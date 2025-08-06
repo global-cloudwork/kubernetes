@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://github.com/argoproj/argo-cd/blob/v3.0.12/manifests/crds/applicationset-crd.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kustomize-matrix-apps
+spec:
+  generators:
+    - matrix:
+        generators:
+          - scmProvider:
+              github:
+                orginization: mcconnellj
+                allBranches: true
+              cloneProtocol: https
+              filters:
+              - repositoryMatch: kubernetes
+          - git:
+              repoURL: https://github.com/mcconnellj/kubernetes.git
+              revision: '{{repo.branch}}'
+              directories:
+                - kustomize
+  template:
+    metadata:
+      name: "{{repo.branch}}-namespace"
+      labels:
+        app.kubernetes.io/managed-by: argocd
+    spec:
+      project: default
+      source:
+        repoURL: "{{repo.url}}"
+        targetRevision: "{{repo.branch}}"
+        path: "kustomize" # Dynamically points to the correct Kustomize overlay
+        kustomize:
+          nameSuffix: "-{{repo.branch}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "argo-cd"

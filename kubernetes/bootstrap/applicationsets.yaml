@@ -1,0 +1,45 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: ApplicationSet
+# metadata:
+#   name: application-instance-applicationset
+#   namespace: argocd
+# spec:
+#   goTemplate: true
+#   goTemplateOptions: ["missingkey=error"]
+#   generators:
+#   - matrix:
+#       generators:
+#       - git:
+#           repoURL: https://github.com/mcconnellj/Mono-Repo.git
+#           revision: main
+#           files:
+#           - path: projects/kubernetes/applications/vaultwarden/*.json
+#       - clusters:
+#           selector:
+#             matchLabels:
+#               argocd.argoproj.io/secret-type: cluster
+#   template:
+#     metadata: 
+#       name: '{{ .application.name }}'
+#       finalizers:
+#         - resources-finalizer.argocd.argoproj.io
+#     spec:
+#       project: default
+#       sources:
+#       - chart: '{{ .application.name }}'
+#         repoURL: '{{ .application.repository }}'
+#         targetRevision: '{{ .application.version }}'
+#         helm:
+#           valueFiles:
+#           - $values/projects/kubernetes/applications/{{ .application.name }}/values.yaml
+#       - repoURL: https://github.com/mcconnellj/Mono-Repo.git
+#         targetRevision: main
+#         ref: values   # This maps $values to this repo root for Helm value files
+#         # path: ""    # Optional: ensure this source is not used to render manifests by itself
+#       destination:
+#         name: '{{ .server }}'
+#         namespace: argocd
+#       syncPolicy:
+#         automated:
+#           selfHeal: true
+#           prune: true
