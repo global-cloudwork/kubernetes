@@ -5,20 +5,11 @@ metadata:
   name: kustomize-matrix-apps
 spec:
   generators:
-    - matrix:
-        generators:
-          - scmProvider:
-              github:
-                organization: global-cloudworks
-                allBranches: true
-              cloneProtocol: https
-              filters:
-              - repositoryMatch: kubernetes
-          - git:
-              repoURL: https://github.com/mcconnellj/kubernetes.git
-              revision: '{{repo.branch}}'
-              directories:
-                - path: kustomize
+    - git:
+        repoURL: https://github.com/global-cloudwork/kubernetes.git
+        revision: 'development'
+        directories:
+          - path: kustomize
   template:
     metadata:
       name: "{{repo.branch}}-namespace"

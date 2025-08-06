@@ -36,7 +36,7 @@ mv -f ./kubernetes-production/kubernetes/initialization/* /var/lib/rancher/k3s/s
 # mv -f ./kubernetes-production/scripts/k3s.sh /etc/profile.d/k3s.sh
 
 echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" > /etc/profile.d/k3s.sh
-chmod 600 /etc/rancher/k3s/k3s.yaml
+chmod 644 /etc/rancher/k3s/k3s.yaml
 
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -
 
