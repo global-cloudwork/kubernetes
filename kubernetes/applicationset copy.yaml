@@ -3,6 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: kustomize-matrix-apps
+  namespace: argocd
 spec:
   generators:
     - git:
@@ -12,17 +13,15 @@ spec:
           - path: kustomize
   template:
     metadata:
-      name: "{{repo.branch}}-namespace"
-      labels:
-        app.kubernetes.io/managed-by: argocd
+      name: "namespace-applicationset"
     spec:
       project: default
       source:
-        repoURL: "{{repo.url}}"
-        targetRevision: "{{repo.branch}}"
+        repoURL: "https://github.com/global-cloudwork/kubernetes.git"
+        targetRevision: "development"
         path: "kustomize" # Dynamically points to the correct Kustomize overlay
-        kustomize:
-          nameSuffix: "-{{repo.branch}}"
+        # kustomize:
+        #   nameSuffix: "-{{repo.branch}}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "argocd"
