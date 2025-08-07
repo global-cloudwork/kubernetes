@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/managed-by: argo-cd
+
+helmCharts:
+  - name: redis
+    repo: https://charts.bitnami.com/bitnami
+    releaseName: my-redis
+    namespace: argocd
+    version: 21.2.14
+
+configMapGenerator:
+  - name: redis
+    files:
+      - redis.properties

@@ -10,18 +10,16 @@ spec:
         repoURL: https://github.com/global-cloudwork/kubernetes.git
         revision: 'development'
         directories:
-          - path: kustomize
+          - path: enviroments/development/kustomize.yaml
   template:
     metadata:
-      name: "namespace-applicationset"
+      name: "development-applicationset"
     spec:
       project: default
       source:
         repoURL: "https://github.com/global-cloudwork/kubernetes.git"
         targetRevision: "development"
-        path: "kustomize" # Dynamically points to the correct Kustomize overlay
-        # kustomize:
-        #   nameSuffix: "-{{repo.branch}}"
+        path: "enviroments/development/kustomize.yaml" 
       destination:
         server: https://kubernetes.default.svc
         namespace: "argocd"

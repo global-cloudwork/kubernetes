@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/managed-by: argo-cd
+
+helmCharts:
+  - name: keycloak
+    repo: https://charts.bitnami.com/bitnami
+    releaseName: my-keycloak
+    namespace: argocd
+    version: 24.9.0
+
+configMapGenerator:
+  - name: keycloak
+    files:
+      - keycloak.properties
