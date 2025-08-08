@@ -28,9 +28,9 @@ spec:
     spec:
       project: default
       source:
-        repoURL: '{{ url }}'
-        targetRevision: '{{ branch }}'
-        path: configurations/environments/{{repo.branch}}
+        repoURL: '{{ .url }}'
+        targetRevision: '{{ .branch }}'
+        path: configurations/environments/{{ .branch }}
       destination:
         server: https://kubernetes.default.svc
         namespace: "argocd"
