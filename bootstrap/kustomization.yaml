@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: argocd
 
-commonLabels:
+labels:
   app.kubernetes.io/managed-by: argo-cd
 
 resources:
@@ -11,11 +11,11 @@ resources:
   - /resources/cluster-secret.k8s.yaml
   - /resources/repository-secret.k8s.yaml
 
-patches:
-  - target:
-      group: ""
-      version: v1
-      kind: ConfigMap
-      name: argocd-cm
-      namespace: argocd
-    path: patches/argocd-patch.yaml
+# patches:
+#   - target:
+#       group: ""
+#       version: v1
+#       kind: ConfigMap
+#       name: argocd-cm
+#       namespace: argocd
+#     path: patches/argocd-patch.yaml
