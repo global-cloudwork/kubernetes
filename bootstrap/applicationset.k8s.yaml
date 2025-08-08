@@ -24,7 +24,7 @@ spec:
       labels:
         app.kubernetes.io/managed-by: argocd
     spec:
-      project: development
+      project: default
       source:
         repoURL: "{{repo.url}}"
         targetRevision: "{{repo.branch}}"
