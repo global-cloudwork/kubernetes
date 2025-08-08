@@ -4,8 +4,8 @@ metadata:
   name: enviroment-applicationset
   namespace: argocd
 spec:
-  goTemplate: true
-  goTemplateOptions: ["missingkey=error"]
+  # goTemplate: true
+  # goTemplateOptions: ["missingkey=error"]
   generators:
     # - matrix:
     #     generators:
