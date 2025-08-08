@@ -2,13 +2,14 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: scm-and-directory-applicationset
+  namespace: argocd
 spec:
   generators:
     - matrix:
         generators:
           - scmProvider:
               github:
-                organization: global-cloudworks
+                organization: global-cloudwork
               filters:
                 - branchMatch: development
                 - repositoryMatch: kubernetes
@@ -16,7 +17,7 @@ spec:
               repoURL: https://github.com/global-cloudwork/kubernetes.git
               revision: 'development'
               directories:
-                - path: enviroments/development/kustomize.yaml
+                - path: /configurations/environments/development
   template:
     metadata:
       name: "{{repo.branch}}-namespace"
@@ -27,7 +28,7 @@ spec:
       source:
         repoURL: "{{repo.url}}"
         targetRevision: "{{repo.branch}}"
-        path: "/enviroments/{{repo.branch}}/kustomize.yaml"
+        path: "/configurations/environments/{{repo.branch}}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "argocd"
