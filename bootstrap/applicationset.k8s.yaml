@@ -7,12 +7,7 @@ spec:
   generators:
     - matrix:
         generators:
-          - scmProvider:
-              github:
-                organization: global-cloudwork
-              filters:
-                - branchMatch: development
-                - repositoryMatch: kubernetes
+          - cluster: []
           - git:
               repoURL: https://github.com/global-cloudwork/kubernetes.git
               revision: 'development'
