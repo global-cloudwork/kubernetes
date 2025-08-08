@@ -3,13 +3,10 @@ kind: Kustomization
 
 namePrefix: "development-"
 
-commonLabels:
-  app.kubernetes.io/managed-by: argo-cd
-
 resources:
   - ../../enviroments/common/base/kustomize.yaml
+  - /resources/secret.k8s.yaml
 
-  - ../../applications/kube-prometheus-stack/kustomize.yaml
   # - ../../applications/cert-manager/kustomize.yaml
   # - ../../applications/traefik/kustomize.yaml
   # - ../../applications/external-dns/kustomize.yaml

@@ -7,6 +7,5 @@ commonLabels:
   app.kubernetes.io/managed-by: argo-cd
 
 resources:
-  - ../namespaces.yaml
-  - ../projects.yaml
-
+  - /respirces/namespace.k8s.yaml
+  - /respirces/app-project.k8s.yaml

@@ -6,14 +6,13 @@ spec:
   generators:
     - matrix:
         generators:
-          # - scmProvider:
-          #     github:
-          #       organization: global-cloudworks
-          #       allBranches: true
-          #     cloneProtocol: https
-          #     filters:
-          #     - repositoryMatch: kubernetes
-          - cluster: []
+          - scmProvider:
+              github:
+                organization: global-cloudworks
+                filters:
+                  - branchMatch: development
+              filters:
+              - repositoryMatch: kubernetes
           - git:
               repoURL: https://github.com/global-cloudwork/kubernetes.git
               revision: 'development'
@@ -30,8 +29,6 @@ spec:
         repoURL: "{{repo.url}}"
         targetRevision: "{{repo.branch}}"
         path: "/enviroments/{{repo.branch}}/kustomize.yaml"
-        kustomize:
-          nameSuffix: "-{{repo.branch}}"
       destination:
         server: https://kubernetes.default.svc
         namespace: "argocd"
