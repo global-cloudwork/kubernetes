@@ -14,21 +14,23 @@ spec:
               revision: 'development'
               files: 
                 - path: configurations/environments/**/config.json
-          - clusters:
-              selector:
-                matchLabels:
-                  argocd.argoproj.io/secret-type: cluster
+          - scmProvider:
+              github:
+                organization: global-cloudwork
+              cloneProtocol: https
+              filters:
+                - repositoryMatch: kubernetes
   template:
     metadata:
-      name: "{{repo.branch}}-namespace"
+      name: '{{ repository }}'
       labels:
         app.kubernetes.io/managed-by: argocd
     spec:
       project: default
       source:
-        repoURL: "{{repo.url}}"
-        targetRevision: "{{repo.branch}}"
-        path: configurations/environments/{{repo.branch}}
+        repoURL: '{{ url }}'
+        targetRevision: '{{ branch }}'
+        path: configurations/environments/'{{ branch }}'
       destination:
         server: https://kubernetes.default.svc
         namespace: "argocd"
