@@ -7,13 +7,13 @@ spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
   generators:
-    # - matrix:
-    #     generators:
-    #       - git:
-    #           repoURL: https://github.com/global-cloudwork/kubernetes.git
-    #           revision: 'development'
-    #           files: 
-    #             - path: configurations/environments/**/config.json
+    - matrix:
+        generators:
+          - git:
+              repoURL: https://github.com/global-cloudwork/kubernetes.git
+              revision: 'development'
+              files: 
+                - path: configurations/environments/**/config.json
           - scmProvider:
               github:
                 organization: global-cloudwork
