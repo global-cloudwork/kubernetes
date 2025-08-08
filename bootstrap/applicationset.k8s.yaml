@@ -1,18 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: scm-and-directory-applicationset
+  name: enviroment-applicationset
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
     - matrix:
         generators:
-          - cluster: []
           - git:
               repoURL: https://github.com/global-cloudwork/kubernetes.git
               revision: 'development'
-              directories:
-                - path: configurations/environments/development
+              files: 
+                - path: configurations/environments/**/config.json
+          - clusters:
+              selector:
+                matchLabels:
+                  argocd.argoproj.io/secret-type: cluster
   template:
     metadata:
       name: "{{repo.branch}}-namespace"
