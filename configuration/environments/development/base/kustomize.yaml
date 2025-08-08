@@ -7,6 +7,8 @@ commonLabels:
   app.kubernetes.io/managed-by: argo-cd
 
 resources:
+  - ../../enviroments/common/base/kustomize.yaml
+
   - ../../applications/kube-prometheus-stack/kustomize.yaml
   # - ../../applications/cert-manager/kustomize.yaml
   # - ../../applications/traefik/kustomize.yaml

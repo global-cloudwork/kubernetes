@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: core
+  annotations:
+    monitoring: prometheus
+    argocd.argoproj.io/sync-wave: "-10"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant
+  annotations:
+    monitoring: prometheus
+    argocd.argoproj.io/sync-wave: "-10"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: edge
+  annotations:
+    monitoring: prometheus
+    argocd.argoproj.io/sync-wave: "-10"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: data
+  annotations:
+    monitoring: prometheus
+    argocd.argoproj.io/sync-wave: "-10"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+  annotations:
+    monitoring: prometheus
+    argocd.argoproj.io/sync-wave: "-10"
