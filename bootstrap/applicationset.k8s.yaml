@@ -9,10 +9,9 @@ spec:
           - scmProvider:
               github:
                 organization: global-cloudworks
-                filters:
-                  - branchMatch: development
               filters:
-              - repositoryMatch: kubernetes
+                - branchMatch: development
+                - repositoryMatch: kubernetes
           - git:
               repoURL: https://github.com/global-cloudwork/kubernetes.git
               revision: 'development'
