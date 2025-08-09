@@ -1,0 +1,11 @@
+# Applications 
+## Depends On: Secrets
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../secrets
+  - https://github.com/argoproj/argo-cd//manifests/cluster-install?ref=v2.8.8
+  - https://github.com/kubernetes-sigs/external-dns//deploy/kubernetes?ref=v0.13.11
+  - https://github.com/cert-manager/cert-manager//deploy/charts/cert-manager/templates?ref=v1.12.0
