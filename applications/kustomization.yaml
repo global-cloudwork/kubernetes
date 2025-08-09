@@ -5,7 +5,7 @@ kind: Kustomization
 
 #Application subdirectories
 resources:
-  - argocd
+  # - argocd
   - cert-manager
   - external-dns
   - sealed-secrets

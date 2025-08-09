@@ -1,12 +1,20 @@
-# Components - Chain End
-## Depends On: Applications
-
+# Secrets
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - app-project.k8s.yaml
-  - applicationset.k8s.yaml
+  - resources/namespace.k8s.yaml
+  - resources/secret.k8s.yaml
+
+# Components - Chain End
+## Depends On: Applications
+
+# apiVersion: kustomize.config.k8s.io/v1beta1
+# kind: Kustomization
+
+# resources:
+#   - app-project.k8s.yaml
+#   - applicationset.k8s.yaml
 
 # patches:
 #   - target:
@@ -16,3 +24,4 @@ resources:
 #       name: argocd-cm
 #       namespace: argocd
 #     path: patches/argocd-patch.yaml
+
