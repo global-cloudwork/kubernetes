@@ -1,0 +1,11 @@
+# Applications 
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+#Application subdirectories
+resources:
+  - argocd
+  - cert-manager
+  - external-dns
+  - sealed-secrets
