@@ -6,6 +6,10 @@ namePrefix: "development-"
 resources:
   - ../common/kustomizeation.yaml
 
+
+
+
+
   # - ../../applications/cert-manager/kustomize.yaml
   # - ../../applications/traefik/kustomize.yaml
   # - ../../applications/external-dns/kustomize.yaml
