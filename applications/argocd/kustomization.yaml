@@ -1,12 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-helmCharts:
-  - name: argo-cd
-    repo: https://argoproj.github.io/argo-helm
-    releaseName: my-argo-cd
-    namespace: argocd
-    version: 8.2.7
+resources:
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.7.2/manifests/install.yaml
+
+patches:
+  - target:
+      group: ""
+      version: v1
+      kind: ConfigMap
+      name: argocd-cm
+      namespace: argocd
+    path: patches/argocd-patch.yaml
 
 # configMapGenerator:
 #   - name: argocd
