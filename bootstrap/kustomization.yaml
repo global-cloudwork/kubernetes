@@ -1,16 +1,13 @@
-# Components
+# Components - Chain End
 ## Depends On: Applications
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: argocd
-
 resources:
-  - ../applications
+  - dependencies
   - resources/app-project.k8s.yaml
   - resources/applicationset.k8s.yaml
-
 
 # patches:
 #   - target:
