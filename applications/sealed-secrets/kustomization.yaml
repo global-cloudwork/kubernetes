@@ -1,9 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-commonLabels:
-  app.kubernetes.io/managed-by: argo-cd
-
 helmCharts:
   - name: sealed-secrets
     repo: https://bitnami-labs.github.io/sealed-secrets
@@ -11,7 +8,7 @@ helmCharts:
     namespace: kube-system
     version: 2.17.3
 
-configMapGenerator:
-  - name: sealed-secrets-config
-    files:
-      - sealed-secrets.properties
+# configMapGenerator:
+#   - name: sealed-secrets-config
+#     files:
+#       - sealed-secrets.properties
