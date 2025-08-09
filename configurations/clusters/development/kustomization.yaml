@@ -4,8 +4,7 @@ kind: Kustomization
 namePrefix: "development-"
 
 resources:
-  - ../../enviroments/common/base/kustomize.yaml
-  - /resources/secret.k8s.yaml
+  - ../common/kustomizeation.yaml
 
   # - ../../applications/cert-manager/kustomize.yaml
   # - ../../applications/traefik/kustomize.yaml
