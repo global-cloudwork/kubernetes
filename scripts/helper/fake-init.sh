@@ -14,7 +14,7 @@ kubectl apply \
 
 kubectl apply -k https://github.com/kubernetes-sigs/external-dns//kustomize
 
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 
-# Fetch Password 
-# kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d
 
