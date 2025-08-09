@@ -7,9 +7,6 @@ resources:
   - ../common
 
 
-
-
-
   # - ../../applications/cert-manager/kustomize.yaml
   # - ../../applications/traefik/kustomize.yaml
   # - ../../applications/external-dns/kustomize.yaml
