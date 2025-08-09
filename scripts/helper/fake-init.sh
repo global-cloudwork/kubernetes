@@ -4,7 +4,6 @@
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 chmod 644 /etc/rancher/k3s/k3s.yaml
 
-
 # Bootstrap Manifests
 kubectl create namespace argocd
 kubectl apply \
