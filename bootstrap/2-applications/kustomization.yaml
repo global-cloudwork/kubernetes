@@ -8,4 +8,4 @@ resources:
   # - https://github.com/bitnami-labs/sealed-secrets/releases/latest/download/controller.yaml
   # - https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
   # - https://raw.githubusercontent.com/kubernetes-sigs/external-dns/master/docs/contributing/crd-source/crd-manifest.yaml
-  - github.com/argoproj/argo-cd/manifests/core?ref=stable
+  - github.com/argoproj/argo-cd/manifests/namespace-install?ref=stable
