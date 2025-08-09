@@ -14,13 +14,13 @@ spec:
     #           revision: 'development'
     #           files: 
     #             - path: configurations/environments/**/config.json
-          - scmProvider:
-              github:
-                organization: global-cloudwork
-                allBranches: true
-              cloneProtocol: https
-              filters:
-                - repositoryMatch: kubernetes
+    - scmProvider:
+        github:
+          organization: global-cloudwork
+          allBranches: true
+        cloneProtocol: https
+        filters:
+          - repositoryMatch: kubernetes
   template:
     metadata:
       name: '{{ .repository }}-{{ .branch }}'
