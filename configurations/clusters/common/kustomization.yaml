@@ -3,9 +3,6 @@ kind: Kustomization
 
 namespace: argocd
 
-commonLabels:
-  app.kubernetes.io/managed-by: argo-cd
-
 resources:
-  - /resources/namespace.k8s.yaml
-  - /resources/app-project.k8s.yaml
+  - resources/namespace.k8s.yaml
+  - resources/app-project.k8s.yaml
