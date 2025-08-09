@@ -6,9 +6,11 @@ namespace: argocd
 labels: []
 
 resources:
-  - resources/applicationset.k8s.yaml
   - resources/cluster-secret.k8s.yaml
   - resources/repository-secret.k8s.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.7.2/manifests/install.yaml
+  - resources/applicationset.k8s.yaml
+
 
 # patches:
 #   - target:

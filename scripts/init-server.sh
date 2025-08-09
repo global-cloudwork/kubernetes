@@ -40,10 +40,6 @@ chmod 644 /etc/rancher/k3s/k3s.yaml
 
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -
 
-wget https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
-apt install ./k9s_linux_amd64.deb
-rm k9s_linux_amd64.deb
-
 echo "--- Startup Script Finished Successfully: $(date) ---"
 
 # kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
