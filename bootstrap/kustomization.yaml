@@ -7,7 +7,7 @@ labels: []
 
 resources:
   - resources/applicationset.k8s.yaml
-  # - resources/cluster-secret.k8s.yaml
+  - resources/cluster-secret.k8s.yaml
   - resources/repository-secret.k8s.yaml
 
 # patches:
