@@ -11,7 +11,7 @@ patches:
       kind: ConfigMap
       name: argocd-cm
       namespace: argocd
-    path: patches/argocd-patch.yaml
+    path: argocd-patch.yaml
 
 # configMapGenerator:
 #   - name: argocd
