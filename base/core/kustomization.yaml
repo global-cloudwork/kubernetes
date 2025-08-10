@@ -2,4 +2,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-   - github.com/global-cloudwork/kubernetes//applications/argocd?ref=development
+   - resources/application.k8s.yaml
