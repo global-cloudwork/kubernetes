@@ -8,6 +8,7 @@ resources:
   - resources
   - applications
   - clusters
+  - 
 
 # patches:
 #   - target:
