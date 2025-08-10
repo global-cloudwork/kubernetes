@@ -7,7 +7,7 @@ kind: Kustomization
 resources:
   - resources
   - applications
-  - c
+  - clusters
 
 # patches:
 #   - target:
