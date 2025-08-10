@@ -4,7 +4,7 @@ kind: Kustomization
 
 resources:
   - kubernetes/secret.k8s.yaml
-  - kubernetes/namespae.k8s.yaml
+  - kubernetes/namespace.k8s.yaml
 
 # Components - Chain End
 ## Depends On: Applications
