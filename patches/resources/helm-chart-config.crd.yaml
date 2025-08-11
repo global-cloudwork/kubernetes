@@ -1,0 +1,12 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+      argocd:
+        port: 8080       # Port inside the cluster where argocd-server listens
+        expose: true
+        exposedPort: 8080 # Port exposed on Traefik's LoadBalancer/Node IP
+        protocol: TCP
