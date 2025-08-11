@@ -5,7 +5,9 @@ kind: Kustomization
 resources:
   - kubernetes/namespace.k8s.yaml
   - kubernetes/secret.k8s.yaml
-  - applications/argocd/
-  - kubernetes/app-project.crd.yaml
-  - kubernetes/application.crd.yaml
-  - kubernetes/application-set.crd.yaml
+
+
+  - applications/core/argocd/
+
+
+  - patches
