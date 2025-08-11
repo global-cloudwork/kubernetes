@@ -6,15 +6,6 @@ namespace: argocd
 resources:
   - https://raw.githubusercontent.com/argoproj/argo-cd/v2.7.2/manifests/install.yaml
 
-patches:
-  - target:
-      group: ""
-      version: v1
-      kind: ConfigMap
-      name: argocd-cm
-      namespace: argocd
-    path: argocd-patch.yaml
-
 # configMapGenerator:
 #   - name: argocd
 #     files:

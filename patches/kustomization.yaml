@@ -7,3 +7,11 @@ resources:
   - resources/application.crd.yaml
   - resources/application-set.crd.yaml
 
+patches:
+  - target:
+      group: ""
+      version: v1
+      kind: ConfigMap
+      name: argocd-cm
+      namespace: argocd
+    path: argocd-patch.yaml
