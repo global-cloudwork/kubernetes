@@ -16,3 +16,10 @@ patches:
       name: argocd-cm
       namespace: argocd
     path: resources/argocd-patch.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: my-argo-cd-argocd-server
+      namespace: argocd
+    path: resources/insecure-patch.yaml
