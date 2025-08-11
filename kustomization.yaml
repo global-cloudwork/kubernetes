@@ -6,3 +6,4 @@ resources:
   - kubernetes/namespace.k8s.yaml
   - kubernetes/secret.k8s.yaml
   - patches
+  - kubernetes/ingress.k8s.yaml

@@ -4,7 +4,6 @@ kind: Kustomization
 
 resources:
   # - resources/helm-chart-config.crd.yaml
-  - resources/ingress.k8s.yaml
   # - resources/app-project.crd.yaml
   # - resources/application.crd.yaml
   # - resources/application-set.crd.yaml
