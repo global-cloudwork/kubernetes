@@ -4,7 +4,6 @@ kind: Kustomization
 namePrefix: "development-"
 
 resources:
-  - ../common
 
 
   # - ../../applications/cert-manager/kustomize.yaml

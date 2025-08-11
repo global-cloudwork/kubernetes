@@ -1,0 +1,9 @@
+# Secrets
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - resources/app-project.crd.yaml
+  - resources/application.crd.yaml
+  - resources/application-set.crd.yaml
+
