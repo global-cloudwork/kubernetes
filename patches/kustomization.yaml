@@ -3,7 +3,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  # - resources/helm-chart-config.crd.yaml
+  - resources/helm-chart-config.crd.yaml
   # - resources/app-project.crd.yaml
   # - resources/application.crd.yaml
   # - resources/application-set.crd.yaml
@@ -16,10 +16,3 @@ patches:
       name: argocd-cm
       namespace: argocd
     path: resources/argocd-patch.yaml
-  - target:
-      group: apps
-      version: v1
-      kind: Deployment
-      name: my-argo-cd-argocd-server
-      namespace: argocd
-    path: resources/insecure-patch.yaml
