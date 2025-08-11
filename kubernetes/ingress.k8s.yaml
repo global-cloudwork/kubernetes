@@ -3,10 +3,13 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
-  # annotations:
-  #   traefik.ingress.kubernetes.io/router.entrypoints: web
+  annotations:
+    kubernetes.io/ingress.class: traefik
 spec:
-  # ingressClassName: traefik
+  tls:
+  - hosts:
+    - argocd.localhost
+    secretName: argocd-tls-cert
   rules:
   - host: argocd.localhost
     http:

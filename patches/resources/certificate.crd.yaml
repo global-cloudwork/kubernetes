@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd-cert
+  namespace: argocd
+spec:
+  secretName: argocd-tls-cert
+  issuerRef:
+    name: selfsigned-issuer
+  commonName: argocd.localhost
+  dnsNames:
+  - argocd.localhost
+  duration: 8760h
+  renewBefore: 360h
