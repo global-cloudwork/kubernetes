@@ -1,3 +1,5 @@
 {
-  "server.insecure": false
+  "server": {
+    "extraArgs": ["--insecure"]
+  }
 }

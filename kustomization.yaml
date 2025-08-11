@@ -9,8 +9,8 @@ resources:
   - kubernetes/namespace.k8s.yaml
   - kubernetes/secret.k8s.yaml
   - kubernetes/ingress.k8s.yaml
-  - patches/resources/certificate.crd.yaml
-  - patches/resources/issuer.crd.yaml
+  # - patches/resources/certificate.crd.yaml
+  # - patches/resources/issuer.crd.yaml
   
   
   
