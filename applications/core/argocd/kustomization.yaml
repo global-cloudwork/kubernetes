@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: argocd
 
-commonLabels:
+commonAnnotations:
   argocd.argoproj.io/sync-wave: "-5"
 
 resources:
