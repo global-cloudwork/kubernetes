@@ -7,9 +7,9 @@ commonLabels:
 
 
 resources:
-  - kubernetes/app-project.crd.yaml
-  - kubernetes/application.crd.yaml
-  - kubernetes/application-set.crd.yaml
+  - resources/app-project.crd.yaml
+  - resources/application.crd.yaml
+  - resources/application-set.crd.yaml
 
 patches:
   - target:
