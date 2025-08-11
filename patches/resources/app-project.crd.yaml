@@ -14,7 +14,6 @@ spec:
   - group: '*'
     kind: '*'
   namespaceResourceBlacklist: []
-
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
@@ -32,7 +31,6 @@ spec:
   - group: '*'
     kind: '*'
   namespaceResourceBlacklist: []
-
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
@@ -50,7 +48,6 @@ spec:
   - group: '*'
     kind: '*'
   namespaceResourceBlacklist: []
-
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
