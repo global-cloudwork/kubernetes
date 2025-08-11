@@ -6,6 +6,10 @@ export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 sudo chmod 644 /etc/rancher/k3s/k3s.yaml
 
 kubectl kustomize --enable-helm \
+  "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=development" \
+  | kubectl apply --dry-run=client -f -
+
+kubectl kustomize --enable-helm \
   "github.com/global-cloudwork/kubernetes?ref=development" \
   | kubectl apply --dry-run=client -f -
 

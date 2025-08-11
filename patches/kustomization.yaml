@@ -5,7 +5,6 @@ kind: Kustomization
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "1"
 
-
 resources:
   - resources/app-project.crd.yaml
   - resources/application.crd.yaml
