@@ -1,6 +1,6 @@
 # cat /etc/rancher/rke2/config.yaml
 write-kubeconfig-mode: 0644
-tls-san:
-  - localhost
 cni: cilium
-disable-kube-proxy: true
+# disable-kube-proxy: true
+# tls-san:
+#   - localhost
