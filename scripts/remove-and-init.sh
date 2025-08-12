@@ -1,10 +1,19 @@
 #!/bin/bash
+# Run as root
+/usr/local/bin/rke2-uninstall.sh
 
-/usr/local/bin/k3s-uninstall.sh
-curl -sfL https://get.k3s.io | sh -
+mkdir -p /var/lib/rancher/rke2/manifests/
+mkdir -p /etc/rancher/rke2/
 
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+cp ../configurations/helm/var-lib-rancher-rke2-manifests.yaml /var/lib/rancher/rke2/manifests/cilium-helm-overlay.yaml
+cp ../configurations/other/etc-rancher-rke2-config.yaml /etc/rancher/rke2/config.yaml
+
+curl -sfL https://get.rke2.io | sudo sh -
+systemctl enable rke2-server.service
+systemctl start rke2-server.service
+
+export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+chmod 644 /etc/rancher/rke2/rke2.yaml
 
 kubectl create namespace argocd
 
