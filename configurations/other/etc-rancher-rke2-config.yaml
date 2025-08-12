@@ -2,6 +2,5 @@
 write-kubeconfig-mode: 0644
 tls-san:
   - localhost
-# token: {Your Token}
 cni: cilium
 disable-kube-proxy: true
