@@ -14,6 +14,8 @@ chmod 644 /etc/rancher/rke2/rke2.yaml
 
 kubectl create namespace argocd
 
+# kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.localhost.pem
+
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
