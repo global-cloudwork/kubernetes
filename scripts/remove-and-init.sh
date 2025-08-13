@@ -13,7 +13,7 @@ export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 chmod 644 /etc/rancher/rke2/rke2.yaml
 
 kubectl create namespace argocd
-kubectl create cert-manager argocd
+kubectl create namespace cert-manager
 
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.localhost.pem
 # kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/1.18.0/examples/kubernetes/servicemesh/ca-issuer.yaml
