@@ -5,6 +5,8 @@ resources:
   - resources/gateway.crd.yaml
   - resources/http-route.crd.yaml
   - resources/issuer.crd.yaml
+  - resources/gateway-class.yaml
+
 
 # configMapGenerator:
 #   - name: argocd
