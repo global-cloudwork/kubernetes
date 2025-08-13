@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - applications/core/argocd
-  - applications/core/cilium/helm-chart-config.yaml
+  # - applications/core/cilium/helm-chart-config.yaml
   - applications/core/cert-manager
   - kubernetes/connection/gateway.crd.yaml
   - kubernetes/connection/http-route.crd.yaml

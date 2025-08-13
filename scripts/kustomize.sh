@@ -1,6 +1,5 @@
 #!/bin/bash
-# kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.localhost.pem
-# kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/1.18.0/examples/kubernetes/servicemesh/ca-issuer.yaml
+kubectl create secret tls argocd-server-tls -n argocd --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
 
 export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 chmod 644 /etc/rancher/rke2/rke2.yaml
