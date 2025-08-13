@@ -172,6 +172,7 @@ configs:
   cm:
     # -- Create the argocd-cm configmap for [declarative setup]
     create: true
+    kustomize.buildOptions: --enable-helm
 
     # -- Annotations to be added to argocd-cm configmap
     annotations: {}
@@ -1104,7 +1105,7 @@ dex:
   name: dex-server
 
   # -- Additional command line arguments to pass to the Dex server
-  extraArgs: [ --enable-helm ]
+  extraArgs: [ ]
 
   # -- Runtime class name for Dex
   # @default -- `""` (defaults to global.runtimeClassName)
