@@ -5,7 +5,7 @@ helmCharts:
   - name: cert-manager
     repo: https://charts.jetstack.io
     releaseName: my-cert-manager
-    namespace: argocd
+    namespace: cert-manager
     version: 1.18.2
     valuesFile: values.yaml
 
