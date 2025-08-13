@@ -1,8 +1,0 @@
-{
-  "server": {
-    "extraArgs": ["--insecure"]
-  },
-  "data": {
-    "kustomize.buildOptions": "--enable-helm"
-  }
-}
