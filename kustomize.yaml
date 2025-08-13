@@ -2,11 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - kubernetes/secret.k8s.yaml
-  - kubernetes/namespace.k8s.yaml
-  - kubernetes/gateway.k8s.yaml
-  - kubernetes/http-route.yaml
-
+  - applications/core/argocd
+  - applications/core/cilium/helm-chart-config.yaml
+  - kubernetes/connection/gateway.k8s.yaml
+  - kubernetes/connection/http-route.k8s.yaml
 
 # configMapGenerator:
 #   - name: argocd

@@ -1,3 +1,0 @@
-- op: replace
-  path: /data/kustomize.buildOptions
-  value: "--enable-helm"

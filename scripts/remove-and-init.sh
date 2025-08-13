@@ -2,10 +2,8 @@
 # Run as root
 /usr/local/bin/rke2-uninstall.sh
 
-mkdir -p /var/lib/rancher/rke2/manifests/
 mkdir -p /etc/rancher/rke2/
-cp ../configurations/helm/cilium.yaml /var/lib/rancher/rke2/manifests/cilium-helm-overlay.yaml
-cp ../configurations/other/etc-rancher-rke2-config.yaml /etc/rancher/rke2/config.yaml
+cp ../configurations/etc-rancher-rke2-config.yaml /etc/rancher/rke2/config.yaml
 
 curl -sfL https://get.rke2.io | sudo sh -
 systemctl enable rke2-server.service

@@ -7,7 +7,7 @@ helmCharts:
     releaseName: my-argo-cd
     namespace: argocd
     version: 8.2.7
-    valuesFile: values.json
+    valuesFile: values.yaml
 
 # configMapGenerator:
 #   - name: argocd
