@@ -1,10 +1,29 @@
+# cat /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+
+# gatewayAPI:
+#   enabled: true
+# hubble:
+#   enabled: true
+#   relay:
+#     enabled: true
+#   ui:
+#     enabled: true
+# encryption:
+#   enabled: true
+#   type: wireguard
+#   nodeEncryption: true
+
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
   name: rke2-cilium
   namespace: kube-system
 spec:
-  valuesFile: "values.yaml"
-
+  valuesContent: |-
+    kubeProxyReplacement: true
+    k8sServiceHost: "10.43.0.1"
+    k8sServicePort: "443"
+    gatewayAPI:
+      enabled: true
 
 
