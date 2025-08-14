@@ -18,6 +18,10 @@ export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 chmod 644 /etc/rancher/rke2/rke2.yaml
 
 kubectl apply -k https://github.com/kubernetes-sigs/gateway-api/config/crd
+kubectl create namespace argocd
+kubectl create namespace cert-manager
+kubectl create secret tls ca -n default --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
+
 
 
 
