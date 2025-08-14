@@ -8,8 +8,6 @@ kubectl create namespace argocd
 kubectl create namespace cert-manager
 
 kubectl apply -k https://github.com/kubernetes-sigs/gateway-api/config/crd
-kubectl apply -f ../applications/core/cilium/helm-chart-config.crd.yaml
-systemctl restart rke2-server
 
 # kubectl kustomize --enable-helm \
 #   "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=development" \
