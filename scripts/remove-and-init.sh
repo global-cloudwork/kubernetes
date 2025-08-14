@@ -1,5 +1,6 @@
 #!/bin/bash
 # Run as root
+/usr/local/bin/rke2-killall.sh
 /usr/local/bin/rke2-uninstall.sh
 
 curl -sfL https://get.rke2.io | sudo sh -
