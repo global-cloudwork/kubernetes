@@ -18,8 +18,6 @@ kind: HelmChartConfig
 metadata:
   name: rke2-cilium
   namespace: kube-system
-operator:
-  replicas: 1
 spec:
   valuesContent: |-
     image:
