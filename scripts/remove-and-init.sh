@@ -17,8 +17,6 @@ export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 chmod 644 /etc/rancher/rke2/rke2.yaml
 
 kubectl apply -k https://github.com/kubernetes-sigs/gateway-api/config/crd
-# kubectl apply -f "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml"
-
 
 
 
