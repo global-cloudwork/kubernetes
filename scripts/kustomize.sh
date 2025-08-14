@@ -13,6 +13,6 @@ kubectl kustomize --enable-helm \
 kubectl kustomize --enable-helm \
   "github.com/global-cloudwork/kubernetes/applications/core/cert-manager?ref=development" \
   | kubectl apply -f -
-
+kube
 # kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes?ref=development" | kubectl apply -f -
 
