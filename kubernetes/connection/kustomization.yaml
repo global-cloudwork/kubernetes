@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   # - resources/load-balancer-ip-pool.yaml
-  - resources/gateway-class.yaml
+  # - resources/gateway-class.yaml
   - resources/gateway.crd.yaml
   - resources/http-route.crd.yaml
   - resources/issuer.crd.yaml
