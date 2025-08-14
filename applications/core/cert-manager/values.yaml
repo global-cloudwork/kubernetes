@@ -219,7 +219,7 @@ podDisruptionBudget:
 
 maxConcurrentChallenges: 60
 
-clusterResourceNamespace: "default"
+clusterResourceNamespace: ""
 
 containerSecurityContext: {"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"allowPrivilegeEscalation":false}
 
