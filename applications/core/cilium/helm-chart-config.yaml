@@ -18,6 +18,8 @@ kind: HelmChartConfig
 metadata:
   name: rke2-cilium
   namespace: kube-system
+operator:
+  replicas: 1
 spec:
   valuesContent: |-
     kubeProxyReplacement: true
@@ -25,5 +27,3 @@ spec:
     k8sServicePort: "443"
     gatewayAPI:
       enabled: true
-operator:
-  replicas: 1
