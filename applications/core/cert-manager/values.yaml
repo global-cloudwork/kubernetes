@@ -225,7 +225,7 @@ containerSecurityContext: {"capabilities":{"drop":["ALL"]},"readOnlyRootFilesyst
 
 dns01RecursiveNameservers: ""
 
-enableCertificateOwnerRef: false
+enableCertificateOwnerRef: true
 
 topologySpreadConstraints: []
 
