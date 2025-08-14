@@ -15,9 +15,8 @@
 
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
-metadata:
-  name: rke2-cilium
-  namespace: kube-system
+metadata.name: rke2-cilium
+metadata.namespace: kube-system
 spec:
   valuesContent: |-
     kubeProxyReplacement: true
@@ -26,4 +25,4 @@ spec:
     gatewayAPI:
       enabled: true
 
-
+hubble.relay.replicas: 1
