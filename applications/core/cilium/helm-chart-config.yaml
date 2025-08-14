@@ -24,5 +24,4 @@ spec:
     k8sServicePort: "443"
     gatewayAPI:
       enabled: true
-
-hubble.relay.replicas: 1
+operator.replicas: 1
