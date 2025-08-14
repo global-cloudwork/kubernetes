@@ -17,7 +17,7 @@ metadata:
 spec:
   gatewayClassName: cilium
   listeners:
-  - hostname: "argocd.127.0.0.1"
+  - hostname: "argocd.localhost"
     port: 443
     name: https-1
     protocol: HTTPS

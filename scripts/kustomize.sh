@@ -15,4 +15,3 @@ kubectl kustomize --enable-helm \
   | kubectl apply -f -
 
 # kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes?ref=development" | kubectl apply -f -
-
