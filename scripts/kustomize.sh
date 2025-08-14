@@ -4,7 +4,7 @@ chmod 644 /etc/rancher/rke2/rke2.yaml
 
 kubectl create namespace argocd
 kubectl create namespace cert-manager
-kubectl create secret tls ca -n cert-manager --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
+# kubectl create secret tls ca -n argocd --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
 
 kubectl kustomize --enable-helm \
   "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=development" \
