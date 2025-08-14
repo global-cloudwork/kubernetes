@@ -5,5 +5,5 @@ cni: cilium
 #   nginx: 
 #     enabled: false
 disable-kube-proxy: true
-tls-san:
-  - localhost
+# tls-san:
+#   - localhost
