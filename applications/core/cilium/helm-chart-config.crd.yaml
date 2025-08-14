@@ -23,7 +23,7 @@ spec:
     image:
       tag: v1.18.0
     kubeProxyReplacement: true
-    k8sServiceHost: 127.0.0.1
+    k8sServiceHost: 10.43.0.1
     k8sServicePort: 443
     operator:
       replicas: 1
