@@ -4,7 +4,7 @@ chmod 644 /etc/rancher/rke2/rke2.yaml
 
 kubectl create namespace argocd
 kubectl create namespace cert-manager
-# kubectl create secret tls ca -n argocd --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
+kubectl create secret tls ca -n argocd --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
 
 kubectl apply -k https://github.com/kubernetes-sigs/gateway-api/config/crd
 # kubectl apply -f "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml"
