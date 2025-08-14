@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - applications/core/argocd
-  - https://raw.githubusercontent.com/global-cloudwork/development/applications/core/cilium/helm-chart-config.yaml
+  - https://raw.githubusercontent.com/global-cloudwork/kubernetes/development/applications/core/cilium/helm-chart-config.yaml
   - applications/core/cert-manager
 
 # configMapGenerator:
