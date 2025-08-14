@@ -3,10 +3,8 @@
 /usr/local/bin/rke2-uninstall.sh
 
 mkdir -p /etc/rancher/rke2/
-mkdir -p /etc/rancher/rke2/manifests
 
 cp ../configurations/etc-rancher-rke2-config.yaml /etc/rancher/rke2/config.yaml
-cp ../applications/core/cilium/helm-chart-config.crd.yaml /etc/rancher/rke2/manifests/cilium-helm-chart-config.crd.yaml
 
 curl -sfL https://get.rke2.io | sudo sh -
 systemctl enable rke2-server.service
@@ -19,3 +17,4 @@ kubectl create namespace argocd
 kubectl create namespace cert-manager
 
 kubectl apply -k https://github.com/kubernetes-sigs/gateway-api/config/crd
+kubectl apply -f ../applications/core/cilium/helm-chart-config.crd.yaml
