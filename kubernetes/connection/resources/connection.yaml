@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: cert-manager-issuer
-  namespace: cert-manager
+  namespace: argocd
 spec:
   ca:
     secretName: ca
@@ -17,7 +17,7 @@ metadata:
 spec:
   gatewayClassName: cilium
   listeners:
-  - hostname: "argocd.localhost"
+  - hostname: "argocd.127.0.0.1"
     port: 443
     name: https-1
     protocol: HTTPS
