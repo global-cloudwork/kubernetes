@@ -4,17 +4,23 @@ kubectl create secret tls argocd-server-tls -n argocd --key=../../keys/argocd-ke
 export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 chmod 644 /etc/rancher/rke2/rke2.yaml
 
-kubectl kustomize --enable-helm \
-  "github.com/global-cloudwork/kubernetes?ref=development" \
-  | kubectl apply -f -
+kubectl create namespace argocd
+kubectl create namespace cert-manager
 
-kubectl kustomize --enable-helm \
-  "github.com/global-cloudwork/kubernetes/kubernetes/connection?ref=development" \
-  | kubectl apply -f -
+kubectl apply -k https://github.com/kubernetes-sigs/gateway-api/config/crd
+kubectl apply -f ../applications/core/cilium/helm-chart-config.crd.yaml
+systemctl restart rke2-server
 
-kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d
-kubectl port-forward svc/argocd-server -n argocd 8080:443
+# kubectl kustomize --enable-helm \
+#   "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=development" \
+#   | kubectl apply -f -
 
-kubectl get secret argocd-tls-cert -n argocd -o jsonpath='{.data.tls\.crt}' | base64 -d > argocd.crt
-sudo cp argocd.crt /usr/local/share/ca-certificates/argocd.crt
-sudo update-ca-certificates
+# kubectl kustomize --enable-helm \
+#   "github.com/global-cloudwork/kubernetes/applications/core/cert-manager?ref=development" \
+#   | kubectl apply -f -
+
+# kubectl kustomize --enable-helm \
+#   "github.com/global-cloudwork/kubernetes?ref=development" \
+#   | kubectl apply -f -
+
+# kubectl create secret tls ca -n argocd --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
