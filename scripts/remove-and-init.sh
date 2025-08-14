@@ -17,4 +17,12 @@ kubectl create namespace argocd
 kubectl create namespace cert-manager
 
 kubectl apply -k https://github.com/kubernetes-sigs/gateway-api/config/crd
+kubectl apply -k ../applications/core/argocd
+kubectl apply -k ../applications/core/cert-manager
 kubectl apply -f ../applications/core/cilium/helm-chart-config.crd.yaml
+
+kubectl kustomize --enable-helm \
+  "github.com/global-cloudwork/kubernetes?ref=development" \
+  | kubectl apply -f -
+
+kubectl create secret tls ca -n argocd --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem

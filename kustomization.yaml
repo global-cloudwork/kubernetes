@@ -2,9 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - applications/core/argocd
-  # - applications/core/cilium/helm-chart-config.crd.yaml
-  - applications/core/cert-manager
+  - kubernetes/connection/resources/certificates.yaml
+  - kubernetes/connection/resources/connection.yaml
+
 
 # configMapGenerator:
 #   - name: argocd

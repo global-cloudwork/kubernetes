@@ -4,6 +4,6 @@ cni: cilium
 # ingress:
 #   nginx: 
 #     enabled: false
-disable-kube-proxy: true
+# disable-kube-proxy: true
 # tls-san:
 #   - localhost
