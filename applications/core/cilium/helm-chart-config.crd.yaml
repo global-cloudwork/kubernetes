@@ -1,14 +1,7 @@
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: rke2-cilium
+  name: rke2-test-config
   namespace: kube-system
-spec:
-  valuesContent: |-
-    eni:
-      enabled: true
-    kubeProxyReplacement: true
-    k8sServiceHost: "localhost"
-    k8sServicePort: "6443"
-    gatewayAPI:
-      enabled: true
+data:
+  test: "startup manifest test"
