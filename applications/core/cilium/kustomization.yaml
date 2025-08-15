@@ -4,3 +4,6 @@ helmCharts:
     namespace: default
     version: 1.18.1
     valuesFile: values.yaml
+
+resources:
+  - resources/namespace.yaml

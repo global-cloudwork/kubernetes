@@ -8,7 +8,6 @@ helmCharts:
     version: 8.2.7
     valuesFile: values.yaml
 
-# configMapGenerator:
-#   - name: argocd
-#     files:
-#       - argocd.properties
+resources:
+  - resources/namespace.yaml
+
