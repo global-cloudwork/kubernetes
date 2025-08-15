@@ -1,8 +1,12 @@
-cni: none
-write-kubeconfig-mode: 0644
+write-kubeconfig: /home/couch/.kube/config
+write-kubeconfig-mode: 644
+node-name: "local"
 tls-san:
-  - 127.0.0.1
+  - "127.0.0.1"
+  - "localhost"
+  - "argocd.localhost"
 disable-kube-proxy: true
 etcd-expose-metrics: false
 disable:
   - rke2-ingress-nginx
+cni: none
