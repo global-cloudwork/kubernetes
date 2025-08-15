@@ -1,0 +1,6 @@
+helmCharts:
+  - name: cilium
+    repo: https://helm.cilium.io/
+    namespace: default
+    version: 1.18.1
+    valuesFile: values.yaml

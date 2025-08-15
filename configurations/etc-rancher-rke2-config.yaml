@@ -1,2 +1,8 @@
-cni: cilium
-version: v1.31.9+rke2r1
+cni: none
+write-kubeconfig-mode: 0644
+tls-san:
+  - 127.0.0.1
+disable-kube-proxy: true
+etcd-expose-metrics: false
+disable:
+  - rke2-ingress-nginx
