@@ -8,9 +8,9 @@
 # kubectl wait --for=condition=Ready pods --all --namespace my-namespace --timeout=300s
 
 # echo "Install Tools"
-# kubectl kustomize --enable-helm \
-#   "github.com/global-cloudwork/kubernetes?ref=development" \
-#   | kubectl apply -f -
+kubectl kustomize --enable-helm \
+  "github.com/global-cloudwork/kubernetes?ref=development" \
+  | kubectl apply -f -
 
 # kubectl wait --for=condition=Ready pods --all --namespace my-namespace --timeout=300s
 
