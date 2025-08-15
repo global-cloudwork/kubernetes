@@ -4,10 +4,6 @@ kubectl kustomize --enable-helm \
   | kubectl apply -f -
 
 kubectl kustomize --enable-helm \
-  "github.com/global-cloudwork/kubernetes/applications/core/cilium?ref=development" \
-  | kubectl apply -f -
-
-kubectl kustomize --enable-helm \
   "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=development" \
   | kubectl apply -f -
 

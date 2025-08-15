@@ -100,14 +100,14 @@ k8sClientRateLimit:
   # @schema
   # -- (int) The sustained request rate in requests per second.
   # @default -- 10
-  qps:
+  qps: 100
   # @schema
   # type: [null, integer]
   # @schema
   # -- (int) The burst request rate in requests per second.
   # The rate limiter will allow short bursts with a higher rate.
   # @default -- 20
-  burst:
+  burst: 200
   # -- Configure the client side rate limit for the Cilium Operator
   operator:
     # @schema
@@ -457,7 +457,7 @@ nat46x64Gateway:
 # -- Configure L2 announcements
 l2announcements:
   # -- Enable L2 announcements
-  enabled: false
+  enabled: true
   # -- If a lease is not renewed for X duration, the current leader is considered dead, a new leader is picked
   # leaseDuration: 15s
   # -- The interval at which the leader will renew the lease
@@ -992,7 +992,7 @@ ingressController:
 gatewayAPI:
   # -- Enable support for Gateway API in cilium
   # This will automatically set enable-envoy-config as well.
-  enabled: false
+  enabled: true
   # -- Enable proxy protocol for all GatewayAPI listeners. Note that _only_ Proxy protocol traffic will be accepted once this is enabled.
   enableProxyProtocol: false
   # -- Enable Backend Protocol selection support (GEP-1911) for Gateway API via appProtocol.
@@ -1010,7 +1010,7 @@ gatewayAPI:
     # -- Enable creation of GatewayClass resource
     # The default value is 'auto' which decides according to presence of gateway.networking.k8s.io/v1/GatewayClass in the cluster.
     # Other possible values are 'true' and 'false', which will either always or never create the GatewayClass, respectively.
-    create: auto
+    create: true
   # -- SecretsNamespace is the namespace in which envoy SDS will retrieve TLS secrets from.
   secretsNamespace:
     # -- Create secrets namespace for Gateway API.
@@ -1023,7 +1023,7 @@ gatewayAPI:
   # Host Network related configuration
   hostNetwork:
     # -- Configure whether the Envoy listeners should be exposed on the host network.
-    enabled: false
+    enabled: true
     # Specify the nodes where the Ingress listeners should be exposed
     nodes:
       # -- Specify the labels of the nodes where the Ingress listeners should be exposed
@@ -2106,7 +2106,7 @@ readinessProbe:
 # -- Configure the kube-proxy replacement in Cilium BPF datapath
 # Valid options are "true" or "false".
 # ref: https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/
-#kubeProxyReplacement: "false"
+kubeProxyReplacement: "true"
 
 # -- healthz server bind address for the kube-proxy replacement.
 # To enable set the value to '0.0.0.0:10256' for all ipv4
@@ -2579,10 +2579,10 @@ envoy:
         # Both PERFMON and BPF requires kernel 5.8, container runtime
         # cri-o >= v1.22.0 or containerd >= v1.5.0.
         # If available, SYS_ADMIN can be removed.
-        #- PERFMON
-        #- BPF
+        - PERFMON
+        - BPF
       # -- Keep capability `NET_BIND_SERVICE` for Envoy process.
-      keepCapNetBindService: false
+      keepCapNetBindService: true
   # -- Affinity for cilium-envoy.
   affinity:
     podAntiAffinity:
@@ -2829,7 +2829,7 @@ operator:
   # -- Enable the cilium-operator component (required).
   enabled: true
   # -- Roll out cilium-operator pods automatically when configmap is updated.
-  rollOutPods: false
+  rollOutPods: true
   # -- cilium-operator image.
   image:
     # @schema
