@@ -1,1 +1,2 @@
 cni: cilium
+version: v1.31.9+rke2r1

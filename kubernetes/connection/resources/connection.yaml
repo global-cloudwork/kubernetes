@@ -1,49 +1,46 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "ipv4-pool"
+spec:
+  blocks:
+  - start: "Start Pool - IP Address"
+    stop: "End Pool - IP Address"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: l2-announcement-policy
+  namespace: kube-system
+spec:
+  interfaces:
+    - eth0
+  externalIPs: true
+  loadBalancerIPs: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token
+  namespace: argocd
+type: Opaque
+stringData:
+  api-token: <Cloudflare API token>
 ---
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: cert-manager-issuer
+  name: cloudflare-issuer
+  namespace: argocd
 spec:
-  ca:
-    secretName: ca
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: tls-gateway
-  annotations:
-    cert-manager.io/issuer: cert-manager-issuer
-spec:
-  gatewayClassName: cilium
-  listeners:
-  - hostname: "argocd.localhost"
-    port: 443
-    name: https-1
-    protocol: HTTPS
-    allowedRoutes:
-      namespaces: 
-        from: All
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - kind: Secret
-        name: ca
-    
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: https-app-route-1
-spec:
-  parentRefs:
-  - name: tls-gateway
-  hostnames:
-  - "argocd.localhost"
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /details
-    backendRefs:
-    - name: argocd-server
-      port: 8080
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory # For production environments, set the URL to https://acme-v02.api.letsencrypt.org/directory
+    email: "<Your email address>"
+    privateKeySecretRef:
+      name: cloudflare-private-key
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
