@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Install RKE2"
-sudo curl -sfL https://get.rke2.io | sudo sh -
+curl -sfL https://get.rke2.io | sudo sh -
 
 mkdir -p /etc/rancher/rke2/
 cp ../configurations/local-kubeconfig.yaml /etc/rancher/rke2/config.yaml

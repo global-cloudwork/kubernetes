@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo ./remove-rke2.sh
+./remove-rke2.sh
 ./install-rke2.sh
 
 # ls -l /etc/rancher/rke2/rke2.yaml
