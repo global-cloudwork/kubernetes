@@ -6,7 +6,7 @@ metadata:
 spec:
   valuesContent: |-
     image:
-      tag: v1.14.5
+      tag: v1.17.3
     eni:
       enabled: true
     kubeProxyReplacement: true

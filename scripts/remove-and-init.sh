@@ -22,6 +22,11 @@ kubectl create namespace argocd
 kubectl create namespace cert-manager
 kubectl create secret tls ca -n default --key=../../keys/argocd-key.pem --cert=../../keys/argocd.localhost.pem
 
-
-
+openssl genrsa -out argocd-key.pem 2048
+openssl req -new -x509 -key argocd-key.pem -out argocd.localhost.pem -days 365 \
+  -subj "/CN=argocd.localhost/O=argocd"
+kubectl create secret tls argocd-tls \
+  --cert=argocd.localhost.pem \
+  --key=argocd-key.pem \
+  -n argocd
 
