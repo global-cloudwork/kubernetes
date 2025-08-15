@@ -1,8 +1,19 @@
 #!/bin/bash
-echo "Remove RKE2"
-curl https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh
-/usr/local/bin/rke2-killall.sh
-/usr/local/bin/rke2-uninstall.sh
+#Everything Is Supressed
+
+echo "Removal Status"
+
+curl -sS https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh &>/dev/null
+[ $? -eq 0 ] && echo -n true || echo -n false
+echo ": System Agent Removal"
+
+sudo /usr/local/bin/rke2-killall.sh &>/dev/null
+[ $? -eq 0 ] && echo -n true || echo -n false
+echo ": RKE2 Kill All"
+
+sudo /usr/local/bin/rke2-uninstall.sh &>/dev/null
+[ $? -eq 0 ] && echo -n true || echo -n false
+echo ": RKE2 Uninstall"
 
 rm -rf /etc/ceph \
        /etc/cni \
@@ -20,6 +31,10 @@ rm -rf /etc/ceph \
        /var/lib/weave \
        /var/log/containers \
        /var/log/pods \
-       /var/run/calico
+       /var/run/calico &>/dev/null
+[ $? -eq 0 ] && echo -n true || echo -n false
+echo ": Remove Folders"
 
-sudo iptables -t nat -X FLANNEL-POSTRTG
+sudo iptables -t nat -X FLANNEL-POSTRTG &>/dev/null
+[ $? -eq 0 ] && echo -n true || echo -n false
+echo ": Remove IPTables"
