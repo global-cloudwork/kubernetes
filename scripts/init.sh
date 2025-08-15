@@ -6,9 +6,9 @@
 # ls -l "$HOME/.kube/"
 
 # echo Installing CRD's
-kubectl kustomize --enable-helm \
-  "github.com/global-cloudwork/kubernetes/tools?ref=development" \
-  | kubectl apply -f -
+# kubectl kustomize --enable-helm \
+#   "github.com/global-cloudwork/kubernetes/tools?ref=development" \
+#   | kubectl apply -f -
 
 # echo Waiting For CRD's
 # kubectl wait --for=condition=Established crd --all --timeout=300s
