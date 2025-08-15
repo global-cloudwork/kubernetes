@@ -7,7 +7,7 @@ sudo chmod a+r /etc/rancher/rke2/rke2.yaml
 # ls -l /etc/rancher/rke2/rke2.yaml
 # ls -l "$HOME/.kube/"
 
-# echo Installing CRD's
+echo Installing CRD's
 kubectl kustomize --enable-helm \
   "github.com/global-cloudwork/kubernetes/tools?ref=development" \
   | kubectl apply -f -
@@ -16,10 +16,10 @@ kubectl kustomize --enable-helm \
 # kubectl wait --for=condition=Established crd --all --timeout=300s
 
 # echo Installing Cilium
-# # echo "Install Cilium"
-# kubectl kustomize --enable-helm \
-#   "github.com/global-cloudwork/kubernetes/applications/core/cilium?ref=development" \
-#   | kubectl apply -f -
+echo "Install Cilium"
+kubectl kustomize --enable-helm \
+  "github.com/global-cloudwork/kubernetes/applications/core/cilium?ref=development" \
+  | kubectl apply -f -
 
 # kubectl wait --for=condition=Ready pods --all --namespace my-namespace --timeout=300s
 
