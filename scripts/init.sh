@@ -7,9 +7,9 @@
 
 # kubectl wait --for=condition=Ready pods --all --namespace my-namespace --timeout=300s
 
-# echo "Install Tools"
+# echo "Install Cilium"
 kubectl kustomize --enable-helm \
-  "github.com/global-cloudwork/kubernetes?ref=development" \
+  "github.com/global-cloudwork/kubernetes/applications/core/cilium?ref=development" \
   | kubectl apply -f -
 
 # kubectl wait --for=condition=Ready pods --all --namespace my-namespace --timeout=300s
