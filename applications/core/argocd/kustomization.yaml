@@ -8,6 +8,4 @@ helmCharts:
     version: 8.2.7
     valuesFile: values.yaml
 
-resources:
-  - resources/namespace.yaml
 

@@ -12,6 +12,3 @@ echo "Waiting for kubeconfig..."
 while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
     sleep 2
 done
-
-# Link kubeconfig after it’s ready
-chmod 644 /etc/rancher/rke2/rke2.yaml
