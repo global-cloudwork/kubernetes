@@ -6,4 +6,4 @@ mkdir -p /etc/rancher/rke2/
 cp ../configurations/local-kubeconfig.yaml /etc/rancher/rke2/config.yaml
 
 systemctl enable rke2-server.service
-systemctl start rke2-server.service
+# systemctl start rke2-server.service
