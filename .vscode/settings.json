@@ -1,0 +1,60 @@
+// {
+//   "json.schemas": [
+//     {
+//       "fileMatch": ["/configuration/**/*application-set.k8s.yaml"],
+//       "url": "../documentation/schema/applicationset.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*app-project.k8s.yaml"],
+//       "url": "../documentation/schema/appproject.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*application.k8s.yaml"],
+//       "url": "../documentation/schema/application.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*ingress-route.k8s.yaml"],
+//       "url": "../documentation/schema/ingressroute.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*ingress-route-tcp.k8s.yaml"],
+//       "url": "../documentation/schema/ingressroutetcp.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*ingress-route-udp.k8s.yaml"],
+//       "url": "../documentation/schema/ingressrouteudp.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*middleware.k8s.yaml"],
+//       "url": "../documentation/schema/middleware.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*middleware-tcp.k8s.yaml"],
+//       "url": "../documentation/schema/middlewaretcp.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*servers-transport.k8s.yaml"],
+//       "url": "../documentation/schema/serverstransport.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*servers-transport-tcp.k8s.yaml"],
+//       "url": "../documentation/schema/serverstransporttcp.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*tls-option.k8s.yaml"],
+//       "url": "../documentation/schema/tlsoption.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*tls-store.k8s.yaml"],
+//       "url": "../documentation/schema/tlsstore.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*traefik-service.k8s.yaml"],
+//       "url": "../documentation/schema/traefikservice.json"
+//     },
+//     {
+//       "fileMatch": ["/configuration/**/*.k8s.yaml"],
+//       "url": "https://kubernetesjsonschema.dev/master-standalone-strict/all.json"
+//     }
+//   ]
+// }

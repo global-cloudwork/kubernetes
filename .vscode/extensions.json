@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "redhat.vscode-yaml", //functional
+    "ms-kubernetes-tools.vscode-kubernetes-tools", //functional
+    "esbenp.prettier-vscode", //visual
+    "pkief.material-icon-theme", //visual
+    "saoudrizwan.claude-dev", //tool
+    "ms-vscode.remote-server" //functional
+  ] 
+}

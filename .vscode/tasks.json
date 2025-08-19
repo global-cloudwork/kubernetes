@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Export K3s Kubectl",
+      "type": "shell",
+      "command": "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml"
+    }
+  ]
+}
