@@ -5,4 +5,3 @@ resources:
   - applications/core/cilium
   # - applications/core/cert-manager
   - applications/core/argocd
-  - 
