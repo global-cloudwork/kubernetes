@@ -3,5 +3,6 @@ kind: Kustomization
 
 resources:
   - applications/core/cilium
+  - applications/core/sealed-secrets
   # - applications/core/cert-manager
   - applications/core/argocd
