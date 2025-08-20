@@ -7,4 +7,3 @@ etcd-expose-metrics: false
 disable:
   - rke2-ingress-nginx
 cni: cilium
-token: {Your Token}
