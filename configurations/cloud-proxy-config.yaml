@@ -1,0 +1,5 @@
+write-kubeconfig-mode: "0644"
+node-name: "worker1"               # Must be unique!
+server: https://192.168.4.26:9345  # Replace with server node IP
+token: "<cluster-token>"           # Copy from /var/lib/rancher/rke2/server/node-token on server
+cni: none      
