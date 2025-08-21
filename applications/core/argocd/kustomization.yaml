@@ -7,3 +7,4 @@ helmCharts:
     namespace: argocd
     version: 8.2.7
     valuesFile: values.yaml
+
