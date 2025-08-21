@@ -1,0 +1,232 @@
+
+
+crds: 
+  keep: true
+  enabled: true
+
+image: 
+  pullPolicy: IfNotPresent
+  repository: "quay.io/jetstack/cert-manager-controller"
+
+config: 
+  apiVersion: "controller.config.cert-manager.io/v1alpha1"
+  kind: "ControllerConfiguration"
+  enableGatewayAPI: true
+
+global: 
+  rbac: 
+    create: true
+    aggregateClusterRoles: true
+  logLevel: 2
+  commonLabels: {}
+  leaderElection: 
+    namespace: "kube-system"
+  imagePullSecrets: []
+  podSecurityPolicy: 
+    enabled: false
+    useAppArmor: true
+  priorityClassName: ""
+
+creator: helm
+
+enabled: true
+
+volumes: []
+
+webhook: 
+  url: {}
+  image: 
+    pullPolicy: IfNotPresent
+    repository: "quay.io/jetstack/cert-manager-webhook"
+  config: {}
+  volumes: []
+  affinity: {}
+  extraEnv: []
+  strategy: {}
+  extraArgs: []
+  podLabels: {}
+  resources: {}
+  securePort: 10250
+  hostNetwork: false
+  serviceType: ClusterIP
+  tolerations: []
+  featureGates: ""
+  nodeSelector: {"kubernetes.io/os":"linux"}
+  replicaCount: 1
+  volumeMounts: []
+  livenessProbe: {"periodSeconds":10,"timeoutSeconds":1,"failureThreshold":3,"successThreshold":1,"initialDelaySeconds":60}
+  networkPolicy: 
+    egress: 
+      - [object Object]
+    enabled: false
+    ingress: 
+      - [object Object]
+  serviceLabels: {}
+  readinessProbe: {"periodSeconds":5,"timeoutSeconds":1,"failureThreshold":3,"successThreshold":1,"initialDelaySeconds":5}
+  serviceAccount: 
+    create: true
+    automountServiceAccountToken: true
+  timeoutSeconds: 30
+  securityContext: {"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}
+  serviceIPFamilies: []
+  enableServiceLinks: false
+  podDisruptionBudget: 
+    enabled: false
+  serviceIPFamilyPolicy: ""
+  containerSecurityContext: {"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"allowPrivilegeEscalation":false}
+  topologySpreadConstraints: []
+  mutatingWebhookConfiguration: 
+    namespaceSelector: {}
+  validatingWebhookConfiguration: 
+    namespaceSelector: {"matchExpressions":[{"key":"cert-manager.io/disable-validation","values":["true"],"operator":"NotIn"}]}
+
+affinity: {}
+
+extraEnv: []
+
+strategy: {}
+
+extraArgs: []
+
+namespace: ""
+
+podLabels: {}
+
+resources: {}
+
+acmesolver: 
+  image: 
+    pullPolicy: IfNotPresent
+    repository: "quay.io/jetstack/cert-manager-acmesolver"
+
+cainjector: 
+  image: 
+    pullPolicy: IfNotPresent
+    repository: "quay.io/jetstack/cert-manager-cainjector"
+  config: {}
+  enabled: true
+  volumes: []
+  affinity: {}
+  extraEnv: []
+  strategy: {}
+  extraArgs: []
+  podLabels: {}
+  resources: {}
+  tolerations: []
+  featureGates: ""
+  nodeSelector: {"kubernetes.io/os":"linux"}
+  replicaCount: 1
+  volumeMounts: []
+  serviceLabels: {}
+  serviceAccount: 
+    create: true
+    automountServiceAccountToken: true
+  securityContext: {"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}
+  enableServiceLinks: false
+  podDisruptionBudget: 
+    enabled: false
+  containerSecurityContext: {"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"allowPrivilegeEscalation":false}
+  topologySpreadConstraints: []
+
+prometheus: 
+  enabled: true
+  podmonitor: 
+    path: /metrics
+    labels: {}
+    enabled: false
+    interval: 60s
+    annotations: {}
+    honorLabels: false
+    scrapeTimeout: 30s
+    prometheusInstance: default
+    endpointAdditionalProperties: {}
+  servicemonitor: 
+    path: /metrics
+    labels: {}
+    enabled: false
+    interval: 60s
+    targetPort: http-metrics
+    annotations: {}
+    honorLabels: false
+    scrapeTimeout: 30s
+    prometheusInstance: default
+    endpointAdditionalProperties: {}
+
+hostAliases: []
+
+installCRDs: false
+
+tolerations: []
+
+extraObjects: []
+
+featureGates: ""
+
+nodeSelector: {"kubernetes.io/os":"linux"}
+
+replicaCount: 1
+
+volumeMounts: []
+
+livenessProbe: {"enabled":true,"periodSeconds":10,"timeoutSeconds":15,"failureThreshold":8,"successThreshold":1,"initialDelaySeconds":10}
+
+serviceAccount: 
+  create: true
+  automountServiceAccountToken: true
+
+securityContext: {"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}
+
+startupapicheck: 
+  rbac: 
+    annotations: {"helm.sh/hook":"post-install","helm.sh/hook-weight":"-5","helm.sh/hook-delete-policy":"before-hook-creation,hook-succeeded"}
+  image: 
+    pullPolicy: IfNotPresent
+    repository: |-
+
+      quay.io/jetstack/cert-manager-startupapicheck
+  enabled: true
+  timeout: 1m
+  volumes: []
+  affinity: {}
+  extraEnv: []
+  extraArgs: 
+    - -v
+  podLabels: {}
+  resources: {}
+  tolerations: []
+  backoffLimit: 4
+  nodeSelector: {"kubernetes.io/os":"linux"}
+  volumeMounts: []
+  jobAnnotations: {"helm.sh/hook":"post-install","helm.sh/hook-weight":"1","helm.sh/hook-delete-policy":"before-hook-creation,hook-succeeded"}
+  serviceAccount: 
+    create: true
+    annotations: {"helm.sh/hook":"post-install","helm.sh/hook-weight":"-5","helm.sh/hook-delete-policy":"before-hook-creation,hook-succeeded"}
+    automountServiceAccountToken: true
+  securityContext: {"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}
+  enableServiceLinks: false
+  containerSecurityContext: {"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"allowPrivilegeEscalation":false}
+
+approveSignerNames: 
+  - issuers.cert-manager.io/*,
+  - clusterissuers.cert-manager.io/*
+
+enableServiceLinks: false
+
+disableAutoApproval: false
+
+podDisruptionBudget: 
+  enabled: false
+
+maxConcurrentChallenges: 60
+
+clusterResourceNamespace: "default"
+
+containerSecurityContext: {"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"allowPrivilegeEscalation":false}
+
+dns01RecursiveNameservers: ""
+
+enableCertificateOwnerRef: true
+
+topologySpreadConstraints: []
+
+dns01RecursiveNameserversOnly: false

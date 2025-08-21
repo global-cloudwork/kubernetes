@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.kubernetes.io/managed-by: argo-cd
+
+helmCharts:
+  - name: n8n
+    repo: oci://8gears.container-registry.com/library/n8n
+    releaseName: my-n8n
+    namespace: argocd
+    version: 1.0.10
+
+configMapGenerator:
+  - name: n8n
+    files:
+      - n8n.properties

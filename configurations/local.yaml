@@ -1,0 +1,9 @@
+write-kubeconfig-mode: 0644
+node-name: "local"
+tls-san:
+  - couch-OMEN-25L-Desktop-GT12-0xxx
+disable-kube-proxy: true
+etcd-expose-metrics: false
+disable:
+  - rke2-ingress-nginx
+cni: cilium
