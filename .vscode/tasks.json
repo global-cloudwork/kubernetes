@@ -2,9 +2,28 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Export K3s Kubectl",
+      "label": "Deploy Kustomize from URL List in .vscode/tasks.json",
       "type": "shell",
-      "command": "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml"
+      "command": "kubectl kustomize --enable-helm \"${input:selectedUrl}\" | kubectl apply -f -",
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup RKE2 kubeconfig",
+      "type": "shell",
+      "command": "sudo chmod a+r /etc/rancher/rke2/rke2.yaml && export KUBECONFIG=/etc/rancher/rke2/rke2.yaml && echo 'KUBECONFIG set to /etc/rancher/rke2/rke2.yaml'",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "selectedUrl",
+      "type": "pickString",
+      "description": "Select a kustomize URL to deploy",
+      "options": [
+        "github.com/global-cloudwork/kubernetes/tools?ref=development",
+        "github.com/global-cloudwork/kubernetes/tools?ref=staging",
+        "github.com/global-cloudwork/kubernetes/tools?ref=production"
+      ]
     }
   ]
 }
