@@ -13,7 +13,7 @@
     {
       "label": "Deploy Kustomize from URL List in .vscode/tasks.json",
       "type": "shell",
-      "command": "kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes${input:selectedUrl}?ref=main\" | kubectl apply --server-side -f -",
+      "command": "kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes${input:selectedUrl}?ref=main\" | kubectl apply --server-side --force-conflicts -f -",
       "problemMatcher": [],
       "dependsOn": []
     }
