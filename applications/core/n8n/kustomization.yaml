@@ -7,3 +7,5 @@ helmCharts:
     namespace: argocd
     version: 1.14.3
     releaseName: my-n8n
+    valuesFile: values.yaml
+    releaseName: n8n

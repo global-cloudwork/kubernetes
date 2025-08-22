@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
   - applications/core/argocd
-  - applications/tenant/n8n
+  - applications/core/n8n
   - applications/data/vaultwarden
