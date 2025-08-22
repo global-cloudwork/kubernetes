@@ -24,7 +24,7 @@
       "type": "pickString",
       "description": "Select a URL from URL List in .vscode/tasks.json",
       "options": [
-        "/enviroments/development",
+        "/environments/development",
         "/applications/core/argocd"
       ]
     }

@@ -11,9 +11,9 @@ resources:
   - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
   # Argo CD CRDs
-  - https://raw.githubusercontent.com/argoproj/argo-cd/7129a2c1474c7069a9e77b92b4ba82f32af05c93/manifests/crds/application-crd.yaml
-  - https://raw.githubusercontent.com/argoproj/argo-cd/7129a2c1474c7069a9e77b92b4ba82f32af05c93/manifests/crds/applicationset-crd.yaml
-  - https://raw.githubusercontent.com/argoproj/argo-cd/7129a2c1474c7069a9e77b92b4ba82f32af05c93/manifests/crds/appproject-crd.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
   - namespace.k8s.yaml
   - secret.k8s.yaml
