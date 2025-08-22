@@ -9,5 +9,6 @@ kubectl kustomize --enable-helm \
   | kubectl apply -f -
 
 
+kubectl port-forward svc/release-name-argocd-server 8080:8080 -n argocd
 
 # # sudo chmod a+r /etc/rancher/rke2/rke2.yaml
