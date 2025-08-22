@@ -17,6 +17,6 @@ resources:
 
   - ../applications/core/argocd
 
-  - admin-application.yaml
-  - argocd-application.yaml
+  - structure-application-set.crd.yaml
+  - argocd-application.crd.yaml
 
