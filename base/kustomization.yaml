@@ -15,7 +15,8 @@ resources:
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
-  - namespace.k8s.yaml
-  - secret.k8s.yaml
-
   - ../applications/core/argocd
+
+  - admin-application.yaml
+  - argocd-application.yaml
+

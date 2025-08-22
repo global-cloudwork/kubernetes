@@ -8,7 +8,6 @@ echo "" | sudo tee -a /etc/rancher/rke2/config.yaml
 echo "tls-san:" | sudo tee -a /etc/rancher/rke2/config.yaml
 echo "  - $(hostname -f)" | sudo tee -a /etc/rancher/rke2/config.yaml
 
-
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 sudo cp ../configurations/helm-chart-config.k8s.yaml /var/lib/rancher/rke2/server/manifests/
 
