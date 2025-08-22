@@ -47,7 +47,7 @@ spec:
           - path: applications/edge/*
   template:
     metadata:
-      name: '{{ .path | replace "/" "-" }}'
+      name: '{{ .path.basename }}'
       labels:
         app.kubernetes.io/managed-by: argocd
     spec:
