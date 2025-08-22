@@ -45,8 +45,9 @@ spec:
           - path: applications/data/*
           - path: applications/tenant/*
           - path: applications/edge/*
-          - path: */resources/*
-            exclude: true
+        exclude: 
+          - */resources/*
+
   template:
     metadata:
       name: '{{ .path.basename }}'
