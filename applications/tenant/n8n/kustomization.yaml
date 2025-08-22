@@ -3,7 +3,7 @@ kind: Kustomization
 
 helmCharts:
   - name: n8n
-    repo: oci://8gears.container-registry.com/library/n8n
-    releaseName: n8n
+    repo: https://community-charts.github.io/helm-charts
     namespace: argocd
-    version: 1.0.10
+    version: 1.14.3
+    releaseName: my-n8n
