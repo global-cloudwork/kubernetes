@@ -1,17 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-commonLabels:
-  app.kubernetes.io/managed-by: argo-cd
-
 helmCharts:
   - name: vault
     repo: https://helm.releases.hashicorp.com
-    releaseName: my-vault
-    namespace: argocd
+    namespace: vault
     version: 0.30.1
-
-configMapGenerator:
-  - name: vault
-    files:
-      - vault.properties
+    releaseName: my-vault
+    valuesFile: vault-values.yaml
