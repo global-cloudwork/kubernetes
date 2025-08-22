@@ -47,7 +47,7 @@ spec:
           - path: applications/edge/*
           - path: applications/*/resources/*
             exclude: true
-  template:te
+  template:
     metadata:
       name: '{{ .path.basename }}'
       labels:
