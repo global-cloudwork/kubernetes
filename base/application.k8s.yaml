@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd
+  name: environment
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/global-cloudwork/kubernetes.git
-    targetRevision: development
-    path: applications/core/argocd
+    targetRevision: main
+    path: base/admin
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
