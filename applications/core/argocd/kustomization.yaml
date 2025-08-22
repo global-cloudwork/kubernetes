@@ -9,3 +9,6 @@ helmCharts:
     valuesFile: values.yaml
     releaseName: argocd
 
+resources:
+  - namespace.k8s.yaml
+  
