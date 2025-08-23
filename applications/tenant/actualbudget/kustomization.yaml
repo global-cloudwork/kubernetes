@@ -6,4 +6,5 @@ helmCharts:
     repo: https://community-charts.github.io/helm-charts
     namespace: actualbudget
     version: 1.8.1
-    releaseName: my-actualbudget
+    releaseName: actualbudget
+    valuesFile: values.yaml

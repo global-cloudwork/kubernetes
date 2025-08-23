@@ -34,4 +34,4 @@ kubectl kustomize "github.com/global-cloudwork/kubernetes/kubernetes/bootstrap?r
 kubectl wait --for=condition=Ready nodes --all --timeout=300s
 
 # Apply the ArgoCD core application
-kubectl kustomize "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main" | kubectl apply --server-side --force-conflicts -f -
+kubectl kustomize "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main" | kubectl apply --enable-helm --server-side --force-conflicts -f -

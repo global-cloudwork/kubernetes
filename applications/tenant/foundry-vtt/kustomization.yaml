@@ -1,17 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-commonLabels:
-  app.kubernetes.io/managed-by: argo-cd
-
 helmCharts:
   - name: foundry-vtt
     repo: https://hugoprudente.github.io/helm-charts/incubator
-    releaseName: my-foundry-vtt
-    namespace: argocd
+    releaseName: foundry-vtt
+    namespace: foundry-vtt
     version: 12.343.0
-
-configMapGenerator:
-  - name: foundry-vtt
-    files:
-      - foundry-vtt.properties

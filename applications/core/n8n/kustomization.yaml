@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
   - name: n8n
     repo: https://community-charts.github.io/helm-charts
-    namespace: argocd
+    namespace: n8n
     version: 1.14.3
     valuesFile: values.yaml
     releaseName: n8n
