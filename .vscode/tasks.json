@@ -1,5 +1,3 @@
-// curl -s https://api.github.com/repos/global-cloudwork/kubernetes/git/trees/main?recursive=1 \ | jq -r '.tree[] | select(.path | endswith("kustomization.yaml")) | .path' \
-
 {
   "version": "2.0.0",
   "tasks": [
@@ -7,15 +5,14 @@
       "label": "Authorize Kubeconfig Access",
       "type": "shell",
       "command": "sudo chmod a+r /etc/rancher/rke2/rke2.yaml && export KUBECONFIG=/etc/rancher/rke2/rke2.yaml",
-      "problemMatcher": [],
-      "dependsOn": []
+      "problemMatcher": []
     },
     {
       "label": "Deploy Kustomize from URL List in .vscode/tasks.json",
       "type": "shell",
       "command": "kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes${input:selectedUrl}?ref=main\" | kubectl apply --server-side --force-conflicts -f -",
       "problemMatcher": [],
-      "dependsOn": []
+      "dependsOn": ["Authorize Kubeconfig Access"]
     }
   ],
   "inputs": [
