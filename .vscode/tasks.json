@@ -27,7 +27,7 @@
         "/environments/development",
         "/applications/core/argocd",
         "/",
-        "/environments/bootstrap"
+        "/bootstrap"
       ]
     }
   ]
