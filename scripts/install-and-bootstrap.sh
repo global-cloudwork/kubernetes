@@ -20,5 +20,12 @@ else
 fi
 
 export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+chmod a+r /etc/rancher/rke2/rke2.yaml
 
 /var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready nodes --all --timeout=300s
+
+kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes/kubernetes/bootstrap?ref=main\" | kubectl apply --server-side --force-conflicts -f -
+
+kubectl wait --for=condition=Ready nodes --all --timeout=300s
+
+kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main\" | kubectl apply --server-side --force-conflicts -f -
