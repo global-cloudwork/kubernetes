@@ -20,7 +20,7 @@
       }
     },
     {
-      "label": "Startup ArgoCD",
+      "label": "Wipe Cluster & Startup ArgoCD",
       "type": "shell",
       "command": "kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main\" | kubectl apply --server-side --force-conflicts -f -",
       "problemMatcher": [],
