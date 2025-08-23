@@ -49,18 +49,18 @@ spec:
           - path: applications/edge/*/kustomization.yaml
   template:
     metadata:
-      name: '{{ .path.basename }}'
+      name: {{ .path.basename }}
       labels:
         app.kubernetes.io/managed-by: argocd
     spec:
-      project: default
+      project: {{index .path.segments 1}}
       source:
         repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
         targetRevision: 'main'
         path: '{{.path}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: argocd
+        namespace: {{ .path.basename }}
       syncPolicy:
         automated:
           prune: true
