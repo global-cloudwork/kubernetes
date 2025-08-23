@@ -4,9 +4,7 @@ curl -sfL https://get.rke2.io | sudo sh -
 
 mkdir -p /etc/rancher/rke2/
 sudo cp ../configurations/local.yaml /etc/rancher/rke2/config.yaml
-echo "" | sudo tee -a /etc/rancher/rke2/config.yaml
-echo "tls-san:" | sudo tee -a /etc/rancher/rke2/config.yaml
-echo "  - $(hostname -f)" | sudo tee -a /etc/rancher/rke2/config.yaml
+echo -e '\nTls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
 
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 sudo cp ../configurations/helm-chart-config.k8s.yaml /var/lib/rancher/rke2/server/manifests/
@@ -21,10 +19,6 @@ else
   echo "/var/lib/rancher/rke2/bin is already in PATH"
 fi
 
-# Wait until all nodes are Ready
-echo "Waiting for all nodes to be Ready..."
-until [ $(kubectl get nodes --no-headers 2>/dev/null | wc -l) -gt 0 ] && \
-      [ $(kubectl get nodes --no-headers 2>/dev/null | grep -c ' Ready') -eq $(kubectl get nodes --no-headers 2>/dev/null | wc -l) ]; do
-    echo "Waiting for nodes..."
-    sleep 5
-done
+export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+
+/var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready nodes --all --timeout=300s
