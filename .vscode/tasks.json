@@ -4,15 +4,46 @@
     {
       "label": "Authorize Kubeconfig Access",
       "type": "shell",
-      "command": "sudo chmod a+r /etc/rancher/rke2/rke2.yaml && export KUBECONFIG=/etc/rancher/rke2/rke2.yaml",
+      "command": "sudo chmod a+r /etc/rancher/rke2/rke2.yaml",
       "problemMatcher": []
+    },
+    {
+      "label": "Startup Cluster",
+      "type": "shell",
+      "command": "cd ${workspaceFolder}/scripts && sudo ./init.sh && \n\
+until [ $(kubectl get nodes --no-headers 2>/dev/null | wc -l) -gt 0 ] && [ $(kubectl get nodes --no-headers 2>/dev/null | grep -c ' Ready') -eq $(kubectl get nodes --no-headers 2>/dev/null | wc -l) ]; do echo 'Waiting for all nodes...'; sleep 5; done",
+      "problemMatcher": [],
+      "dependsOn": ["Authorize Kubeconfig Access"],
+      "options": {
+        "env": {
+          "KUBECONFIG": "/etc/rancher/rke2/rke2.yaml"
+        }
+      }
+    },
+    {
+      "label": "Startup ArgoCD",
+      "type": "shell",
+      "command": "kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes/bootstrap?ref=main\" | kubectl apply --server-side --force-conflicts -f - && \n\
+kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main\" | kubectl apply --server-side --force-conflicts -f -",
+      "problemMatcher": [],
+      "dependsOn": ["Startup Cluster"],
+      "options": {
+        "env": {
+          "KUBECONFIG": "/etc/rancher/rke2/rke2.yaml"
+        }
+      }
     },
     {
       "label": "Deploy Kustomize from URL List in .vscode/tasks.json",
       "type": "shell",
       "command": "kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes${input:selectedUrl}?ref=main\" | kubectl apply --server-side --force-conflicts -f -",
       "problemMatcher": [],
-      "dependsOn": ["Authorize Kubeconfig Access"]
+      "dependsOn": [],
+      "options": {
+        "env": {
+          "KUBECONFIG": "/etc/rancher/rke2/rke2.yaml"
+        }
+      }
     }
   ],
   "inputs": [

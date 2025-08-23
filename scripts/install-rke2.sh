@@ -20,3 +20,11 @@ if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
 else
   echo "/var/lib/rancher/rke2/bin is already in PATH"
 fi
+
+# Wait until all nodes are Ready
+echo "Waiting for all nodes to be Ready..."
+until [ $(kubectl get nodes --no-headers 2>/dev/null | wc -l) -gt 0 ] && \
+      [ $(kubectl get nodes --no-headers 2>/dev/null | grep -c ' Ready') -eq $(kubectl get nodes --no-headers 2>/dev/null | wc -l) ]; do
+    echo "Waiting for nodes..."
+    sleep 5
+done
