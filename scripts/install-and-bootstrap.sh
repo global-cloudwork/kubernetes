@@ -22,10 +22,16 @@ fi
 export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 chmod a+r /etc/rancher/rke2/rke2.yaml
 
+#!/bin/bash
+
+# Wait for all nodes to be ready
 /var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready nodes --all --timeout=300s
 
-kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes/kubernetes/bootstrap?ref=main\" | kubectl apply --server-side --force-conflicts -f -
+# Apply the bootstrap kustomize
+kubectl kustomize "github.com/global-cloudwork/kubernetes/kubernetes/bootstrap?ref=main" | kubectl apply --server-side --force-conflicts -f -
 
+# Wait again for all nodes to be ready
 kubectl wait --for=condition=Ready nodes --all --timeout=300s
 
-kubectl kustomize --enable-helm \"github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main\" | kubectl apply --server-side --force-conflicts -f -
+# Apply the ArgoCD core application
+kubectl kustomize "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main" | kubectl apply --server-side --force-conflicts -f -
