@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
-kind: startup-manifests
+kind: Application
 metadata:
-  name: kubernetes-manifests
+  name: startup-manifests
   namespace: argocd
 spec:
   project: default
@@ -18,9 +18,9 @@ spec:
       selfHeal: true
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: argocd-manifests
+kind: Application
 metadata:
-  name: applications
+  name: application-manifests
   namespace: argocd
 spec:
   project: default

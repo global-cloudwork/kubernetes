@@ -33,3 +33,9 @@ kubectl wait --for=condition=Ready nodes --all --timeout=300s
 
 # Apply the ArgoCD core application
 kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main" | kubectl apply --server-side --force-conflicts -f -
+
+# Wait again for all nodes to be ready
+kubectl wait --for=condition=Ready nodes --all --timeout=300s
+
+# Apply the ArgoCD core application
+kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/environments/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
