@@ -1,3 +1,36 @@
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: ApplicationSet
+# metadata:
+#   name: cluster-applicationset
+#   namespace: argocd
+# spec:
+#   generators:
+#    - scmProvider:
+#         github:
+#           organization: global-cloudwork
+#           allBranches: true
+#         cloneProtocol: https
+#         filters:
+#           - repositoryMatch: kubernetes
+#           - branchMatch: development
+#   template:
+#     metadata:
+#       name: '{{ .repository }}-{{ .branch }}'
+#     spec:
+#       project: default
+#       source:
+#         repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
+#         targetRevision: 'development'
+#         path: components/base
+#       destination:
+#         server: https://kubernetes.default.svc
+#         namespace: "argocd"
+#       syncPolicy:
+#         automated:
+#           prune: true
+#           selfHeal: true
+# ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -16,23 +49,22 @@ spec:
           - path: applications/edge/*/kustomization.yaml
   template:
     metadata:
-      name: {{ .path.basename }}
+      name: '{{ .path.basename }}'
       labels:
         app.kubernetes.io/managed-by: argocd
     spec:
-      project: {{index .path.segments 1}}
+      project: default
       source:
         repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
         targetRevision: 'main'
-        path: '{{.path.path}}'
+        path: '{{.path}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: {{ .path.basename }}
+        namespace: argocd
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
-
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -58,7 +90,7 @@ spec:
       source:
         repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
         targetRevision: 'main'
-        path: '{{.path.path}}'
+        path: '{{.path}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: argocd
