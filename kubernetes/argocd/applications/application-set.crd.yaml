@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: main
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - matrix:
+      generators:
+      - git:
+          repoURL: https://github.com/argoproj/argo-cd.git
+          revision: HEAD
+          files:
+          - path: configurations/applications.yaml
+      - list:
+          elementsYaml: {{ .charts | toJson }}
+  template:
+    metadata:
+      name: {{ .name }}
+    spec:
+      project: default
+      sources:
+        - repoURL: {{ .repoURL }}
+          chart: {{ .name }}
+          targetRevision: {{ .targetRevision }}
+          helm:
+            releaseName: {{ .name }}
+            valueFiles:
+            - $values/applications/{{ .name }}/values.yaml
+        - repoURL: 'https://github.com/argoproj/argo-cd.git'
+          targetRevision: main
+          ref: values   
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: {{ .name }}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
