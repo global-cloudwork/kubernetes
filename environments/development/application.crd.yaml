@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: development-application
+  name: development-base-application
   namespace: argocd
 spec:
   project: default
@@ -9,6 +9,25 @@ spec:
     repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
     targetRevision: 'main'
     path: 'kubernetes/base'
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: development-gateway-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
+    targetRevision: 'main'
+    path: 'kubernetes/gateway'
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: argocd

@@ -6,11 +6,11 @@ metadata:
   namespace: argocd
 spec:
   parentRefs:
-  - name: example # gateway name
-    namespace: common
-    sectionName: https-link
+  - name: gateway
+    namespace: gateway
+    sectionName: https
   hostnames:
-  - "argo.example.link"
+  - "argo.promotesudbury.ca"
   rules:
   - backendRefs:
     - name: argocd-server
@@ -25,11 +25,11 @@ metadata:
   namespace: keycloak
 spec:
   parentRefs:
-  - name: example # gateway name
-    namespace: common
+  - name: gateway # gateway name
+    namespace: gateway
     sectionName: https-link
   hostnames:
-  - "sso.example.link"
+  - "keycloak.promotesudbury.ca"
   rules:
   - matches:
     - path:
