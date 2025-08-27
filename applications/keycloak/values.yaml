@@ -113,10 +113,10 @@ image:
 auth:
   ## @param auth.adminUser Keycloak administrator user
   ##
-  adminUser: user
+  adminUser: admin
   ## @param auth.adminPassword Keycloak administrator password for the new user
   ##
-  adminPassword: ""
+  adminPassword: "password"
   ## @param auth.existingSecret Existing secret containing Keycloak admin password
   ##
   existingSecret: ""
@@ -539,7 +539,7 @@ sidecars: []
 service:
   ## @param service.type Kubernetes service type
   ##
-  type: ClusterIP
+  type: NodePort
   ## @param service.http.enabled Enable http port on service
   ##
   http:
@@ -556,7 +556,7 @@ service:
   ## NOTE: choose port between <30000-32767>
   ##
   nodePorts:
-    http: ""
+    http: "30080"
     https: ""
   ## @param service.extraPorts Extra port to expose on Keycloak service
   ##
@@ -1261,7 +1261,7 @@ postgresql:
   auth:
     postgresPassword: ""
     username: bn_keycloak
-    password: ""
+    password: "password"
     database: bitnami_keycloak
     existingSecret: ""
     secretKeys:
