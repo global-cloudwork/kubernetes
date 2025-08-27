@@ -69,6 +69,13 @@ key:
       repoURL: "https://gissilabs.github.io/charts/"
       namespace: vaultwarden
 
+    - name: argocd
+      chart: argo-cd
+      version: "8.3.1"
+      releaseName: argocd
+      repoURL: "https://argoproj.github.io/argo-helm"
+      namespace: argocd
+
     - name: n8n
       chart: n8n
       version: "1.0.12"
