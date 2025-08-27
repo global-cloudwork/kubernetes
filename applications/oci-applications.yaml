@@ -1,0 +1,14 @@
+key:
+  components:
+    # - name: 
+    #   chart: 
+    #   version: "1.8.1"
+    #   releaseName: 
+    #   repoURL: "https://"
+    #   namespace: 
+
+    helm install my-n8n oci://8gears.container-registry.com/library/n8n --version 1.0.12
+
+    helm pull oci://registry-1.docker.io/bitnamicharts/keycloak --version 25.2.0
+
+    
