@@ -1,49 +1,6 @@
-charts:
-  - name: actualbudget
-    targetRevision: "1.8.1"
-    releaseName: actualbudget
-    repoUrl: "https://community-charts.github.io/helm-charts"
-  - name: argocd
-    targetRevision: "8.2.7"
-    releaseName: argocd
-    repoUrl: "https://argoproj.github.io/argo-helm"
-  - name: cert-manager
-    targetRevision: "1.8.1"
-    releaseName: cert-manager
-    repoUrl: "https://charts.jetstack.io"
-  - name: external-secrets
-    targetRevision: "0.19.2"
-    releaseName: external-secrets
-    repoUrl: "https://charts.external-secrets.io"
-  - name: foundry-vtt
-    targetRevision: "12.343.0"
-    releaseName: foundry-vtt
-    repoUrl: "https://hugoprudente.github.io/helm-charts/incubator"
-  - name: keycloak
-    targetRevision: "26.3.3"
-    releaseName: keycloak
-    repoUrl: "https://charts.bitnami.com/bitnami"
-  - name: kube-prometheus-stack
-    targetRevision: "75.17.1"
-    releaseName: kube-prometheus-stack
-    repoUrl: "https://prometheus-community.github.io/helm-charts"
-  - name: longhorn
-    targetRevision: "1.9.1"
-    releaseName: longhorn
-    repoUrl: "https://charts.longhorn.io"
-  - name: n8n
-    targetRevision: "1.14.3"
-    releaseName: n8n
-    repoUrl: "https://community-charts.github.io/helm-charts"
-  - name: redis
-    targetRevision: "21.2.14"
-    releaseName: redis
-    repoUrl: "https://charts.bitnami.com/bitnami"
-  - name: vault
-    targetRevision: "0.30.1"
-    releaseName: vault
-    repoUrl: "https://helm.releases.hashicorp.com"
-  - name: vaultwarden
-    targetRevision: "1.2.5"
-    releaseName: vaultwarden
-    repoUrl: "https://gissilabs.github.io/charts/"
+key:
+  applications:
+    - appName: argocd
+      appTargetRevision: "8.2.7"
+      appReleaseName: argocd
+      appRepoUrl: "https://argoproj.github.io/argo-helm"

@@ -1,19 +1,19 @@
 #!/bin/bash
 #Everything Is Supressed
 
-echo "Removal Status"
+echo "Script Start - Removing any existing rke2 features"
 
 curl -sS https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh &>/dev/null
 [ $? -eq 0 ] && echo -n true || echo -n false
-echo ": System Agent Removal"
+echo "the system agent uninstall script ran"
 
 sudo /usr/local/bin/rke2-killall.sh &>/dev/null
 [ $? -eq 0 ] && echo -n true || echo -n false
-echo ": RKE2 Kill All"
+echo "the kill all script ran"
 
 sudo /usr/local/bin/rke2-uninstall.sh &>/dev/null
 [ $? -eq 0 ] && echo -n true || echo -n false
-echo ": RKE2 Uninstall"
+echo "the rke2 uninstall script ran"
 
 rm -rf /etc/ceph \
        /etc/cni \
@@ -33,8 +33,8 @@ rm -rf /etc/ceph \
        /var/log/pods \
        /var/run/calico &>/dev/null
 [ $? -eq 0 ] && echo -n true || echo -n false
-echo ": Remove Folders"
+echo "relevant folders have been removed"
 
 sudo iptables -t nat -X FLANNEL-POSTRTG &>/dev/null
 [ $? -eq 0 ] && echo -n true || echo -n false
-echo ": Remove IPTables"
+echo "the iptables have been removed"

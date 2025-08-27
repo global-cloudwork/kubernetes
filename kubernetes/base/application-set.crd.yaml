@@ -1,0 +1,78 @@
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: ApplicationSet
+# metadata:
+#   name: cluster-applicationset
+#   namespace: argocd
+# spec:
+#   generators:
+#    - scmProvider:
+#         github:
+#           organization: global-cloudwork
+#           allBranches: true
+#         cloneProtocol: https
+#         filters:
+#           - repositoryMatch: kubernetes
+#           - branchMatch: development
+#   template:
+#     metadata:
+#       name: '{{ .repository }}-{{ .branch }}'
+#     spec:
+#       project: default
+#       source:
+#         repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
+#         targetRevision: 'development'
+#         path: components/base
+#       destination:
+#         server: https://kubernetes.default.svc
+#         namespace: "argocd"
+#       syncPolicy:
+#         automated:
+#           prune: true
+#           selfHeal: true
+# ---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: applications-application-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: 
+  - "missingkey=error"
+  generators:
+    - matrix:
+        generators:
+        - git:
+            repoURL: https://github.com/global-cloudwork/kubernetes.git
+            revision: main
+            files:
+            - path: applications/applications.yaml
+        - list:
+            elements: []
+            elementsYaml: '{{ .key.applications | toJson }}'
+  template:
+    metadata:
+      name: '{{ .appName }}'
+    spec:
+      project: default
+      sources:
+        - repoURL: '{{ .appRepoURL }}'
+          chart: '{{ .appName }}'
+          targetRevision: '{{ .appTargetRevision }}'
+          helm:
+            valueFiles:
+            - $values/applications/argocd/values.yaml
+        - repoURL: 'https://github.com/global-cloudwork/kubernetes.git'
+          targetRevision: main
+          ref: values   
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .appName }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - ServerSideApply=true

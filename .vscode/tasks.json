@@ -39,9 +39,8 @@
       "description": "Select a URL from URL List in .vscode/tasks.json",
       "options": [
         "/environments/development",
-        "/applications/core/argocd",
-        "/",
-        "/bootstrap"
+        "/applications/argocd",
+        "/kubernetes/bootstrap"
       ]
     }
   ]

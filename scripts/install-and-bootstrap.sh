@@ -1,36 +1,49 @@
 #!/bin/bash
-echo "Install RKE2"
+echo Script Start - Configure a new RKE2 instilation, deploy manifests
+
+echo curl and run installer script https://get.rke2.io
 curl -sfL https://get.rke2.io | sudo sh -
 
+echo copying startup configuration file in to place, then appending machines hostname
 mkdir -p /etc/rancher/rke2/
 sudo cp ../configurations/local.yaml /etc/rancher/rke2/config.yaml
 echo -e '\nTls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
 
+echo copying addon manifests in to place, specificaly type: HelmChartConfig
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 sudo cp ../configurations/helm-chart-config.k8s.yaml /var/lib/rancher/rke2/server/manifests/
 
+echo enable, then start the rke2-server service
 systemctl enable rke2-server.service
 systemctl start rke2-server.service
 
+echo check if bin for rke2 is in path
 if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
   echo "export PATH=\$PATH:/var/lib/rancher/rke2/bin" >> ~/.profile
-  echo "Added /var/lib/rancher/rke2/bin to PATH in ~/.profile"
+  echo "reuslt - path needs to be added, profile modified"
 else
-  echo "/var/lib/rancher/rke2/bin is already in PATH"
+  echo "result - path exists already, profile unchanged"
 fi
 
+echo export kubeconfig, and chmod a+r for testing purposes
 export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 chmod a+r /etc/rancher/rke2/rke2.yaml
 
+echo waiting for the node, then all of its pods
+/var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready node --all --timeout=600s
+/var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready pod --all -n kube-system --timeout=600s
 
-# Wait for all nodes to be ready
-/var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready nodes --all --timeout=300s
-
-# Apply the bootstrap kustomize
+echo applying crds and other manifests /kubernetes/bootstrap 
 /var/lib/rancher/rke2/bin/kubectl kustomize "github.com/global-cloudwork/kubernetes/kubernetes/bootstrap?ref=main" | kubectl apply --server-side --force-conflicts -f -
 
-# Wait again for all nodes to be ready
-/var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready nodes --all --timeout=300s
+echo waiting for all pods
+/var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready pods --all --timeout=300s
 
-# Apply the ArgoCD core application
-/var/lib/rancher/rke2/bin/kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/applications/core/argocd?ref=main" | kubectl apply --server-side --force-conflicts -f -
+echo applying the argocd helm chart, turned manifest /applications/argocd
+/var/lib/rancher/rke2/bin/kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/applications/argocd?ref=main" | kubectl apply --server-side --force-conflicts -f -
+
+echo waiting for all pods
+/var/lib/rancher/rke2/bin/kubectl wait --for=condition=Ready pods --all --timeout=300s
+
+echo applying the development kustomize overlay environments/development
+/var/lib/rancher/rke2/bin/kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/environments/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
