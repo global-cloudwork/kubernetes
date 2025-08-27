@@ -4,11 +4,11 @@ key:
       chart: actualbudget
       version: "1.8.1"
       releaseName: actualbudget
-      repoUrl: "https://community-charts.github.io/helm-charts"
+      repoURL: "https://community-charts.github.io/helm-charts"
       namespace: actualbudget
     - name: argocd
       chart: argocd
       version: "8.2.7"
       releaseName: argocd
-      repoUrl: "https://argoproj.github.io/argo-helm"
+      repoURL: "https://argoproj.github.io/argo-helm"
       namespace: argocd
