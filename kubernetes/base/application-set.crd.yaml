@@ -63,7 +63,7 @@ spec:
           helm:
             releaseName: '{{ .releaseName }}'
             valueFiles:
-              - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/application/{{ .name }}/values.yaml
+              - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/applications/{{ .name }}/values.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{ .namespace }}'
