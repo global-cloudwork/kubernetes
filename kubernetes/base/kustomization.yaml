@@ -1,6 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Point to the base resources (YAML files or directories)
 resources:
   - application-set.crd.yaml

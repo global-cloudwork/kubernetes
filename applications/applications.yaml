@@ -1,6 +1,14 @@
 key:
-  applications:
-    - appName: argocd
-      appTargetRevision: "8.2.7"
-      appReleaseName: argocd
-      appRepoUrl: "https://argoproj.github.io/argo-helm"
+  components:
+    - name: actualbudget
+      chart: actualbudget
+      version: "1.8.1"
+      releaseName: actualbudget
+      repoUrl: "https://community-charts.github.io/helm-charts"
+      namespace: actualbudget
+    - name: argocd
+      chart: argocd
+      version: "8.2.7"
+      releaseName: argocd
+      repoUrl: "https://argoproj.github.io/argo-helm"
+      namespace: argocd
