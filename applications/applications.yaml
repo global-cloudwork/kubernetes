@@ -5,7 +5,8 @@ key:
     #   version: "1.8.1"
     #   releaseName: 
     #   repoURL: "https://"
-    #   namespace: 
+    #   namespace:
+    
     - name: actualbudget
       chart: actualbudget
       version: "1.8.1"
@@ -16,7 +17,7 @@ key:
     - name: cert-manager
       chart: cert-manager
       version: "1.18.2"
-      releaseName: my-cert-manager
+      releaseName: cert-manager
       repoURL: "https://charts.jetstack.io"
       namespace: cert-manager
 
@@ -65,7 +66,7 @@ key:
     - name: vaultwarden
       chart: vaultwarden
       version: "1.2.6"
-      releaseName: my-vaultwarden
+      releaseName: vaultwarden
       repoURL: "https://gissilabs.github.io/charts/"
       namespace: vaultwarden
 
@@ -78,9 +79,9 @@ key:
 
     - name: n8n
       chart: n8n
-      version: "1.0.12"
-      releaseName: my-n8n
-      repoURL: "oci://8gears.container-registry.com/library/n8n"
+      version: "1.15.2"
+      releaseName: n8n
+      repoURL: "https://community-charts.github.io/helm-charts"
       namespace: n8n
 
     # - name: keycloak
