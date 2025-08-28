@@ -30,6 +30,13 @@
           "KUBECONFIG": "/etc/rancher/rke2/rke2.yaml"
         }
       }
+    },
+    {
+      "label": "Argocd in Browser",
+      "type": "shell",
+      "command": "xdg-open",
+      "args": [ "http://localhost:30080" ],
+      "problemMatcher": []
     }
   ],
   "inputs": [
