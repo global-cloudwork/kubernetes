@@ -9,7 +9,7 @@ spec:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
         revision: 'main' 
         directories:
-          - path: 'kubernetes/base/*/*'
+          - path: 'kubernetes/base/*'
   template:
     metadata:
       name: '{{path.basename}}' 
