@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: deploy-all-yaml
+  name: base-application-set
   namespace: argocd
 spec:
   generators:
