@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: deploy-all-yaml
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/global-cloudwork/kubernetes'
+        revision: 'main' 
+        directories:
+          - path: 'kubernetes/base/*'
+  template:
+    metadata:
+      name: '{{path.basename}}-application' 
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/global-cloudwork/kubernetes'
+        targetRevision: 'main'
+        path: '{{path}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: argocd  
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
