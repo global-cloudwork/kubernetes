@@ -1,32 +1,32 @@
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: Gateway
-metadata:
-  name: gateway
-  namespace: common
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-io
-spec:
-  gatewayClassName: cilium
-  addresses:
-    - value: "10.0.1.250"
-  listeners:
-    - name: http
-      port: 80
-      protocol: HTTP
-      hostname: "*.promotesudbury.ca"
-      allowedRoutes:
-        namespaces:
-          from: All
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: Gateway
+# metadata:
+#   name: gateway
+#   namespace: common
+#   annotations:
+#     cert-manager.io/cluster-issuer: letsencrypt-io
+# spec:
+#   gatewayClassName: cilium
+#   addresses:
+#     - value: "10.0.1.250"
+#   listeners:
+#     - name: http
+#       port: 80
+#       protocol: HTTP
+#       hostname: "*.promotesudbury.ca"
+#       allowedRoutes:
+#         namespaces:
+#           from: All
 
-    - name: https-link
-      port: 443
-      protocol: HTTPS
-      hostname: "*.promotesudbury.ca"
-      tls:
-        mode: Terminate
-        certificateRefs:
-        - kind: Secret
-          name: wildcard-example-link
-      allowedRoutes:
-        namespaces:
-          from: All
+#     - name: https-link
+#       port: 443
+#       protocol: HTTPS
+#       hostname: "*.promotesudbury.ca"
+#       tls:
+#         mode: Terminate
+#         certificateRefs:
+#         - kind: Secret
+#           name: wildcard-example-link
+#       allowedRoutes:
+#         namespaces:
+#           from: All
