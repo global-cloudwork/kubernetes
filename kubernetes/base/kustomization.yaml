@@ -4,5 +4,4 @@ kind: Kustomization
 
 # Resources to be applied (e.g., manifests, directories with YAML files)
 resources:
-  - applicaiton-set.crd.yaml
-  
+  - application-set.crd.yaml
