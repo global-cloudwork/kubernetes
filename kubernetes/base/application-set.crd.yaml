@@ -8,11 +8,11 @@ spec:
     - git:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
         revision: 'main' 
-        files:
-          - path: 'kubernetes/base/*/*.yaml'
+        directories:
+          - path: 'kubernetes/base/*/'
   template:
     metadata:
-      name: '{{path.basename}}--{{timestamp}}' 
+      name: '{{path.basename}}' 
     spec:
       project: default
       source:
