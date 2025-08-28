@@ -1,3 +1,24 @@
+# HTTP Redirection Route
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: http-link-redirect
+  namespace: common
+spec:
+  parentRefs:
+  - name: example
+    namespace: common
+    sectionName: http-link
+  hostnames:
+  - "*.promotesudbury.ca"
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
+        port: 443
+---
 # ArgoCD UI
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
@@ -14,7 +35,7 @@ spec:
   rules:
   - backendRefs:
     - name: argocd-server
-      port: 80
+      port: 30080
 
 ---
 # Keycloak

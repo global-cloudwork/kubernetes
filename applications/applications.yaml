@@ -83,12 +83,12 @@ key:
     #   repoURL: "oci://8gears.container-registry.com/library/n8n"
     #   namespace: default
 
-    - name: keycloak
-      chart: keycloak
-      version: "25.2.0"
-      releaseName: keycloak
-      repoURL: "https://charts.bitnami.com/bitnami"
-      namespace: keycloak
+    # - name: keycloak
+    #   chart: keycloak
+    #   version: "25.2.0"
+    #   releaseName: keycloak
+    #   repoURL: "https://charts.bitnami.com/bitnami"
+    #   namespace: keycloak
 
     # - name: redis
     #   chart: redis
