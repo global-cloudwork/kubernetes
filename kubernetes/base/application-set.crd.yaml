@@ -8,11 +8,11 @@ spec:
     - git:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
         revision: 'main' 
-        files:
-          - path: 'kubernetes/base/applications/*.yaml'
+        directories:
+          - path: 'kubernetes/base/applications'
   template:
     metadata:
-      name: '{{path.basename | replace(".", "-")}}-{{file.basename | replace(".", "-")}}'
+      name: '{{path.basename}}'
     spec:
       project: default
       source:
@@ -37,11 +37,11 @@ spec:
     - git:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
         revision: 'main' 
-        files:
-          - path: 'kubernetes/base/gateway/*.yaml'
+        directories:
+          - path: 'kubernetes/base/gateway'
   template:
     metadata:
-      name: '{{path.basename | replace(".", "-")}}-{{file.basename | replace(".", "-")}}'
+      name: '{{path.basename}}'
     spec:
       project: default
       source:
