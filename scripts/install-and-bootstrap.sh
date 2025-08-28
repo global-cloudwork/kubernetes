@@ -41,4 +41,4 @@ echo applying the argocd helm chart, turned manifest /applications/argocd
 kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/applications/argocd?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
 
 echo applying the development kustomize overlay environments/development
-kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/environments/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
+kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/overlays/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
