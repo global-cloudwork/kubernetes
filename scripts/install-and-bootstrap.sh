@@ -11,7 +11,7 @@ mkdir -p /etc/rancher/rke2/
 sudo cp ../configurations/local.yaml /etc/rancher/rke2/config.yaml
 echo -e '\nTls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
 
-echo copying addon manifests in to place, specificaly type: HelmChartConfig
+echo copying HelmChartConfig manifests in to place 
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 sudo cp ../configurations/helm-chart-config.k8s.yaml /var/lib/rancher/rke2/server/manifests/
 
