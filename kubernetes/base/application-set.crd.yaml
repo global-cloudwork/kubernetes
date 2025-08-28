@@ -12,7 +12,7 @@ spec:
           - path: 'kubernetes/base/applications/*.yaml'
   template:
     metadata:
-      name: '{{path.basename}}-{{file.basename}}'
+      name: '{{path.basename | replace(".", "-")}}-{{file.basename | replace(".", "-")}}'
     spec:
       project: default
       source:
@@ -41,7 +41,7 @@ spec:
           - path: 'kubernetes/base/gateway/*.yaml'
   template:
     metadata:
-      name: '{{path.basename}}-{{file.basename}}'
+      name: '{{path.basename | replace(".", "-")}}-{{file.basename | replace(".", "-")}}'
     spec:
       project: default
       source:
