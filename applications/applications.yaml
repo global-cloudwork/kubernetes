@@ -6,12 +6,12 @@ key:
     #   releaseName: 
     #   repoURL: "https://"
     #   namespace: 
-    # - name: actualbudget
-    #   chart: actualbudget
-    #   version: "1.8.1"
-    #   releaseName: actualbudget
-    #   repoURL: "https://community-charts.github.io/helm-charts"
-    #   namespace: actualbudget
+    - name: actualbudget
+      chart: actualbudget
+      version: "1.8.1"
+      releaseName: actualbudget
+      repoURL: "https://community-charts.github.io/helm-charts"
+      namespace: actualbudget
 
     - name: cert-manager
       chart: cert-manager
@@ -62,12 +62,12 @@ key:
     #   repoURL: "https://helm.releases.hashicorp.com"
     #   namespace: vault
 
-    # - name: vaultwarden
-    #   chart: vaultwarden
-    #   version: "1.2.6"
-    #   releaseName: my-vaultwarden
-    #   repoURL: "https://gissilabs.github.io/charts/"
-    #   namespace: vaultwarden
+    - name: vaultwarden
+      chart: vaultwarden
+      version: "1.2.6"
+      releaseName: my-vaultwarden
+      repoURL: "https://gissilabs.github.io/charts/"
+      namespace: vaultwarden
 
     # - name: argocd
     #   chart: argo-cd
@@ -76,12 +76,12 @@ key:
     #   repoURL: "https://argoproj.github.io/argo-helm"
     #   namespace: argocd
 
-    # - name: n8n
-    #   chart: n8n
-    #   version: "1.0.12"
-    #   releaseName: my-n8n
-    #   repoURL: "oci://8gears.container-registry.com/library/n8n"
-    #   namespace: default
+    - name: n8n
+      chart: n8n
+      version: "1.0.12"
+      releaseName: my-n8n
+      repoURL: "oci://8gears.container-registry.com/library/n8n"
+      namespace: default
 
     # - name: keycloak
     #   chart: keycloak
