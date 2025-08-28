@@ -87,8 +87,8 @@ key:
       chart: keycloak
       version: "25.2.0"
       releaseName: keycloak
-      repoURL: "oci://registry-1.docker.io/bitnamicharts/keycloak"
-      namespace: default
+      repoURL: "https://charts.bitnami.com/bitnami"
+      namespace: keycloak
 
     # - name: redis
     #   chart: redis
