@@ -34,7 +34,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: applications-application-set
+  name: helm-deployments
   namespace: argocd
 spec:
   goTemplate: true
