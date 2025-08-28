@@ -81,7 +81,7 @@ key:
       version: "1.0.12"
       releaseName: my-n8n
       repoURL: "oci://8gears.container-registry.com/library/n8n"
-      namespace: default
+      namespace: n8n
 
     # - name: keycloak
     #   chart: keycloak
