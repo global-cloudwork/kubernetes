@@ -8,11 +8,11 @@ spec:
     - git:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
         revision: 'main' 
-        directories:
-          - path: 'kubernetes/base/applications'
+        files:
+          - path: 'kubernetes/base/applications/*.yaml'
   template:
     metadata:
-      name: '{{path.basename}}'
+      name: '{{path.basename | splitList "." | first}}' 
     spec:
       project: default
       source:
@@ -30,18 +30,18 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gateway-manifests
+  name: kubernetes-manifests
   namespace: argocd
 spec:
   generators:
     - git:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
         revision: 'main' 
-        directories:
-          - path: 'kubernetes/base/gateway'
+        files:
+          - path: 'kubernetes/base/gateway/*.yaml'
   template:
     metadata:
-      name: '{{path.basename}}'
+      name: '{{path.basename | splitList "." | first}}' 
     spec:
       project: default
       source:
