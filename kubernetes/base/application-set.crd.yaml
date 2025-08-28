@@ -30,7 +30,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kubernetes-manifests
+  name: gateway-manifests
   namespace: argocd
 spec:
   generators:
