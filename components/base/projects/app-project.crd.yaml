@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: test-cluster-project
+  namespace: argocd
+spec:
+  description: Project for testing apps in the test Kubernetes cluster
+
+  # Restrict applications to specific source repositories
+  sourceRepos:
+    - https://github.com/global-cloudwork/kubernetes.git  # Adjust this
+
+  # Allow deployments only to specific cluster(s) and namespace(s)
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc  # Use "*" for all clusters, or specify
+
+  # Optional: Allow all applications to sync
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
