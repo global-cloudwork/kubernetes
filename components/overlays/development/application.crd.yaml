@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/global-cloudwork/kubernetes
     targetRevision: main
-    path: kubernetes/base
+    path: components/base
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

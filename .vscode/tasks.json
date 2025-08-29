@@ -47,7 +47,7 @@
       "options": [
         "/environments/development",
         "/applications/argocd",
-        "/kubernetes/bootstrap"
+        "/components/bootstrap"
       ]
     }
   ]

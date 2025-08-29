@@ -34,11 +34,11 @@ chmod a+r /etc/rancher/rke2/rke2.yaml
 echo waiting for the node, then all of its pods
 kubectl wait --for=condition=Ready node --all --timeout=600s
 
-echo applying crds and other manifests /kubernetes/bootstrap 
-kubectl kustomize "github.com/global-cloudwork/kubernetes/kubernetes/bootstrap?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
+echo applying crds and other manifests /components/bootstrap 
+kubectl kustomize "github.com/global-cloudwork/kubernetes/components/bootstrap?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
 
 echo applying the argocd helm chart, turned manifest /applications/argocd
 kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/applications/argocd?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
 
 echo applying the development kustomize overlay environments/development
-kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/kubernetes/overlays/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
+kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/components/overlays/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
