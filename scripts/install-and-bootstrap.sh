@@ -37,8 +37,8 @@ kubectl wait --for=condition=Ready node --all --timeout=600s
 echo applying crds and other manifests /components/bootstrap 
 kubectl kustomize "github.com/global-cloudwork/kubernetes/components/bootstrap?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
 
-echo applying the argocd helm chart, turned manifest /applications/argocd
-kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/applications/argocd?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
+echo applying the argocd helm chart, turned manifest /components/applications/argocd
+kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/components/applications/argocd?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
 
 echo applying the development kustomize overlay environments/development
 kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/components/environments/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
