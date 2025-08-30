@@ -12,7 +12,7 @@ declare -a KUSTOMIZE_PATHS=(
 )
 
 echo() {
-    command echo -e "\n\033[4m$1\033[0m"
+    command echo -E "\n\033[4m$1\033[0m"
 }
 
 echo Script Start - Configure a new RKE2 instilation, deploy manifests

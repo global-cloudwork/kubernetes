@@ -1,6 +1,10 @@
 #!/bin/bash
 #Everything Is Supressed
 
+echo() {
+    command echo -e "\n\033[4m$1\033[0m"
+}
+
 echo "Script Start - Removing any existing rke2 features"
 
 echo rke2 kill all script sucseeded
