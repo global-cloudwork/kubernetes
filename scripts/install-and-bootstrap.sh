@@ -20,7 +20,7 @@ systemctl enable --now rke2-server.service
 
 echo check if bin for rke2 is in path
 if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
-  echo "export PATH=\$PATH:/var/lib/rancher/rke2/bin" >> ~/.profile
+  echo "export PATH=\$PATH:/var/lib/rancher/rke2/bin" >> ~/.bashrc
   echo "reuslt - path needs to be added, profile modified"
 else
   echo "result - path exists already, profile unchanged"
