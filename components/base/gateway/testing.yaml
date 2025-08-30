@@ -28,7 +28,7 @@
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
 metadata:
-  name: "ipv4-pool"
+  name: "ipv4-ip-pool"
   namespace: argocd
 spec:
   blocks:
