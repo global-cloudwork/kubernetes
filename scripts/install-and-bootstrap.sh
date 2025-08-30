@@ -1,6 +1,10 @@
 #!/bin/bash
 #curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
+CLUSTER_CONFIG_PATH=
+HELM_CONFIG_PATH=
+REPOSITORY=
+
 echo Script Start - Configure a new RKE2 instilation, deploy manifests
 
 echo curl and run installer script https://get.rke2.io
