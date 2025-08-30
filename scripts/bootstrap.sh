@@ -1,10 +1,13 @@
 #!/bin/bash
 #curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-REPOSITORY=global-cloudwork/kubernetes
 REVISION=main
-CLUSTER_CONFIG_PATH=configurations/on-site.yaml
-HELM_CONFIG_PATH=configurations/helm-chart-config.crd.yaml
+REPOSITORY=global-cloudwork/kubernetes
+RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
+
+CLUSTER_CONFIG_PATH=$RAW_REPOSITORY/configurations/on-site.yaml
+HELM_CONFIG_PATH=$RAW_REPOSITORY/configurations/helm-chart-config.crd.yaml
+
 declare -a KUSTOMIZE_PATHS=(
 "components/bootstrap"
 "components/applications/argocd"
@@ -34,8 +37,8 @@ mkdir -p /etc/rancher/rke2/
 mkdir -p /var/lib/rancher/rke2/server/manifests
 
 echo "Curl cluster config, and helm chart config"
-sudo curl -o /etc/rancher/rke2/config.yaml https://raw.githubusercontent.com/$REPOSITORY/main/configurations/on-site.yaml
-sudo curl -o /var/lib/rancher/rke2/server/manifests/helm-chart-config.crd.yaml https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/configurations/helm-chart-config.crd.yaml
+sudo curl -o /etc/rancher/rke2/config.yaml $CLUSTER_CONFIG_PATH
+sudo curl -o /var/lib/rancher/rke2/server/manifests/helm-chart-config.crd.yaml $HELM_CONFIG_PATH
 
 echo "Modify configurations to add hostname"
 sudo echo -e '\ntls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
@@ -43,11 +46,9 @@ sudo echo -e '\ntls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
 echo "Enable, then start the rke2-server service"
 systemctl enable --now rke2-server.service
 
-echo "Check if bin for rke2 is in path"
+echo "Add bin for rke2 if not in path"
 if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
-  echo "Result - Path needs to be added, profile modified"
-else
-  echo "Result - Path exists already, profile unchanged"
+  echo 'export PATH=$PATH:/var/lib/rancher/rke2/bin/' >> ~/.bashrc
 fi
 
 echo "Configuring path and links that error silently"

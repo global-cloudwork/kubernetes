@@ -10,6 +10,8 @@ function h1() {
 
 source .env
 
+h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
+
 if gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; then
     echo "Instance $INSTANCE_NAME exists. Deleting..."
     gcloud compute instances delete "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --quiet
@@ -49,6 +51,3 @@ while true; do
 done
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
-
-# kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable
-# https://github.com/argoproj/argo-cd/blob/master/manifests/install.yaml
