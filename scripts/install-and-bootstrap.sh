@@ -3,16 +3,18 @@
 
 CLUSTER_CONFIG_PATH=
 HELM_CONFIG_PATH=
-REPOSITORY=
+REPOSITORY=github.com/global-cloudwork/kubernetes/
+REVISION=main
+
 
 echo Script Start - Configure a new RKE2 instilation, deploy manifests
 
 echo curl and run installer script https://get.rke2.io
 curl -sfL https://get.rke2.io | sudo sh -
 
-echo copying startup configuration file in to place, then appending machines hostname
+echo curl startup configuration file, then appending machines hostname
 mkdir -p /etc/rancher/rke2/
-sudo cp ../configurations/local.yaml /etc/rancher/rke2/config.yaml
+sudo curl -o /etc/rancher/rke2/config.yaml https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/configurations/on-site.yaml
 echo -e '\nTls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
 
 echo copying HelmChartConfig manifests in to place 
