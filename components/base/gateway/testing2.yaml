@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-ipv4
+  namespace: argocd
 spec:
   replicas: 2
   selector:
@@ -32,6 +33,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx-service-ipv4
+  namespace: argocd
 spec:
   type: LoadBalancer
   selector:
@@ -41,9 +43,26 @@ spec:
       targetPort: 80
 ---
 apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service-ipv6
+  namespace: argocd
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ipFamilies:
+  - IPv6
+  ipFamilyPolicy: SingleStack
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: html-message
+  namespace: argocd
 data:
   index.html: |
     <!DOCTYPE html>

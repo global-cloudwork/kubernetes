@@ -65,3 +65,6 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
       kubectl apply --server-side --force-conflicts -f -
 done
+
+
+# kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem

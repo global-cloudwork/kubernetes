@@ -7,21 +7,19 @@ metadata:
     cert-manager.io/cluster-issuer: cert-manager.io #Creates Cert
 spec:
   gatewayClassName: cilium
-  # addresses:
-  #   - value: "10.0.1.250"
   listeners:
-    - name: http
+    - hostname: "*.promotesudbury.ca"
+      name: http
       port: 80
       protocol: HTTP
-      hostname: "*.promotesudbury.ca"
       allowedRoutes:
         namespaces:
           from: All
 
-    - name: https-link
+    - hostname: "*.promotesudbury.ca"
+      name: https-link
       port: 443
       protocol: HTTPS
-      hostname: "*.promotesudbury.ca"
       tls:
         mode: Terminate
         certificateRefs:
