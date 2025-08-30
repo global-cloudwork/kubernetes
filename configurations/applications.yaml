@@ -52,7 +52,7 @@ key:
     - name: longhorn
       chart: longhorn
       version: "1.9.1"
-      releaseName: my-longhorn
+      releaseName: longhorn
       repoURL: "https://charts.longhorn.io"
       namespace: longhorn
 
