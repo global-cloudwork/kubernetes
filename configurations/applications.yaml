@@ -55,13 +55,7 @@ key:
       releaseName: longhorn
       repoURL: "https://charts.longhorn.io"
       namespace: longhorn
-
-    - name: minio 
-      chart: bitnami/minio
-      version: "17.0.21"
-      releaseName: my-minio
-      repoURL: "https://charts.bitnami.com/bitnami"
-      namespace: minio
+      nodePort: 10111
 
     # - name: vault
     #   chart: vault
@@ -83,6 +77,7 @@ key:
     #   releaseName: argocd
     #   repoURL: "https://argoproj.github.io/argo-helm"
     #   namespace: argocd
+    #   nodePort: 30080
 
     - name: n8n
       chart: n8n
@@ -90,6 +85,7 @@ key:
       releaseName: n8n
       repoURL: "https://community-charts.github.io/helm-charts"
       namespace: n8n
+      nodePort: 5678
 
     # - name: keycloak
     #   chart: keycloak
@@ -104,3 +100,11 @@ key:
     #   releaseName: redis
     #   repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
     #   namespace: default
+
+    - name: kubeview
+      chart: kubeview/kubeview
+      version: "2.0.5"
+      releaseName: kubeview
+      repoURL: "https://code.benco.io/kubeview/deploy/helm"
+      namespace: kubeview
+      nodePort: 30000

@@ -16,8 +16,7 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 sudo cp ../configurations/helm-chart-config.k8s.yaml /var/lib/rancher/rke2/server/manifests/
 
 echo enable, then start the rke2-server service
-systemctl enable rke2-server.service
-systemctl start rke2-server.service
+systemctl enable --now rke2-server.service
 
 echo check if bin for rke2 is in path
 if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
@@ -27,9 +26,13 @@ else
   echo "result - path exists already, profile unchanged"
 fi
 
-echo export kubeconfig, and chmod a+r for testing purposes
-export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
-chmod a+r /etc/rancher/rke2/rke2.yaml
+ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+mkdir -p ~/.kube
+ln -s /etc/rancher/rke2/rke2.yaml ~/.kube/config
+export PATH=$PATH:/var/lib/rancher/rke2/bin/
+
+# echo chmod a+r for testing purposes
+# chmod a+r /etc/rancher/rke2/rke2.yaml
 
 echo waiting for the node, then all of its pods
 kubectl wait --for=condition=Ready node --all --timeout=600s
@@ -42,3 +45,5 @@ kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/componen
 
 echo applying the development kustomize overlay environments/development
 kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/components/environments/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
+
+#Token sudo cat /var/lib/rancher/rke2/server/node-token 
