@@ -56,6 +56,13 @@ key:
       repoURL: "https://charts.longhorn.io"
       namespace: longhorn
 
+    - name: minio 
+      chart: bitnami/minio
+      version: "17.0.21"
+      releaseName: my-minio
+      repoURL: "https://charts.bitnami.com/bitnami"
+      namespace: minio
+
     # - name: vault
     #   chart: vault
     #   version: "0.30.1"
