@@ -1,25 +1,40 @@
 #!/bin/bash
 #curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-CLUSTER_CONFIG_PATH=
-HELM_CONFIG_PATH=
-REPOSITORY=github.com/global-cloudwork/kubernetes/
+REPOSITORY=global-cloudwork/kubernetes
 REVISION=main
+CLUSTER_CONFIG_PATH=configurations/on-site.yaml
+HELM_CONFIG_PATH=configurations/helm-chart-config.crd.yaml
+declare -a KUSTOMIZE_PATHS=(
+"components/bootstrap"
+"components/applications/argocd"
+"components/environments/development"
+)
 
+echo() {
+    command echo -e "\n\033[4m$1\033[0m"
+}
 
 echo Script Start - Configure a new RKE2 instilation, deploy manifests
 
-echo curl and run installer script https://get.rke2.io
-curl -sfL https://get.rke2.io | sudo sh -
+echo installing curl, helm, kubectl
+sudo apt-get update
+sudo apt-get install -y curl
 
-echo curl startup configuration file, then appending machines hostname
+echo curl and install rke2 and helm
+curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash > /dev/null 2>&1
+curl -sfL https://get.rke2.io | sudo sh - > /dev/null 2>&1
+
+echo making configuration directories
 mkdir -p /etc/rancher/rke2/
-sudo curl -o /etc/rancher/rke2/config.yaml https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/configurations/on-site.yaml
-echo -e '\nTls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
+mkdir -p /var/lib/rancher/rke2/server/manifests
 
-echo copying HelmChartConfig manifests in to place 
-sudo mkdir -p /var/lib/rancher/rke2/server/manifests
-sudo cp ../configurations/helm-chart-config.k8s.yaml /var/lib/rancher/rke2/server/manifests/
+echo curl cluster config, and helm chart config
+sudo curl -o /etc/rancher/rke2/config.yaml https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/configurations/on-site.yaml
+sudo curl -o /var/lib/rancher/rke2/server/manifests/helm-chart-config.crd.yaml https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/configurations/helm-chart-config.crd.yaml
+
+echo modify confiruations to add hostname
+sudo echo -e '\ntls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
 
 echo enable, then start the rke2-server service
 systemctl enable --now rke2-server.service
@@ -32,24 +47,16 @@ else
   echo "result - path exists already, profile unchanged"
 fi
 
-ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-mkdir -p ~/.kube
-ln -s /etc/rancher/rke2/rke2.yaml ~/.kube/config
+echo configuring path and links that error silently
 export PATH=$PATH:/var/lib/rancher/rke2/bin/
-
-# echo chmod a+r for testing purposes
-# chmod a+r /etc/rancher/rke2/rke2.yaml
+mkdir -p ~/.kube
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl &>/dev/null
+sudo ln -s /etc/rancher/rke2/rke2.yaml ~/.kube/config &>/dev/null
 
 echo waiting for the node, then all of its pods
 kubectl wait --for=condition=Ready node --all --timeout=600s
 
-echo applying crds and other manifests /components/bootstrap 
-kubectl kustomize "github.com/global-cloudwork/kubernetes/components/bootstrap?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
-
-echo applying the argocd helm chart, turned manifest /components/applications/argocd
-kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/components/applications/argocd?ref=main" | kubectl apply --wait --server-side --force-conflicts -f -
-
-echo applying the development kustomize overlay environments/development
-kubectl kustomize --enable-helm "github.com/global-cloudwork/kubernetes/components/environments/development?ref=main" | kubectl apply --server-side --force-conflicts -f -
-
-#Token sudo cat /var/lib/rancher/rke2/server/node-token 
+for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
+    echo "Applying Kustomize PATH: $CURRENT_PATH"
+    kubectl kustomize --enable-helm --ignore-errors "$REPOSITORY $CURRENT_PATH ?ref=main" | kubectl apply --server-side --ignore-errors --force-conflicts -f -
+done

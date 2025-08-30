@@ -39,3 +39,8 @@ echo "relevant folders have been removed"
 echo iptables removal sucseeded
 sudo iptables -t nat -X FLANNEL-POSTRTG &>/dev/null
 [ $? -eq 0 ] && echo -n true || echo -n false
+
+echo symlink removal sucseeded
+sudo rm -f /usr/local/bin/kubectl
+sudo rm -f ~/.kube/config
+[ $? -eq 0 ] && echo -n true || echo -n false
