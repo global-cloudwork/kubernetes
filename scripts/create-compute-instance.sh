@@ -1,9 +1,13 @@
 #!/bin/bash
 
-# Run this script:
-# curl -sSL https://raw.githubusercontent.com/mcconnellj/k3s-server/main/scripts/create-e2-server.sh?nocache=$(date +%s) | bash
+echo() {
+    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
+}
 
-# Load environment variables from the .env file if needed
+function h1() {
+  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
+}
+
 source .env
 
 if gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; then

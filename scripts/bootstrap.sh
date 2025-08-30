@@ -12,51 +12,55 @@ declare -a KUSTOMIZE_PATHS=(
 )
 
 echo() {
-    command echo -E "\n\033[4m$1\033[0m"
+    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
 
-echo Script Start - Configure a new RKE2 instilation, deploy manifests
+function h1() {
+  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
+}
 
-echo installing curl, helm, kubectl
+h1 "Configure RKE2 & Deploy Kustomizations"
+
+echo "Installing curl, helm, kubectl"
 sudo apt-get update
 sudo apt-get install -y curl
 
-echo curl and install rke2 and helm
+echo "Curl and install rke2 and helm"
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash > /dev/null 2>&1
 curl -sfL https://get.rke2.io | sudo sh - > /dev/null 2>&1
 
-echo making configuration directories
+echo "Making configuration directories"
 mkdir -p /etc/rancher/rke2/
 mkdir -p /var/lib/rancher/rke2/server/manifests
 
-echo curl cluster config, and helm chart config
-sudo curl -o /etc/rancher/rke2/config.yaml https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/configurations/on-site.yaml
+echo "Curl cluster config, and helm chart config"
+sudo curl -o /etc/rancher/rke2/config.yaml https://raw.githubusercontent.com/$REPOSITORY/main/configurations/on-site.yaml
 sudo curl -o /var/lib/rancher/rke2/server/manifests/helm-chart-config.crd.yaml https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/configurations/helm-chart-config.crd.yaml
 
-echo modify confiruations to add hostname
+echo "Modify configurations to add hostname"
 sudo echo -e '\ntls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
 
-echo enable, then start the rke2-server service
+echo "Enable, then start the rke2-server service"
 systemctl enable --now rke2-server.service
 
-echo check if bin for rke2 is in path
+echo "Check if bin for rke2 is in path"
 if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
-  echo "export PATH=\$PATH:/var/lib/rancher/rke2/bin" >> ~/.bashrc
-  echo "reuslt - path needs to be added, profile modified"
+  echo "Result - Path needs to be added, profile modified"
 else
-  echo "result - path exists already, profile unchanged"
+  echo "Result - Path exists already, profile unchanged"
 fi
 
-echo configuring path and links that error silently
+echo "Configuring path and links that error silently"
 export PATH=$PATH:/var/lib/rancher/rke2/bin/
 mkdir -p ~/.kube
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl &>/dev/null
 sudo ln -s /etc/rancher/rke2/rke2.yaml ~/.kube/config &>/dev/null
 
-echo waiting for the node, then all of its pods
+echo "Waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
 
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     echo "Applying Kustomize PATH: $CURRENT_PATH"
-    kubectl kustomize --enable-helm --ignore-errors "$REPOSITORY $CURRENT_PATH ?ref=main" | kubectl apply --server-side --ignore-errors --force-conflicts -f -
+    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
+      kubectl apply --server-side --force-conflicts -f -
 done
