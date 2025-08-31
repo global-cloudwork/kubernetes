@@ -31,8 +31,8 @@ sudo apt-get update
 sudo apt-get install -y curl
 
 echo "Curl and install rke2 and helm"
-curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash > /dev/null 2>&1
-curl -sfL https://get.rke2.io | sudo sh - > /dev/null 2>&1
+curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+curl -sfL https://get.rke2.io | sudo sh -
 
 echo "Making configuration directories"
 mkdir -p /etc/rancher/rke2/
@@ -57,8 +57,8 @@ fi
 echo "Configuring path and links that error silently"
 export PATH=$PATH:/var/lib/rancher/rke2/bin/
 mkdir -p ~/.kube
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl &>/dev/null
-sudo ln -s /etc/rancher/rke2/rke2.yaml ~/.kube/config &>/dev/null
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+sudo ln -s /etc/rancher/rke2/rke2.yaml ~/.kube/config
 
 echo "Waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
