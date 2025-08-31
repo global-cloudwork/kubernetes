@@ -3,5 +3,4 @@ kind: ClusterIssuer
 metadata:
   name: issuer
 spec:
-  ca:
-    secretName: cert-manager-webhook-ca
+  selfSigned: {}
