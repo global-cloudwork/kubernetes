@@ -42,6 +42,7 @@ sudo curl -o /var/lib/rancher/rke2/server/manifests/helm-chart-config.crd.yaml $
 
 echo "Modify configurations to add hostname"
 sudo echo -e '\ntls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
+sudo echo -e '\nnode-name: '$NODE_NAME >> /etc/rancher/rke2/config.yaml
 
 echo "Enable, then start the rke2-server service"
 systemctl enable --now rke2-server.service
