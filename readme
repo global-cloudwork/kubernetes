@@ -37,3 +37,29 @@ Encryption:              Wireguard       [NodeEncryption: Disabled, cilium_wg0 (
 Cluster health:          1/1 reachable   (2025-08-31T17:38:30Z)   (Probe interval: 1m5.91673732s)
 Name                     IP              Node                     Endpoints
 Modules Health:          Stopped(12) Degraded(0) OK(148)
+
+
+local dns01RecursiveNameservers:
+
+# Create a resolved configuration for the domain
+sudo mkdir -p /etc/systemd/resolved.conf.d
+
+sudo tee /etc/systemd/resolved.conf.d/argocd-override.conf << EOF
+[Resolve]
+DNS=127.0.0.1#5353
+Domains=~argocd.promotesudbury.ca
+EOF
+
+# Set up a local DNS responder (using dnsmasq on port 5353)
+sudo tee /etc/dnsmasq-argocd.conf << EOF
+port=5353
+bind-interfaces
+interface=lo
+address=/argocd.promotesudbury.ca/127.0.0.1
+EOF
+
+# Start dnsmasq on port 5353
+sudo dnsmasq --conf-file=/etc/dnsmasq-argocd.conf --pid-file=/var/run/dnsmasq-argocd.pid
+
+# Restart systemd-resolved
+sudo systemctl restart systemd-resolved
