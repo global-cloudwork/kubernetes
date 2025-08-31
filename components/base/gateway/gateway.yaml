@@ -4,7 +4,7 @@ metadata:
   name: gateway
   namespace: argocd
   annotations:
-    cert-manager.io/cluster-issuer: cert-manager.io #Creates Cert
+    cert-manager.io/cluster-issuer: cluster-issuer #Creates Cert
 spec:
   gatewayClassName: cilium
   listeners:
