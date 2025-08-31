@@ -181,8 +181,7 @@ startupapicheck:
     annotations: {"helm.sh/hook":"post-install","helm.sh/hook-weight":"-5","helm.sh/hook-delete-policy":"before-hook-creation,hook-succeeded"}
   image: 
     pullPolicy: IfNotPresent
-    repository: |-
-      quay.io/jetstack/cert-manager-startupapicheck
+    repository: quay.io/jetstack/cert-manager-startupapicheck
   enabled: true
   timeout: 1m
   volumes: []
