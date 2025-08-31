@@ -1,8 +1,8 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: issuer
-  namespace: kube-system
+  namespace: cert-manager
 spec:
   ca:
-    secretName: cilium-ca
+    secretName: cert-manager-webhook-ca
