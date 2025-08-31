@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: cluster-issuer
+  name: issuer
   namespace: kube-system
 spec:
   ca:
