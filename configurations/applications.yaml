@@ -1,5 +1,10 @@
 key:
   components:
+    #   hubble
+    #   service - nodePort: 31234
+    #   service - listen on 4245
+    #   ui service - nodePort: 31235
+
     # - name: 
     #   chart: 
     #   version: "1.8.1"
