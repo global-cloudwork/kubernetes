@@ -13,12 +13,13 @@ h1 "Removing Existing RKE2 Resources"
 
 echo "remove symbolic links before re-installing"
 sudo rm $HOME/.kube/config
+sudo rm /usr/local/bin/kubectl
 
 echo "rke2 kill all script succeeded"
 sudo /usr/local/bin/rke2-killall.sh
 
 echo "rke2 uninstall script succeeded"
-sudo /usr/local/bin/rke2-uninstall.sh
+sudo /usr/local/bin/rke2-uninstall.sh &>/dev/null
 
 echo "System agent uninstall script succeeded"
 curl -sS https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh &>/dev/null
@@ -40,7 +41,7 @@ rm -rf /etc/ceph \
        /var/lib/weave \
        /var/log/containers \
        /var/log/pods \
-       /var/run/calico
+       /var/run/calico &>/dev/null
 
 echo "iptables removal succeeded"
-sudo iptables -t nat -X FLANNEL-POSTRTG
+sudo iptables -t nat -X FLANNEL-POSTRTG &>/dev/null

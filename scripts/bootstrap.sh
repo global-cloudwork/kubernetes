@@ -48,8 +48,8 @@ sudo curl -o /etc/rancher/rke2/config.yaml $RKE2_CONFIGURATION_PATH
 sudo curl -o /var/lib/rancher/rke2/server/manifests/cilium-configuration.yaml $CILIUM_CONFIGURATION_PATH
 
 echo "Modify configurations to add hostname"
-sudo echo -e '\ntls-san:\n  - $(hostname -f)' >> /etc/rancher/rke2/config.yaml
-sudo echo -e '\nnode-name: '$CLUSTER_NAME >> /etc/rancher/rke2/config.yaml
+echo -e "\ntls-san:\n  - $(hostname -f)" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
+echo -e "\nnode-name: $CLUSTER_NAME" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 
 echo "Enable, then start the rke2-server service"
 systemctl enable --now rke2-server.service
@@ -58,12 +58,6 @@ echo "Add bin for rke2 if not in path"
 if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
   echo 'export PATH=$PATH:/var/lib/rancher/rke2/bin/' >> ~/.bashrc
 fi
-
-export KUBECONFIG=
-kubectl config view --flatten
-
-export KUBECONFIG=$
-kubectl config view --flatten --merge --kubeconfig="$(find "$(pwd)" -mindepth 2 -type f -name '*kubeconfig*' | paste -sd:)" > "$HOME/.kube/config"
 
 echo "setting up kubectl"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
@@ -76,7 +70,10 @@ mkdir -p $HOME/.kube
 
 echo "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
 ln -sf /etc/rancher/rke2/rke2.yaml "$CLUSTER_STORAGE_PATH/$CLUSTER_NAME/config"
-KUBECONFIG=$(find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:) kubectl config view --flatten > $HOME/.kube/config
+KUBECONFIG=$(find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:) 
+kubectl config view --flatten > $HOME/.kube/config
+
+KUBECONFIG=$HOME/.kube/config
 
 echo "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s

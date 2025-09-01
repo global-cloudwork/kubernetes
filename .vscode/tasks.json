@@ -10,7 +10,7 @@
     {
       "label": "Wipe, Install, and Bootstrap",
       "type": "shell",
-      "command": "cd ${workspaceFolder}/scripts && sudo ./bootstrap.sh",
+      "command": "cd ${workspaceFolder}/scripts && ./bootstrap.sh",
       "problemMatcher": [],
       "dependsOn": [],
       "options": {
