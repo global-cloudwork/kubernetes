@@ -11,6 +11,11 @@ function h1() {
 
 h1 "Removing Existing RKE2 Resources"
 
+echo "remove symbolic links"
+sudo rm /usr/local/bin/kubectl
+sudo rm /root/.kube/config
+
+
 echo "rke2 kill all script succeeded"
 sudo /usr/local/bin/rke2-killall.sh &>/dev/null
 
