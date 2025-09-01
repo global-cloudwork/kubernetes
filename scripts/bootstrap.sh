@@ -58,8 +58,8 @@ echo "Configuring path and links that error silently"
 export PATH=$PATH:/var/lib/rancher/rke2/bin/
 mkdir -p ~/.kube
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-sudo ln -s /etc/rancher/rke2/rke2.yaml ~/.kube/config
-chmod 644 /etc/rancher/rke2/rke2.yaml
+ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/config"
+# chmod 644 /etc/rancher/rke2/rke2.yaml
 
 echo "Waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
