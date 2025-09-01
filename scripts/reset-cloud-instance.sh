@@ -8,19 +8,21 @@ function h1() {
   command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
 }
 
+CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
+
 source .env
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 
+echo "checking if instance exists..."
 if gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; then
-    echo "Instance $INSTANCE_NAME exists. Deleting..."
+    echo "it exists, deleting"
     gcloud compute instances delete "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --quiet
-    echo "Waiting for instance $INSTANCE_NAME to be deleted..."
-    while gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; do
-        sleep 5
-    done
-    echo "Instance $INSTANCE_NAME deleted."
 fi
+
+while gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; do
+    sleep 5
+done
 
 gcloud compute instances create "$INSTANCE_NAME" \
   --project="$GCP_PROJECT" \
@@ -37,8 +39,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
   --shielded-integrity-monitoring \
   --labels=goog-ec-src=vm_add-gcloud \
   --reservation-affinity=any \
-  --metadata=startup-script-url="https://raw.githubusercontent.com/mcconnellj/kubernetes/production/scripts/init-server.sh?nocache=$(date +%s)"
-
+  --metadata=startup-script-url="https://raw.githubusercontent.com/mcconnellj/global-cloudwork/kubernetes/main/scripts/cloud-bootstrap.sh",cilium-ca-secret="$CILIUM_CA"
 
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')

@@ -2,7 +2,7 @@
 #curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 
-CLUSTER_NAME=on-site
+CLUSTER_NAME=cloud-proxy
 
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
@@ -59,26 +59,16 @@ if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
   echo 'export PATH=$PATH:/var/lib/rancher/rke2/bin/' >> ~/.bashrc
 fi
 
-export KUBECONFIG=
-kubectl config view --flatten
+echo "Configuring path and links that error silently"
 
-export KUBECONFIG=$
-kubectl config view --flatten --merge --kubeconfig="$(find "$(pwd)" -mindepth 2 -type f -name '*kubeconfig*' | paste -sd:)" > "$HOME/.kube/config"
-
-echo "setting up kubectl"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 export PATH=$PATH:/var/lib/rancher/rke2/bin/
 
-echo "making kubeconfig directories"
-mkdir -p "$CLUSTER_STORAGE_PATH/$CLUSTER_NAME"
-mkdir -p "$CLUSTER_STORAGE_PATH/merged"
 mkdir -p $HOME/.kube
 
-echo "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
-ln -sf /etc/rancher/rke2/rke2.yaml "$CLUSTER_STORAGE_PATH/$CLUSTER_NAME/config"
-KUBECONFIG=$(find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:) kubectl config view --flatten > $HOME/.kube/config
+ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/config"
 
-echo "waiting for the node, then all of its pods"
+echo "Waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
 
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
@@ -87,5 +77,9 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
       kubectl apply --server-side --force-conflicts -f -
 done
 
+#Pair in reset-cloud-instance.sh
+#Takes in ca as metadata, creates secret
+curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca \
+| base64 -d | kubectl create -f -
 
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem

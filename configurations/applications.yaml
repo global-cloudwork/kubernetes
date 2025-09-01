@@ -12,19 +12,19 @@ key:
     #   repoURL: "https://"
     #   namespace:
 
-    - name: trust-manager
-      chart: trust-manager
-      version: "0.19.0"
-      releaseName: trust-manager
-      repoURL: "https://charts.jetstack.io"
-      namespace: cert-manager
+    # - name: trust-manager
+    #   chart: trust-manager
+    #   version: "0.19.0"
+    #   releaseName: trust-manager
+    #   repoURL: "https://charts.jetstack.io"
+    #   namespace: cert-manager
     
-    - name: actualbudget
-      chart: actualbudget
-      version: "1.8.1"
-      releaseName: actualbudget
-      repoURL: "https://community-charts.github.io/helm-charts"
-      namespace: actualbudget
+    # - name: actualbudget
+    #   chart: actualbudget
+    #   version: "1.8.1"
+    #   releaseName: actualbudget
+    #   repoURL: "https://community-charts.github.io/helm-charts"
+    #   namespace: actualbudget
 
     - name: cert-manager
       chart: cert-manager
@@ -61,13 +61,13 @@ key:
     #   repoURL: "https://prometheus-community.github.io/helm-charts"
     #   namespace: kube-prometheus-stack
 
-    - name: longhorn
-      chart: longhorn
-      version: "1.9.1"
-      releaseName: longhorn
-      repoURL: "https://charts.longhorn.io"
-      namespace: longhorn
-      nodePort: 10111
+    # - name: longhorn
+    #   chart: longhorn
+    #   version: "1.9.1"
+    #   releaseName: longhorn
+    #   repoURL: "https://charts.longhorn.io"
+    #   namespace: longhorn
+    #   nodePort: 10111
 
     # - name: vault
     #   chart: vault
@@ -76,12 +76,12 @@ key:
     #   repoURL: "https://helm.releases.hashicorp.com"
     #   namespace: vault
 
-    - name: vaultwarden
-      chart: vaultwarden
-      version: "1.2.6"
-      releaseName: vaultwarden
-      repoURL: "https://gissilabs.github.io/charts/"
-      namespace: vaultwarden
+    # - name: vaultwarden
+    #   chart: vaultwarden
+    #   version: "1.2.6"
+    #   releaseName: vaultwarden
+    #   repoURL: "https://gissilabs.github.io/charts/"
+    #   namespace: vaultwarden
 
     # - name: argocd
     #   chart: argo-cd
@@ -91,13 +91,13 @@ key:
     #   namespace: argocd
     #   nodePort: 30080
 
-    - name: n8n
-      chart: n8n
-      version: "1.15.2"
-      releaseName: n8n
-      repoURL: "https://community-charts.github.io/helm-charts"
-      namespace: n8n
-      nodePort: 5678
+    # - name: n8n
+    #   chart: n8n
+    #   version: "1.15.2"
+    #   releaseName: n8n
+    #   repoURL: "https://community-charts.github.io/helm-charts"
+    #   namespace: n8n
+    #   nodePort: 5678
 
     # - name: keycloak
     #   chart: keycloak
@@ -113,10 +113,10 @@ key:
     #   repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
     #   namespace: default
 
-    - name: kubeview
-      chart: kubeview/kubeview
-      version: "2.0.5"
-      releaseName: kubeview
-      repoURL: "https://code.benco.io/kubeview/deploy/helm"
-      namespace: kubeview
-      nodePort: 30000
+    # - name: kubeview
+    #   chart: kubeview/kubeview
+    #   version: "2.0.5"
+    #   releaseName: kubeview
+    #   repoURL: "https://code.benco.io/kubeview/deploy/helm"
+    #   namespace: kubeview
+    #   nodePort: 30000
