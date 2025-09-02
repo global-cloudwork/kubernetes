@@ -5,11 +5,6 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
-    encryption:
-      enabled: true
-      type: wireguard
-    externalIPs:
-      enabled: true
     kubeProxyReplacement: true
     operator:
       replicas: 1
@@ -23,11 +18,3 @@ spec:
         enabled: true
       ui:
         enabled: true
-    l2announcements:
-      enabled: true
-    k8sClientRateLimit:
-      burst: 40 # Important value when many services run on a Kubernetes cluster. Check out the documentation https://docs.cilium.io/en/v1.17/network/l2-announcements/#sizing-client-rate-limit
-      qps: 20 # Important value when many services run on a Kubernetes cluster. Check out the documentation https://docs.cilium.io/en/v1.17/network/l2-announcements/#sizing-client-rate-limit
-    cluster:
-      name: on-site
-      id: 001
