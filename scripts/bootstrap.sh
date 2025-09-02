@@ -11,8 +11,8 @@ REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
 
-RKE2_CONFIGURATION_FILE=$RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
-CILIUM_CONFIGURATION_FILE=$RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
+RKE2_CONFIGURATION_FILE=configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
+CILIUM_CONFIGURATION_FILE=configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
 
 declare -a KUSTOMIZE_PATHS=(
 "components/bootstrap"
@@ -34,56 +34,54 @@ h2 "apt installing curl, helm, kubectl"
 sudo apt-get update
 sudo apt-get install -y curl
 
+h2 "Curl and install rke2 and helm"
+curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+curl -sfL https://get.rke2.io | sudo sh -
+
 h2 "Making configuration directories"
-mkdir -p /etc/rancher/rke2/
-mkdir -p /var/lib/rancher/rke2/server/manifests
+sudo mkdir -p /etc/rancher/rke2/
+sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 
 h2 "Curl cluster config, and helm chart config"
-h1 $RKE2_CONFIGURATION_FILE
-sudo curl -o /etc/rancher/rke2/config.yaml $RKE2_CONFIGURATION_FILE
-sudo curl -o /var/lib/rancher/rke2/server/manifests/cilium-configuration.yaml $CILIUM_CONFIGURATION_FILE
+sudo curl -o /etc/rancher/rke2/config.yaml $RAW_REPOSITORY/$RKE2_CONFIGURATION_FILE
+sudo curl -o /var/lib/rancher/rke2/server/manifests/cilium-configuration.yaml $RAW_REPOSITORY/$CILIUM_CONFIGURATION_FILE
+sudo curl -o /var/lib/rancher/rke2/server/manifests/gateway-crd.yaml $RAW_REPOSITORY/gateway.networking.k8s.io_gatewayclasses.yaml
 
 h2 "Modify configurations to add hostname"
 echo -e "\ntls-san:\n  - $(hostname -f)" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 echo -e "node-name: $CLUSTER_NAME" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 
-h2 "Curl and install rke2 and helm"
-curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-curl -sfL https://get.rke2.io | sudo sh -
-
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable --now rke2-server.service
 
-# while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
-#   h2 "kubeconfig not found yet, waiting"
-#   sleep 5
-# done
+while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
+  h2 "kubeconfig not found yet, waiting"
+  sleep 5
+done
 
-# h2 "setting up kubectl"
-# sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-# PATH=$PATH:/var/lib/rancher/rke2/bin/
+h2 "setting up kubectl"
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+PATH=$PATH:/var/lib/rancher/rke2/bin/
 
-# h2 "making kubeconfig directories"
-# mkdir -p "$HOME/.kube/$CLUSTER_NAME"
+h2 "making kubeconfig directories"
+mkdir -p "$HOME/.kube/$CLUSTER_NAME"
 
-# h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
-# ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
-# export KUBECONFIG=$(find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:)
-# kubectl config view --flatten > $HOME/.kube/config
+h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
+ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+export KUBECONFIG=$(find "$HOME/.kube/" \( -type f -o -type l \) -name config | paste -sd:)
 
-# h1 $KUBECONFIG
-# find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:
-# export KUBECONFIG=$HOME/.kube/config
-# h1 $KUBECONFIG
+# Flatten all merged kubeconfigs into the default config file
+kubectl config view --flatten > "$HOME/.kube/config"
 
-# h2 "waiting for the node, then all of its pods"
-# kubectl wait --for=condition=Ready node --all --timeout=600s
+h2 "waiting for the node, then all of its pods"
+kubectl wait --for=condition=Ready node --all --timeout=600s
+kubectl wait --for=condition=Ready pods --all --timeout=600s
 
 # for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
 #     h2 "Applying Kustomize PATH: $CURRENT_PATH"
 #     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
 #       kubectl apply --server-side --force-conflicts -f -
+#     kubectl wait --for=condition=Ready pods --all --timeout=600s
 # done
-
 
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem

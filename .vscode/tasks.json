@@ -10,13 +10,10 @@
     {
       "label": "Wipe, Install, and Bootstrap",
       "type": "shell",
-      "command": "cd ${workspaceFolder}/scripts && ./bootstrap.sh",
+      "command": "cd ${workspaceFolder}/scripts && ./remove-and-bootstrap.sh",
       "problemMatcher": [],
       "dependsOn": [],
       "options": {
-        "env": {
-          "KUBECONFIG": "/etc/rancher/rke2/rke2.yaml"
-        }
       }
     },
     {
@@ -26,9 +23,6 @@
       "problemMatcher": [],
       "dependsOn": [],
       "options": {
-        "env": {
-          "KUBECONFIG": "/etc/rancher/rke2/rke2.yaml"
-        }
       }
     },
     {

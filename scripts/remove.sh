@@ -15,16 +15,16 @@ echo "remove symbolic links before re-installing"
 rm $HOME/.kube/config
 sudo rm /usr/local/bin/kubectl
 
-echo "rke2 kill all script succeeded"
+echo "rke2 kill all script"
 sudo /usr/local/bin/rke2-killall.sh
 
-echo "rke2 uninstall script succeeded"
+echo "rke2 uninstall script"
 sudo /usr/local/bin/rke2-uninstall.sh &>/dev/null
 
-echo "System agent uninstall script succeeded"
+echo "System agent uninstall script"
 curl -sS https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh &>/dev/null
 
-echo "Folder removal succeeded"
+echo "Folder removal"
 rm -rf /etc/ceph \
        /etc/cni \
        /etc/kubernetes \
@@ -43,5 +43,5 @@ rm -rf /etc/ceph \
        /var/log/pods \
        /var/run/calico &>/dev/null
 
-echo "iptables removal succeeded"
+echo "iptables removal"
 sudo iptables -t nat -X FLANNEL-POSTRTG &>/dev/null
