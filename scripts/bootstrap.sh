@@ -6,14 +6,13 @@ CLUSTER_NAME=on-site
 
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
-CLUSTER_STORAGE_PATH="$HOME/Documents/kube"
 
 REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
 
-RKE2_CONFIGURATION_PATH=$RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
-CILIUM_CONFIGURATION_PATH=$RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
+RKE2_CONFIGURATION_FILE=$RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
+CILIUM_CONFIGURATION_FILE=$RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
 
 declare -a KUSTOMIZE_PATHS=(
 "components/bootstrap"
@@ -21,7 +20,7 @@ declare -a KUSTOMIZE_PATHS=(
 "components/environments/development"
 )
 
-echo() {
+function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
 
@@ -31,58 +30,60 @@ function h1() {
 
 h1 "Configure RKE2 & Deploy Kustomizations"
 
-echo "Installing curl, helm, kubectl"
+h2 "apt installing curl, helm, kubectl"
 sudo apt-get update
 sudo apt-get install -y curl
 
-echo "Curl and install rke2 and helm"
-curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-curl -sfL https://get.rke2.io | sudo sh -
-
-echo "Making configuration directories"
+h2 "Making configuration directories"
 mkdir -p /etc/rancher/rke2/
 mkdir -p /var/lib/rancher/rke2/server/manifests
 
-echo "Curl cluster config, and helm chart config"
-sudo curl -o /etc/rancher/rke2/config.yaml $RKE2_CONFIGURATION_PATH
-sudo curl -o /var/lib/rancher/rke2/server/manifests/cilium-configuration.yaml $CILIUM_CONFIGURATION_PATH
+h2 "Curl cluster config, and helm chart config"
+h1 $RKE2_CONFIGURATION_FILE
+sudo curl -o /etc/rancher/rke2/config.yaml $RKE2_CONFIGURATION_FILE
+sudo curl -o /var/lib/rancher/rke2/server/manifests/cilium-configuration.yaml $CILIUM_CONFIGURATION_FILE
 
-echo "Modify configurations to add hostname"
+h2 "Modify configurations to add hostname"
 echo -e "\ntls-san:\n  - $(hostname -f)" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
-echo -e "\nnode-name: $CLUSTER_NAME" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
+echo -e "node-name: $CLUSTER_NAME" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 
-echo "Enable, then start the rke2-server service"
-systemctl enable --now rke2-server.service
+h2 "Curl and install rke2 and helm"
+curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+curl -sfL https://get.rke2.io | sudo sh -
 
-echo "Add bin for rke2 if not in path"
-if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
-  echo 'export PATH=$PATH:/var/lib/rancher/rke2/bin/' >> ~/.bashrc
-fi
+h2 "Enable, then start the rke2-server service"
+sudo systemctl enable --now rke2-server.service
 
-echo "setting up kubectl"
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-export PATH=$PATH:/var/lib/rancher/rke2/bin/
+# while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
+#   h2 "kubeconfig not found yet, waiting"
+#   sleep 5
+# done
 
-echo "making kubeconfig directories"
-mkdir -p "$CLUSTER_STORAGE_PATH/$CLUSTER_NAME"
-mkdir -p "$CLUSTER_STORAGE_PATH/merged"
-mkdir -p $HOME/.kube
+# h2 "setting up kubectl"
+# sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+# PATH=$PATH:/var/lib/rancher/rke2/bin/
 
-echo "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
-ln -sf /etc/rancher/rke2/rke2.yaml "$CLUSTER_STORAGE_PATH/$CLUSTER_NAME/config"
-KUBECONFIG=$(find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:) 
-kubectl config view --flatten > $HOME/.kube/config
+# h2 "making kubeconfig directories"
+# mkdir -p "$HOME/.kube/$CLUSTER_NAME"
 
-KUBECONFIG=$HOME/.kube/config
+# h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
+# ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+# export KUBECONFIG=$(find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:)
+# kubectl config view --flatten > $HOME/.kube/config
 
-echo "waiting for the node, then all of its pods"
-kubectl wait --for=condition=Ready node --all --timeout=600s
+# h1 $KUBECONFIG
+# find "$HOME/.kube/" -mindepth 2 -type f | paste -sd:
+# export KUBECONFIG=$HOME/.kube/config
+# h1 $KUBECONFIG
 
-for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
-    echo "Applying Kustomize PATH: $CURRENT_PATH"
-    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
-      kubectl apply --server-side --force-conflicts -f -
-done
+# h2 "waiting for the node, then all of its pods"
+# kubectl wait --for=condition=Ready node --all --timeout=600s
+
+# for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
+#     h2 "Applying Kustomize PATH: $CURRENT_PATH"
+#     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
+#       kubectl apply --server-side --force-conflicts -f -
+# done
 
 
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem

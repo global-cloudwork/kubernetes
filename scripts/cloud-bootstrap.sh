@@ -54,11 +54,6 @@ sudo echo -e '\nnode-name: '$CLUSTER_NAME >> /etc/rancher/rke2/config.yaml
 echo "Enable, then start the rke2-server service"
 systemctl enable --now rke2-server.service
 
-echo "Add bin for rke2 if not in path"
-if ! echo "$PATH" | grep -q "/var/lib/rancher/rke2/bin"; then
-  echo 'export PATH=$PATH:/var/lib/rancher/rke2/bin/' >> ~/.bashrc
-fi
-
 echo "Configuring path and links that error silently"
 
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
