@@ -44,10 +44,10 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 
 h2 "Curl cluster config, and helm chart config"
 sudo curl -o /etc/rancher/rke2/config.yaml $RAW_REPOSITORY/$RKE2_CONFIGURATION_FILE
-sudo curl -o /var/lib/rancher/rke2/server/manifests/rke2-cilium $RAW_REPOSITORY/$CILIUM_CONFIGURATION_FILE
+sudo curl -o /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml $RAW_REPOSITORY/$CILIUM_CONFIGURATION_FILE
 
 h2 "Modify configurations to add hostname"
-echo -e "\ntls-san:\n  - $(hostname -f)" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
+echo -e "tls-san:\n  - $(hostname -I | awk '{print $1}')" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 echo -e "node-name: $CLUSTER_NAME" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 
 h2 "Enable, then start the rke2-server service"
