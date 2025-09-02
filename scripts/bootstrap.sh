@@ -45,7 +45,6 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 h2 "Curl cluster config, and helm chart config"
 sudo curl -o /etc/rancher/rke2/config.yaml $RAW_REPOSITORY/$RKE2_CONFIGURATION_FILE
 sudo curl -o /var/lib/rancher/rke2/server/manifests/cilium-configuration.yaml $RAW_REPOSITORY/$CILIUM_CONFIGURATION_FILE
-sudo curl -o /var/lib/rancher/rke2/server/manifests/gateway-crd.yaml $RAW_REPOSITORY/gateway.networking.k8s.io_gatewayclasses.yaml
 
 h2 "Modify configurations to add hostname"
 echo -e "\ntls-san:\n  - $(hostname -f)" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
