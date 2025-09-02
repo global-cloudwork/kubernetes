@@ -11,9 +11,6 @@ REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
 
-RKE2_CONFIGURATION_FILE=configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
-CILIUM_CONFIGURATION_FILE=configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
-
 declare -a KUSTOMIZE_PATHS=(
 "components/bootstrap"
 "components/applications/argocd"
@@ -43,8 +40,8 @@ sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 
 h2 "Curl cluster config, and helm chart config"
-sudo curl -o /etc/rancher/rke2/config.yaml $RAW_REPOSITORY/$RKE2_CONFIGURATION_FILE
-sudo curl -o /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml $RAW_REPOSITORY/$CILIUM_CONFIGURATION_FILE
+sudo curl -o /etc/rancher/rke2/config.yaml $RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
+sudo curl -o /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml $RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
 
 h2 "Modify configurations to add hostname"
 echo -e "tls-san:\n  - $(hostname -I | awk '{print $1}')" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
