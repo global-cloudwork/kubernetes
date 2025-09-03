@@ -73,11 +73,11 @@ h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
 kubectl wait --for=condition=Ready pods --all --timeout=600s
 
-# for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
-#     h2 "Applying Kustomize PATH: $CURRENT_PATH"
-#     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
-#       kubectl apply --server-side --force-conflicts -f -
-#     kubectl wait --for=condition=Ready pods --all --timeout=600s
-# done
+for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
+    h2 "Applying Kustomize PATH: $CURRENT_PATH"
+    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
+      kubectl apply --server-side --force-conflicts -f -
+    kubectl wait --for=condition=Ready pods --all --timeout=600s
+done
 
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
