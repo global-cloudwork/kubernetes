@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: edge-deployment
+  name: core-deployment
   namespace: argocd
 spec:
   generators:
@@ -9,7 +9,7 @@ spec:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
         revision: 'main' 
         directories:
-          - path: 'components/base/edge/*'
+          - path: 'components/base/core/*'
   template:
     metadata:
       name: '{{path.basename}}' 
