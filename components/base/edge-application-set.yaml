@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: base-manifest-deployment
+  name: edge-deployment
   namespace: argocd
 spec:
   generators:
