@@ -27,12 +27,12 @@ key:
     #   namespace: argocd
     #   nodePort: 30080
 
-    - name: actualbudget
-      chart: actualbudget
-      version: "1.8.1"
-      releaseName: actualbudget
-      repoURL: "https://community-charts.github.io/helm-charts"
-      namespace: actualbudget
+    # - name: actualbudget
+    #   chart: actualbudget
+    #   version: "1.8.1"
+    #   releaseName: actualbudget
+    #   repoURL: "https://community-charts.github.io/helm-charts"
+    #   namespace: actualbudget
 
     - name: cert-manager
       chart: cert-manager
@@ -48,12 +48,12 @@ key:
       repoURL: "https://charts.external-secrets.io/"
       namespace: external-secrets
 
-    - name: falco
-      chart: falco
-      version: "6.2.5"
-      releaseName: my-falco
-      repoURL: "https://falcosecurity.github.io/charts"
-      namespace: falco
+    # - name: falco
+    #   chart: falco
+    #   version: "6.2.5"
+    #   releaseName: my-falco
+    #   repoURL: "https://falcosecurity.github.io/charts"
+    #   namespace: falco
 
     # - name: foundry-vtt
     #   chart: foundry-vtt
@@ -62,12 +62,12 @@ key:
     #   repoURL: "https://hugoprudente.github.io/helm-charts/incubator"
     #   namespace: foundry-vtt
 
-    - name: kube-prometheus-stack
-      chart: kube-prometheus-stack
-      version: "77.0.2"
-      releaseName: my-kube-prometheus-stack
-      repoURL: "https://prometheus-community.github.io/helm-charts"
-      namespace: kube-prometheus-stack
+    # - name: kube-prometheus-stack
+    #   chart: kube-prometheus-stack
+    #   version: "77.0.2"
+    #   releaseName: my-kube-prometheus-stack
+    #   repoURL: "https://prometheus-community.github.io/helm-charts"
+    #   namespace: kube-prometheus-stack
 
     # - name: longhorn
     #   chart: longhorn
@@ -84,12 +84,12 @@ key:
     #   repoURL: "https://helm.releases.hashicorp.com"
     #   namespace: vault
 
-    - name: vaultwarden
-      chart: vaultwarden
-      version: "1.2.6"
-      releaseName: vaultwarden
-      repoURL: "https://gissilabs.github.io/charts/"
-      namespace: vaultwarden
+    # - name: vaultwarden
+    #   chart: vaultwarden
+    #   version: "1.2.6"
+    #   releaseName: vaultwarden
+    #   repoURL: "https://gissilabs.github.io/charts/"
+    #   namespace: vaultwarden
 
     - name: n8n
       chart: n8n
@@ -99,19 +99,19 @@ key:
       namespace: n8n
       nodePort: 5678
 
-    - name: keycloak
-      chart: keycloak
-      version: "25.2.0"
-      releaseName: keycloak
-      repoURL: "https://charts.bitnami.com/bitnami"
-      namespace: keycloak
+    # - name: keycloak
+    #   chart: keycloak
+    #   version: "25.2.0"
+    #   releaseName: keycloak
+    #   repoURL: "https://charts.bitnami.com/bitnami"
+    #   namespace: keycloak
 
-    - name: redis
-      chart: redis
-      version: "22.0.6"
-      releaseName: redis
-      repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
-      namespace: default
+    # - name: redis
+    #   chart: redis
+    #   version: "22.0.6"
+    #   releaseName: redis
+    #   repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
+    #   namespace: default
 
     # - name: kubeview
     #   chart: kubeview/kubeview
