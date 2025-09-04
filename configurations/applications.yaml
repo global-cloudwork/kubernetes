@@ -19,12 +19,12 @@ key:
     #   repoURL: "https://charts.jetstack.io"
     #   namespace: cert-manager
     
-    # - name: actualbudget
-    #   chart: actualbudget
-    #   version: "1.8.1"
-    #   releaseName: actualbudget
-    #   repoURL: "https://community-charts.github.io/helm-charts"
-    #   namespace: actualbudget
+    - name: actualbudget
+      chart: actualbudget
+      version: "1.8.1"
+      releaseName: actualbudget
+      repoURL: "https://community-charts.github.io/helm-charts"
+      namespace: actualbudget
 
     - name: cert-manager
       chart: cert-manager
@@ -76,12 +76,12 @@ key:
     #   repoURL: "https://helm.releases.hashicorp.com"
     #   namespace: vault
 
-    # - name: vaultwarden
-    #   chart: vaultwarden
-    #   version: "1.2.6"
-    #   releaseName: vaultwarden
-    #   repoURL: "https://gissilabs.github.io/charts/"
-    #   namespace: vaultwarden
+    - name: vaultwarden
+      chart: vaultwarden
+      version: "1.2.6"
+      releaseName: vaultwarden
+      repoURL: "https://gissilabs.github.io/charts/"
+      namespace: vaultwarden
 
     # - name: argocd
     #   chart: argo-cd
@@ -91,20 +91,20 @@ key:
     #   namespace: argocd
     #   nodePort: 30080
 
-    # - name: n8n
-    #   chart: n8n
-    #   version: "1.15.2"
-    #   releaseName: n8n
-    #   repoURL: "https://community-charts.github.io/helm-charts"
-    #   namespace: n8n
-    #   nodePort: 5678
+    - name: n8n
+      chart: n8n
+      version: "1.15.2"
+      releaseName: n8n
+      repoURL: "https://community-charts.github.io/helm-charts"
+      namespace: n8n
+      nodePort: 5678
 
-    # - name: keycloak
-    #   chart: keycloak
-    #   version: "25.2.0"
-    #   releaseName: keycloak
-    #   repoURL: "https://charts.bitnami.com/bitnami"
-    #   namespace: keycloak
+    - name: keycloak
+      chart: keycloak
+      version: "25.2.0"
+      releaseName: keycloak
+      repoURL: "https://charts.bitnami.com/bitnami"
+      namespace: keycloak
 
     # - name: redis
     #   chart: redis
