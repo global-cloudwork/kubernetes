@@ -4,6 +4,6 @@ kind: Kustomization
 resources:
   - helm-application-set.yaml
   - edge-application-set.yaml
-  # - core-application-set.yaml
+  - core-application-set.yaml
   # - data-application-set.yaml
   # - tenant-application-set.yaml
