@@ -19,6 +19,14 @@ key:
     #   repoURL: "https://charts.jetstack.io"
     #   namespace: cert-manager
     
+    # - name: argocd
+    #   chart: argo-cd
+    #   version: "8.3.1"
+    #   releaseName: argocd
+    #   repoURL: "https://argoproj.github.io/argo-helm"
+    #   namespace: argocd
+    #   nodePort: 30080
+
     - name: actualbudget
       chart: actualbudget
       version: "1.8.1"
@@ -33,19 +41,19 @@ key:
       repoURL: "https://charts.jetstack.io"
       namespace: cert-manager
 
-    # - name: external-secrets
-    #   chart: external-secrets
-    #   version: "0.19.2"
-    #   releaseName: my-external-secrets
-    #   repoURL: "https://charts.external-secrets.io/"
-    #   namespace: external-secrets
+    - name: external-secrets
+      chart: external-secrets
+      version: "0.19.2"
+      releaseName: my-external-secrets
+      repoURL: "https://charts.external-secrets.io/"
+      namespace: external-secrets
 
-    # - name: falco
-    #   chart: falco
-    #   version: "6.2.5"
-    #   releaseName: my-falco
-    #   repoURL: "https://falcosecurity.github.io/charts"
-    #   namespace: falco
+    - name: falco
+      chart: falco
+      version: "6.2.5"
+      releaseName: my-falco
+      repoURL: "https://falcosecurity.github.io/charts"
+      namespace: falco
 
     # - name: foundry-vtt
     #   chart: foundry-vtt
@@ -54,12 +62,12 @@ key:
     #   repoURL: "https://hugoprudente.github.io/helm-charts/incubator"
     #   namespace: foundry-vtt
 
-    # - name: kube-prometheus-stack
-    #   chart: kube-prometheus-stack
-    #   version: "77.0.2"
-    #   releaseName: my-kube-prometheus-stack
-    #   repoURL: "https://prometheus-community.github.io/helm-charts"
-    #   namespace: kube-prometheus-stack
+    - name: kube-prometheus-stack
+      chart: kube-prometheus-stack
+      version: "77.0.2"
+      releaseName: my-kube-prometheus-stack
+      repoURL: "https://prometheus-community.github.io/helm-charts"
+      namespace: kube-prometheus-stack
 
     # - name: longhorn
     #   chart: longhorn
@@ -83,14 +91,6 @@ key:
       repoURL: "https://gissilabs.github.io/charts/"
       namespace: vaultwarden
 
-    # - name: argocd
-    #   chart: argo-cd
-    #   version: "8.3.1"
-    #   releaseName: argocd
-    #   repoURL: "https://argoproj.github.io/argo-helm"
-    #   namespace: argocd
-    #   nodePort: 30080
-
     - name: n8n
       chart: n8n
       version: "1.15.2"
@@ -106,12 +106,12 @@ key:
       repoURL: "https://charts.bitnami.com/bitnami"
       namespace: keycloak
 
-    # - name: redis
-    #   chart: redis
-    #   version: "22.0.6"
-    #   releaseName: redis
-    #   repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
-    #   namespace: default
+    - name: redis
+      chart: redis
+      version: "22.0.6"
+      releaseName: redis
+      repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
+      namespace: default
 
     # - name: kubeview
     #   chart: kubeview/kubeview
