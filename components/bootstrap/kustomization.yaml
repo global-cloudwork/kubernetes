@@ -19,5 +19,3 @@ resources:
   # Secrets: Cluster, and Repo
   - secret.k8s.yaml
 
-  # Longhorn
-  - https://raw.githubusercontent.com/longhorn/longhorn/v1.9.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
