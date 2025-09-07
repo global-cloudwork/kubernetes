@@ -85,6 +85,8 @@ h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
 kubectl wait --for=condition=Ready pods --all --timeout=600s
 
+kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod
+
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     h2 "Applying Kustomize PATH: $CURRENT_PATH"
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
