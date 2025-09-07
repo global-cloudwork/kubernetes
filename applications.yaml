@@ -36,12 +36,12 @@ key:
     #   repoURL: "https://community-charts.github.io/helm-charts"
     #   namespace: actualbudget
 
-    # - name: cert-manager
-    #   chart: cert-manager
-    #   version: "1.18.2"
-    #   releaseName: cert-manager
-    #   repoURL: "https://charts.jetstack.io"
-    #   namespace: cert-manager
+    - name: cert-manager
+      chart: cert-manager
+      version: "1.18.2"
+      releaseName: cert-manager
+      repoURL: "https://charts.jetstack.io"
+      namespace: cert-manager
 
     # - name: external-secrets
     #   chart: external-secrets
