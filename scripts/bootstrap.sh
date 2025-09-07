@@ -8,6 +8,13 @@
 # sudo modprobe dm_crypt
 # echo dm_crypt | sudo tee /etc/modules-load.d/longhorn.conf
 
+# sudo apt update
+# sudo apt install nfs-kernel-server
+# mkdir -p /nfs && chown nobody:nogroup /nfs
+sudo systemctl start nfs-kernel-server.service
+
+
+
 CLUSTER_NAME=on-site
 
 DEFAULT_KUBECONFIG=$HOME/.kube/config
