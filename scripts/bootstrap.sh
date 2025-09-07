@@ -14,8 +14,6 @@
 # mkdir -p /nfs && chown nobody:nogroup /nfs
 sudo systemctl start nfs-kernel-server.service
 
-
-
 CLUSTER_NAME=on-site
 
 DEFAULT_KUBECONFIG=$HOME/.kube/config
@@ -91,7 +89,8 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     h2 "Applying Kustomize PATH: $CURRENT_PATH"
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
       kubectl apply --server-side --force-conflicts -f -
-    kubectl wait --for=condition=Ready pods --all -A --timeout=600s
+    kubectl wait --for=condition=complete "$job" --timeout=600s || true
+    kubectl wait --for=condition=running pods --all -A --timeout=600s || true
 done
 
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
