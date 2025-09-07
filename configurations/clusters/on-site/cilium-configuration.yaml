@@ -16,5 +16,7 @@ spec:
         enabled: true
       ui:
         enabled: true
+        service:
+          type: NodePort
     gatewayAPI:
       enabled: true
