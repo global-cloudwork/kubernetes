@@ -76,7 +76,7 @@ key:
       version: "1.9.1"
       releaseName: longhorn
       repoURL: "https://charts.longhorn.io"
-      namespace: longhorn
+      namespace: longhorn-system
       nodePort: 10111
 
     # - name: vault
