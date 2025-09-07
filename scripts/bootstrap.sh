@@ -90,7 +90,7 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     h2 "Applying Kustomize PATH $((CURRENT_PATH + 1)) of $TOTAL_PATHS: $CURRENT_PATH"
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
       kubectl apply --server-side --force-conflicts -f -
-    kubectl wait --for=condition=complete "$job" --timeout=600s || true
+    kubectl wait --for=condition=complete jobs --all -A --timeout=600s || true
     kubectl wait --for=condition=running pods --all -A --timeout=600s || true
 done
 
