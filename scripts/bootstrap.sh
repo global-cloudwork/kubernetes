@@ -1,6 +1,12 @@
 #!/bin/bash
 #curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
+# sudo apt-get update -y
+# sudo apt-get install -y open-iscsi nfs-common util-linux dmsetup cryptsetup
+# sudo systemctl enable --now iscsid
+# sudo modprobe iscsi_tcp
+# sudo modprobe dm_crypt
+# echo dm_crypt | sudo tee /etc/modules-load.d/longhorn.conf
 
 CLUSTER_NAME=on-site
 
