@@ -31,6 +31,14 @@ spec:
             releaseName: '{{ .releaseName }}'
             valueFiles:
               - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/components/applications/{{ .name }}/values.yaml
+          kustomize:
+            labels:
+              - includeSelectors: true
+                includeTemplates: true
+                pairs:
+                  app.kubernetes.io/part-of: '{{ .name }}'
+                  app.kubernetes.io/managed-by: 'argocd'
+            ignoreMissingComponents: true
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{ .namespace }}'
@@ -41,6 +49,3 @@ spec:
         syncOptions:
         - CreateNamespace=true
         - ServerSideApply=true
-
-
-

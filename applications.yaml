@@ -78,7 +78,7 @@ key:
       repoURL: "https://charts.longhorn.io"
       namespace: longhorn-system
       nodePort: 10111
-
+        
     # - name: vault
     #   chart: vault
     #   version: "0.30.1"
