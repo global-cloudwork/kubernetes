@@ -15,6 +15,13 @@ key:
     #   repoURL: "https://"
     #   namespace:
 
+    - name: homer
+      chart: homer
+      version: "0.13.0"
+      releaseName: my-homer
+      repoURL: "https://charts.gabe565.com"
+      namespace: homer
+
     # - name: trust-manager
     #   chart: trust-manager
     #   version: "0.19.0"
