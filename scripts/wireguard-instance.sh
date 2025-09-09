@@ -24,6 +24,13 @@ while gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT
 done
 
 gcloud compute instances create "$INSTANCE_NAME" \
+    --zone="$GCP_ZONE" \
+    --image-family=debian-11 \
+    --image-project=debian-cloud \
+    --tags=wireguard \
+    --metadata=startup-script-url=https://raw.githubusercontent.com/your-username/your-repo/main/startup.sh
+
+gcloud compute instances create "$INSTANCE_NAME" \
   --project="$GCP_PROJECT" \
   --zone="$GCP_ZONE" \
   --machine-type="$MACHINE_TYPE" \
@@ -32,7 +39,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
   --instance-termination-action=STOP \
   --service-account="$SERVICE_ACCOUNT" \
   --tags=http-server,https-server \
-  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image="@UBUNTU_IMAGE,image-project=ubuntu-os-cloud \
+  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image="@UBUNTU_IMAGE",image-project=ubuntu-os-cloud \
   --no-shielded-secure-boot \
   --shielded-vtpm \
   --shielded-integrity-monitoring \
