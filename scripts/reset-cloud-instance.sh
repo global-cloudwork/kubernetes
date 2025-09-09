@@ -14,7 +14,7 @@ source .env
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 echo "checking if instance exists..."
-if gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; then
+if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --format="value(name)" --project="$GCP_PROJECT" --zones="$GCP_ZONE")" ]; then
     echo "it exists, deleting"
     gcloud compute instances delete "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --quiet
 fi
@@ -32,7 +32,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
   --instance-termination-action=STOP \
   --service-account="$SERVICE_ACCOUNT" \
   --tags=http-server,https-server \
-  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image=ubuntu-minimal-2404-noble-amd64-v20250725,image-project=ubuntu-os-cloud \
+  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image=@UBUNTU_IMAGE,image-project=ubuntu-os-cloud \
   --no-shielded-secure-boot \
   --shielded-vtpm \
   --shielded-integrity-monitoring \
