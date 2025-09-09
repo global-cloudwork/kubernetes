@@ -13,7 +13,6 @@ CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
 source .env
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
-
 echo "checking if instance exists..."
 if gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; then
     echo "it exists, deleting"
