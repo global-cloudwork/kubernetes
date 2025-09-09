@@ -85,8 +85,8 @@ h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
 kubectl wait --for=condition=Ready pods --all --timeout=600s
 
-h2 "deleting pods to enable cilium hostNetwork"
-kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod
+# h2 "deleting pods to enable cilium hostNetwork"
+# kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod
 
 h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=600s
@@ -96,8 +96,8 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     h2 "Applying Kustomize PATH: $CURRENT_PATH"
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
       kubectl apply --server-side --force-conflicts -f -
-    # kubectl wait --for=condition=complete jobs --all -A --timeout=600s || true
-    # kubectl wait --for=condition=running pods --all -A --timeout=600s || true
+    kubectl wait --for=condition=complete jobs --all -A --timeout=600s || true
+    kubectl wait --for=condition=running pods --all -A --timeout=600s || true
 done
 
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
