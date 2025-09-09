@@ -32,7 +32,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
   --instance-termination-action=STOP \
   --service-account="$SERVICE_ACCOUNT" \
   --tags=http-server,https-server \
-  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image=@UBUNTU_IMAGE,image-project=ubuntu-os-cloud \
+  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image="@UBUNTU_IMAGE",image-project=ubuntu-os-cloud \
   --no-shielded-secure-boot \
   --shielded-vtpm \
   --shielded-integrity-monitoring \
