@@ -5,7 +5,6 @@ resources:
   - application.crd.yaml
    # Longhorn
   - https://raw.githubusercontent.com/longhorn/longhorn/v1.9.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
-  - patches/
 
 labels:
   - includeSelectors: true
