@@ -100,4 +100,18 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl wait --for=condition=running pods --all -A --timeout=100s || true
 done
 
+
+# # Conditional block to run only if CLUSTER_NAME is "cloud-proxy"
+# if [ "$CLUSTER_NAME" == "cloud-proxy" ]; then
+#   # Download and apply Cilium CA
+#   curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca \
+#   | base64 -d | kubectl create -f -
+
+#     # Commented-out secret creation (as in the original code)
+#     # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem 
+# fi
+
+
+
+
 # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem

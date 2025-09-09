@@ -39,7 +39,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
   --shielded-integrity-monitoring \
   --labels=goog-ec-src=vm_add-gcloud \
   --reservation-affinity=any \
-  --metadata=startup-script-url="https://raw.githubusercontent.com/mcconnellj/global-cloudwork/kubernetes/main/scripts/cloud-bootstrap.sh",cilium-ca-secret="$CILIUM_CA"
+  --metadata=startup-script-url="https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/bootstrap.sh" #,cilium-ca-secret="$CILIUM_CA"
 
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')
