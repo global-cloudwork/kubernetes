@@ -1,3 +1,3 @@
 #!/bin/bash
 ./remove.sh
-./bootstrap.sh
+./rke2/install-server.sh
