@@ -58,3 +58,5 @@ while true; do
 done
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
+
+

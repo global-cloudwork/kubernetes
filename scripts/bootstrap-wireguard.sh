@@ -10,3 +10,13 @@ docker run -d \
   --sysctl="net.ipv4.conf.all.src_valid_mark=1" \
   --restart unless-stopped \
   lscr.io/linuxserver/wireguard:latest
+
+
+# sudo apt update && sudo apt upgrade
+
+# # Turn on IP forwarding for IPv4.
+# # edit /etc/sysctl.conf file, uncomment this line:
+# # net.ipv4.ip_forward=1
+# # then apply the changes.
+# # sudo sysctl -p
+
