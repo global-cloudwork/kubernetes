@@ -1,7 +1,8 @@
 sudo apt install curl tree git -y
 
 apt update && apt upgrade -y
-apt install -y curl tree
+apt install -y curl tree wireguard git
+
 
 #gcloud cli
 cd ~
