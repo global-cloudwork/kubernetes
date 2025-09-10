@@ -14,8 +14,8 @@ source ~/.bashrc
 sudo apt install git -y
 curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-  git config --global user.email "josh.v.mcconnell@gmail.com"
-  git config --global user.name "josh m"
+git config --global user.email "josh.v.mcconnell@gmail.com"
+git config --global user.name "josh m"
 
 
 sudo apt install wireguard git dh-autoreconf libglib2.0-dev intltool build-essential libgtk-3-dev libnma-dev libsecret-1-dev network-manager-dev resolvconf
