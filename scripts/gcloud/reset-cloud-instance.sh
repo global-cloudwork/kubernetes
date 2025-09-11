@@ -10,8 +10,6 @@ function h1() {
 
 CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
 
-source .env
-
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 echo "checking if instance exists..."
 if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --format="value(name)" --project="$GCP_PROJECT" --zones="$GCP_ZONE")" ]; then
@@ -32,7 +30,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
   --instance-termination-action=STOP \
   --service-account="$SERVICE_ACCOUNT" \
   --tags=http-server,https-server \
-  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image="@UBUNTU_IMAGE,image-project=ubuntu-os-cloud \
+  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image="@UBUNTU_IMAGE",image-project=ubuntu-os-cloud \
   --no-shielded-secure-boot \
   --shielded-vtpm \
   --shielded-integrity-monitoring \

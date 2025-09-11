@@ -9,8 +9,12 @@ function h1() {
 }
 
 CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
-
-source .env
+INSTANCE_NAME=wireguard
+GCP_PROJECT=global-cloudworks 
+GCP_ZONE=us-central1-a
+MACHINE_TYPE=e2-micro
+SERVICE_ACCOUNT=714519505181-compute@developer.gserviceaccount.com
+STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/rke2/install-server.sh
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 echo "checking if instance exists..."
@@ -24,28 +28,22 @@ while gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT
 done
 
 gcloud compute instances create "$INSTANCE_NAME" \
+    --project="$GCP_PROJECT" \
     --zone="$GCP_ZONE" \
-    --image-family=debian-11 \
-    --image-project=debian-cloud \
-    --tags=wireguard \
-    --metadata=startup-script-url=https://raw.githubusercontent.com/your-username/your-repo/main/startup.sh
-
-gcloud compute instances create "$INSTANCE_NAME" \
-  --project="$GCP_PROJECT" \
-  --zone="$GCP_ZONE" \
-  --machine-type="$MACHINE_TYPE" \
-  --network-interface=network-tier=STANDARD,stack-type=IPV4_ONLY,subnet=default \
-  --provisioning-model=SPOT \
-  --instance-termination-action=STOP \
-  --service-account="$SERVICE_ACCOUNT" \
-  --tags=http-server,https-server \
-  --create-disk=auto-delete=yes,boot=yes,mode=rw,size=10,type=pd-balanced,image="@UBUNTU_IMAGE",image-project=ubuntu-os-cloud \
-  --no-shielded-secure-boot \
-  --shielded-vtpm \
-  --shielded-integrity-monitoring \
-  --labels=goog-ec-src=vm_add-gcloud \
-  --reservation-affinity=any \
-  --metadata=startup-script-url="https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/bootstrap.sh" #,cilium-ca-secret="$CILIUM_CA"
+    --machine-type="$MACHINE_TYPE" \
+    --network-interface=network-tier=STANDARD,stack-type=IPV4_ONLY,subnet=default \
+    --maintenance-policy=MIGRATE \
+    --provisioning-model=STANDARD \
+    --service-account="$SERVICE_ACCOUNT" \
+    --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/trace.append \
+    --tags=http-server,https-server \
+    --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,image=projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2504-plucky-amd64-v20250828,mode=rw,size=15,type=pd-standard \
+    --no-shielded-secure-boot \
+    --shielded-vtpm \
+    --shielded-integrity-monitoring \
+    --labels=goog-ec-src=vm_add-gcloud \
+    --reservation-affinity=any \
+    --metadata=startup-script-url="$STARTUP_SCRIPT_URL" #,cilium-ca-secret="$CILIUM_CA"
 
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')
@@ -58,5 +56,11 @@ while true; do
 done
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
+
+
+
+
+
+
 
 

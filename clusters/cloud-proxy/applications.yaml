@@ -1,0 +1,132 @@
+#ARGO - 30080
+#N8N - 30691
+#HUBBLE - 31235
+key:
+  components:
+    #   hubble
+    #   service - nodePort: 31234
+    #   service - listen on 4245
+    #   ui service - nodePort: 31235
+
+    # - name: 
+    #   chart: 
+    #   version: "1.8.1"
+    #   releaseName: 
+    #   repoURL: "https://"
+    #   namespace:
+
+    # - name: homer
+    #   chart: homer
+    #   version: "0.13.0"
+    #   releaseName: my-homer
+    #   repoURL: "https://charts.gabe565.com"
+    #   namespace: homer
+
+    # - name: trust-manager
+    #   chart: trust-manager
+    #   version: "0.19.0"
+    #   releaseName: trust-manager
+    #   repoURL: "https://charts.jetstack.io"
+    #   namespace: cert-manager
+    
+    # - name: argocd
+    #   chart: argo-cd
+    #   version: "8.3.1"
+    #   releaseName: argocd
+    #   repoURL: "https://argoproj.github.io/argo-helm"
+    #   namespace: argocd
+    #   nodePort: 30080
+
+    # - name: actualbudget
+    #   chart: actualbudget
+    #   version: "1.8.1"
+    #   releaseName: actualbudget
+    #   repoURL: "https://community-charts.github.io/helm-charts"
+    #   namespace: actualbudget
+
+    - name: cert-manager
+      chart: cert-manager
+      version: "1.18.2"
+      releaseName: cert-manager
+      repoURL: "https://charts.jetstack.io"
+      namespace: cert-manager
+
+    # - name: external-secrets
+    #   chart: external-secrets
+    #   version: "0.19.2"
+    #   releaseName: my-external-secrets
+    #   repoURL: "https://charts.external-secrets.io/"
+    #   namespace: external-secrets
+
+    # - name: falco
+    #   chart: falco
+    #   version: "6.2.5"
+    #   releaseName: my-falco
+    #   repoURL: "https://falcosecurity.github.io/charts"
+    #   namespace: falco
+
+    # - name: foundry-vtt
+    #   chart: foundry-vtt
+    #   version: "12.343.0"
+    #   releaseName: my-foundry-vtt
+    #   repoURL: "https://hugoprudente.github.io/helm-charts/incubator"
+    #   namespace: foundry-vtt
+
+    # - name: kube-prometheus-stack
+    #   chart: kube-prometheus-stack
+    #   version: "77.0.2"
+    #   releaseName: my-kube-prometheus-stack
+    #   repoURL: "https://prometheus-community.github.io/helm-charts"
+    #   namespace: kube-prometheus-stack
+
+    # - name: longhorn
+    #   chart: longhorn
+    #   version: "1.9.1"
+    #   releaseName: longhorn
+    #   repoURL: "https://charts.longhorn.io"
+    #   namespace: longhorn-system
+    #   nodePort: 10111
+        
+    # - name: vault
+    #   chart: vault
+    #   version: "0.30.1"
+    #   releaseName: my-vault
+    #   repoURL: "https://helm.releases.hashicorp.com"
+    #   namespace: vault
+
+    # - name: vaultwarden
+    #   chart: vaultwarden
+    #   version: "1.2.6"
+    #   releaseName: vaultwarden
+    #   repoURL: "https://gissilabs.github.io/charts/"
+    #   namespace: vaultwarden
+
+    # - name: n8n
+    #   chart: n8n
+    #   version: "1.15.2"
+    #   releaseName: n8n
+    #   repoURL: "https://community-charts.github.io/helm-charts"
+    #   namespace: n8n
+    #   nodePort: 5678
+
+    # - name: keycloak
+    #   chart: keycloak
+    #   version: "25.2.0"
+    #   releaseName: keycloak
+    #   repoURL: "https://charts.bitnami.com/bitnami"
+    #   namespace: keycloak
+
+    # - name: redis
+    #   chart: redis
+    #   version: "22.0.6"
+    #   releaseName: redis
+    #   repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
+    #   namespace: default
+
+    # - name: kubeview
+    #   chart: kubeview/kubeview
+    #   version: "2.0.5"
+    #   releaseName: kubeview
+    #   repoURL: "https://code.benco.io/kubeview/deploy/helm"
+    #   namespace: kubeview
+    #   nodePort: 30000
