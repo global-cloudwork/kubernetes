@@ -3,18 +3,24 @@
 echo() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
-
 function h1() {
   command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
 }
 
-CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
+# ======================== Style Ends Here ========================
+
 INSTANCE_NAME=wireguard
-GCP_PROJECT=global-cloudworks 
 GCP_ZONE=us-central1-a
 MACHINE_TYPE=e2-micro
-SERVICE_ACCOUNT=714519505181-compute@developer.gserviceaccount.com
 STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/rke2/install-server.sh
+
+sudo apt-get install -y curl wireguard
+
+wg genkey > private.key
+wg pubkey < private.key > public.key
+
+CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
+PUBLIC_KEY=$(cat public.key)
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 echo "checking if instance exists..."
@@ -43,7 +49,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --shielded-integrity-monitoring \
     --labels=goog-ec-src=vm_add-gcloud \
     --reservation-affinity=any \
-    --metadata=startup-script-url="$STARTUP_SCRIPT_URL" #,cilium-ca-secret="$CILIUM_CA"
+    --metadata=startup-script-url="$STARTUP_SCRIPT_URL",CILIUM-CA="$CILIUM_CA",PUBLIC-KEY="$PUBLIC_KEY",ALLOWED-IPS="$ALLOWED_IPS"
 
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')

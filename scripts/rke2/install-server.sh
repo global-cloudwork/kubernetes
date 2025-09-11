@@ -10,6 +10,13 @@ declare -a KUSTOMIZE_PATHS=(
     "components/applications/argocd"
     "components/environments/development"
 )
+
+declare -a PEERS=(
+    "publickey1 10.0.0.2/32"
+    "publickey2 10.0.0.3/32"
+    "publickey3 10.0.0.4/32:10.0.0.4/32"
+)
+
 function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
@@ -18,10 +25,11 @@ function h1() {
 }
 
 h1 "Configure RKE2 & Deploy Kustomizations"
+sudo apt install wireguard
 
-h2 "apt installing curl, helm, kubectl"
+h2 "apt installing"
 sudo apt-get update
-sudo apt-get install -y curl
+sudo apt-get install -y curl wireguard
 
 h2 "Curl and install rke2 and helm"
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash

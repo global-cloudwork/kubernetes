@@ -6,10 +6,11 @@ REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
 
 declare -a KUSTOMIZE_PATHS=(
-    "components/bootstrap"
-    "components/applications/argocd"
-    "components/environments/development"
+  "components/bootstrap"
+  "components/applications/argocd"
+  "components/environments/development"
 )
+
 function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
@@ -21,7 +22,30 @@ h1 "Configure RKE2 & Deploy Kustomizations"
 
 h2 "apt installing curl, helm, kubectl"
 sudo apt-get update
-sudo apt-get install -y curl
+sudo apt-get install -y curl wireguard
+
+AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/)
+AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/allowed-ip)
+
+declare -a PEERS=(
+    "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
+)
+
+wg genkey > private.key
+wg pubkey < private.key > public.key
+
+h2 "Define and Append  interface configuration to wireguard-configuration.config"
+sed -i "s/^Address =.*$/Address = $ADDRESS/" wireguard-configuration.config
+sed -i "s/^PrivateKey =.*$/PrivateKey = $PRIVATE_KEY/" wireguard-configuration.config
+
+for peer in "${PEERS[@]}"; do
+    IFS=',' read -r public_key allowed_ips <<< "$peer"
+    sed -i "s/^PublicKey =.*$/PublicKey = $public_key/" wireguard-configuration.config
+    sed -i "s/^AllowedIPs =.*$/AllowedIPs = $allowed_ips/" wireguard-configuration.config
+done
+
+wg setconf wg0 wireguard-configuration.conf
+ip link set up dev wg0
 
 h2 "Curl and install rke2 and helm"
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
