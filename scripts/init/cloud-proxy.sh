@@ -104,6 +104,7 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl wait --for=condition=running pods --all -A --timeout=100s || true
 done
 
+echo "STARTUP COMPLETE"
 
 # # Conditional block to run only if CLUSTER_NAME is "cloud-proxy"
 # if [ "$CLUSTER_NAME" == "cloud-proxy" ]; then

@@ -8,9 +8,18 @@
       "problemMatcher": []
     },
     {
-      "label": "Wipe, Install, and Bootstrap",
+      "label": "Replace On Site Cluster",
       "type": "shell",
-      "command": "cd ${workspaceFolder}/scripts && ./remove-and-bootstrap.sh",
+      "command": "cd ${workspaceFolder}/scripts/tools && ./replace-on-site.sh",
+      "problemMatcher": [],
+      "dependsOn": [],
+      "options": {
+      }
+    },
+    {
+      "label": "Replace Cloud Proxy Cluster",
+      "type": "shell",
+      "command": "cd ${workspaceFolder}/scripts/tools && ./replace-cloud-proxy.sh",
       "problemMatcher": [],
       "dependsOn": [],
       "options": {

@@ -16,11 +16,9 @@ STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes
 
 sudo apt-get install -y curl wireguard
 
-wg genkey > private.key
-wg pubkey < private.key > public.key
-
 CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
 PUBLIC_KEY=$(cat public.key)
+ALLOWED_IPS=$(hostname -I)
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 echo "checking if instance exists..."
@@ -61,9 +59,20 @@ while true; do
     sleep 5
 done
 
+echo "Waiting for the startup script to complete..."
+gcloud compute instances get-serial-port-output "$INSTANCE_NAME" \
+    --project="$GCP_PROJECT" \
+    --zone="$GCP_ZONE" \
+    --follow | grep -q "Startup script finished"
+
 gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
 
+echo "Endlessly watching serial output for 'STARTUP COMPLETE' message"
+gcloud compute instances get-serial-port-output $INSTANCE_NAME --zone=$GCP_ZONE | grep "STARTUP COMPLETE"
 
+gcloud compute instances remove-metadata INSTANCE_NAME \
+    --zone=ZONE_NAME \
+    --keys=CILIUM-CA,PUBLIC-KEY,ALLOWED-IPS
 
 
 
