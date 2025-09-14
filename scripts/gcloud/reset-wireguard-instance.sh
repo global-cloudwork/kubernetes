@@ -60,16 +60,16 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --service-account="$SERVICE_ACCOUNT" \
     --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/trace.append \
     --tags=http-server,https-server,wireguard \
-    --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,size=10,type=pd-standard \
     --image-family=ubuntu-minimal-2504-plucky-amd64 \
     --image-project=ubuntu-os-cloud \
+    --boot-disk-size=10GB \
     --no-shielded-secure-boot \
     --shielded-vtpm \
     --shielded-integrity-monitoring \
     --labels=goog-ec-src=vm_add-gcloud \
     --reservation-affinity=any \
     --metadata=startup-script-url="$STARTUP_SCRIPT_URL",CILIUM-CA="$CILIUM_CA",PUBLIC-KEY="$PUBLIC_KEY",ALLOWED-IPS="$ALLOWED_IPS"
-
+    
 h2 "Waiting for instance to be running..."
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')
