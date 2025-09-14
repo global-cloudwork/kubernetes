@@ -22,6 +22,13 @@ declare -a KUSTOMIZE_PATHS=(
   "components/environments/development"
 )
 
+function h2() {
+    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
+}
+function h1() {
+  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
+}
+
 h1 "Configure RKE2 & Deploy Kustomizations"
 
 h2 "apt installing curl"
