@@ -43,10 +43,9 @@ if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --form
     gcloud compute instances delete "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --quiet
 fi
 
-while gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; do
+while [[ $(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; echo $?) -eq 0 ]]; do
     sleep 5
 done
-
 
 gcloud compute instances create "$INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
