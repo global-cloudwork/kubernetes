@@ -11,6 +11,8 @@ function h1() {
 
 h1 "Resetting Wireguard Instance"
 
+source .env
+
 INSTANCE_NAME=wireguard
 GCP_ZONE=us-central1-a
 MACHINE_TYPE=e2-micro
@@ -18,6 +20,10 @@ STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes
 
 h2 "apt installing curl, helm, kubectl"
 sudo apt-get install -y curl wireguard
+
+h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
+wg genkey > private.key
+wg pubkey < private.key > public.key
 
 #Set metadata values for sending to startup script
 CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml)
@@ -68,11 +74,10 @@ while true; do
     sleep 5
 done
 
-echo "Waiting for the startup script to complete..."
-gcloud compute instances get-serial-port-output "$INSTANCE_NAME" \
+echo "Streaming startup script output..."
+gcloud compute instances tail-serial-port-output "$INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
-    --zone="$GCP_ZONE" \
-    --follow | grep -q "Startup script finished"
+    --zone="$GCP_ZONE" | grep "Startup script finished"
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
 
