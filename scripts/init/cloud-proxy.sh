@@ -4,42 +4,48 @@ RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
+AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" \
+    http://metadata.google.internal/computeMetadata/v1/instance/attributes/authors-public-key | base64 -d)
+AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" \
+    http://metadata.google.internal/computeMetadata/v1/instance/attributes/allowed-ip | base64 -d)
+CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
+    http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca | base64 -d)
+ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
+    http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip | base64 -d)
 
+declare -a PEERS=(
+    "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
+)
 declare -a KUSTOMIZE_PATHS=(
   "components/bootstrap"
   "components/applications/argocd"
   "components/environments/development"
 )
 
-function h2() {
-    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
-}
-function h1() {
-  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
-}
-
 h1 "Configure RKE2 & Deploy Kustomizations"
 
-h2 "apt installing curl, helm, kubectl"
+h2 "apt installing curl"
 sudo apt-get update
 sudo apt-get install -y curl wireguard
 
-AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/)
-AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/allowed-ip)
-
-declare -a PEERS=(
-    "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
-)
-
+h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
 wg genkey > private.key
 wg pubkey < private.key > public.key
 
-h2 "Define and Append  interface configuration to wireguard-configuration.config"
+PRIVATE_KEY=$(cat private.key)
+
+h2 "Replace interface address, and private key wireguard-configuration.config"
 sed -i "s/^Address =.*$/Address = $ADDRESS/" wireguard-configuration.config
 sed -i "s/^PrivateKey =.*$/PrivateKey = $PRIVATE_KEY/" wireguard-configuration.config
 
+h2 "for each peer, create a new section in the wireguard-configuration.config"
+#fix
 for peer in "${PEERS[@]}"; do
     IFS=',' read -r public_key allowed_ips <<< "$peer"
+    sed -i '$a\[Peer]' wireguard-configuration.config
+    sed -i "$a\PublicKey = $public_key" wireguard-configuration.config
+    sed -i "$a\AllowedIPs = $allowed_ips" wireguard-configuration.config
+
     sed -i "s/^PublicKey =.*$/PublicKey = $public_key/" wireguard-configuration.config
     sed -i "s/^AllowedIPs =.*$/AllowedIPs = $allowed_ips/" wireguard-configuration.config
 done

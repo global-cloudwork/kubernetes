@@ -9,16 +9,25 @@ function h1() {
 
 # ======================== Style Ends Here ========================
 
+h1 "Resetting Wireguard Instance"
+
 INSTANCE_NAME=wireguard
 GCP_ZONE=us-central1-a
 MACHINE_TYPE=e2-micro
 STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/rke2/install-server.sh
 
+h2 "apt installing curl, helm, kubectl"
 sudo apt-get install -y curl wireguard
 
-CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml | base64 -w0)
+#Set metadata values for sending to startup script
+CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml)
 PUBLIC_KEY=$(cat public.key)
 ALLOWED_IPS=$(hostname -I)
+
+#Encrypt metadata values
+CILIUM_CA=$(echo "$CILIUM_CA" | base64 -w0)
+PUBLIC_KEY=$(echo "$PUBLIC_KEY" | base64 -w0)
+ALLOWED_IPS=$(echo "$ALLOWED_IPS" | base64 -w0)
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 echo "checking if instance exists..."
