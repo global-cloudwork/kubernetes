@@ -1,4 +1,20 @@
-CLUSTER_NAME=on-site
+append_lines_to_file() {
+    # $1 = filename
+    # $2 = multiline string
+
+    # Negate the AND: return if file not writable OR text is empty
+    if ! [[ -w "$1" && -n "$2" ]]; then
+      echo "Error: File not writable or text is empty." >&2
+      exit 1
+    fi
+
+    # Append each line safely
+    while IFS= read -r current; do
+      printf "%s\n" "$current" >> "$1"
+    done <<< "$2"
+}
+
+CLUSTER_NAME=cloud-proxy
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
@@ -23,7 +39,7 @@ declare -a KUSTOMIZE_PATHS=(
 )
 
 function h2() {
-    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
+  command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
 function h1() {
   command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
@@ -35,42 +51,12 @@ h2 "apt installing curl"
 sudo apt-get update
 sudo apt-get install -y curl wireguard
 
-h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
-wg genkey > private.key
-wg pubkey < private.key > public.key
 
-PRIVATE_KEY=$(cat private.key)
 
-h2 "Replace interface address, and private key wireguard-configuration.config"
-sed -i "s/^Address =.*$/Address = $ADDRESS/" wireguard-configuration.config
-sed -i "s/^PrivateKey =.*$/PrivateKey = $PRIVATE_KEY/" wireguard-configuration.config
-
-h2 "for each peer, create a new section in the wireguard-configuration.config"
-#fix
-for peer in "${PEERS[@]}"; do
-    IFS=',' read -r public_key allowed_ips <<< "$peer"
-    sed -i '$a\[Peer]' wireguard-configuration.config
-    sed -i "$a\PublicKey = $public_key" wireguard-configuration.config
-    sed -i "$a\AllowedIPs = $allowed_ips" wireguard-configuration.config
-
-    sed -i "s/^PublicKey =.*$/PublicKey = $public_key/" wireguard-configuration.config
-    sed -i "s/^AllowedIPs =.*$/AllowedIPs = $allowed_ips/" wireguard-configuration.config
-done
-
-wg setconf wg0 wireguard-configuration.conf
-ip link set up dev wg0
 
 h2 "Curl and install rke2 and helm"
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
-
-h2 "Making configuration directories"
-sudo mkdir -p /etc/rancher/rke2/
-sudo mkdir -p /var/lib/rancher/rke2/server/manifests
-
-h2 "Curl cluster config, and helm chart config"
-sudo curl -o /etc/rancher/rke2/config.yaml $RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
-sudo curl -o /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml $RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
 
 h2 "Modify configurations to add hostname"
 echo -e "tls-san:\n  - $(hostname -I | awk '{print $1}')" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
@@ -117,7 +103,33 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl wait --for=condition=running pods --all -A --timeout=100s || true
 done
 
-echo "STARTUP COMPLETE"
+echo "STARTUP COMPLETE Starting Wireguard Setup"
+
+h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
+wg genkey > private.key
+wg pubkey < private.key > public.key
+PRIVATE_KEY=$(cat private.key)
+touch wireguard-configuration.config
+append_lines_to_file wireguard-configuration.config "
+[Interface]
+Address = $ADDRESS
+PrivateKey = $PRIVATE_KEY
+ListenPort = 51820
+SaveConfig = true"
+
+h2 "for each peer, create a new section in the wireguard-configuration.config"
+for peer in "${PEERS[@]}"; do
+    IFS=',' read -r public_key allowed_ips <<< "$peer"
+    append_lines_to_file wireguard-configuration.config "
+    [Peer]
+    PublicKey = $public_key
+    AllowedIPs = $allowed_ips"
+done
+
+wg setconf wg0 wireguard-configuration.conf
+ip link set up dev wg0
+
+
 
 # # Conditional block to run only if CLUSTER_NAME is "cloud-proxy"
 # if [ "$CLUSTER_NAME" == "cloud-proxy" ]; then

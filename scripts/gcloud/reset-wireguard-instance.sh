@@ -4,8 +4,9 @@ function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
 function h1() {
-  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
+    command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
 }
+
 
 # ======================== Style Ends Here ========================
 
@@ -16,8 +17,11 @@ source .env
 INSTANCE_NAME=wireguard
 GCP_ZONE=us-central1-a
 MACHINE_TYPE=e2-micro
-STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/rke2/install-server.sh
+STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/init/cloud-proxy.sh
 IMAGE=projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2504-plucky-amd64-v20250911
+
+USER=ubuntu
+INTERFACE=nic0
 
 h2 "apt installing curl, helm, kubectl"
 sudo apt-get install -y curl wireguard
@@ -79,7 +83,7 @@ while true; do
     sleep 5
 done
 
-gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
+gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE --ssh-flag="-o UserKnownHostsFile=/dev/null"
 
 # h2 "Streaming startup script output..."
 # gcloud compute instances tail-serial-port-output "$INSTANCE_NAME" \

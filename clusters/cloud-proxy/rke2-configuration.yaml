@@ -1,4 +1,0 @@
-write-kubeconfig-mode: '0644'
-disable-kube-proxy: true
-etcd-expose-metrics: false
-cni: cilium
