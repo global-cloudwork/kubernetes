@@ -37,16 +37,19 @@ PUBLIC_KEY=$(echo "$PUBLIC_KEY" | base64 -w0)
 ALLOWED_IPS=$(echo "$ALLOWED_IPS" | base64 -w0)
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
-echo "checking if instance exists..."
+
+h2 "checking if instance exists..."
 if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --format="value(name)" --project="$GCP_PROJECT" --zones="$GCP_ZONE")" ]; then
     echo "it exists, deleting"
     gcloud compute instances delete "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --quiet
 fi
 
+h2 "waiting for instance to delete..."
 while [[ $(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; echo $?) -eq 0 ]]; do
     sleep 5
 done
 
+h2 "creating instance..."
 gcloud compute instances create "$INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
     --zone="$GCP_ZONE" \
@@ -67,7 +70,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --reservation-affinity=any \
     --metadata=startup-script-url="$STARTUP_SCRIPT_URL",CILIUM-CA="$CILIUM_CA",PUBLIC-KEY="$PUBLIC_KEY",ALLOWED-IPS="$ALLOWED_IPS"
 
-
+h2 "Waiting for instance to be running..."
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')
     if [[ "$STATUS" == "RUNNING" ]]; then
@@ -78,14 +81,14 @@ while true; do
     sleep 5
 done
 
-echo "Streaming startup script output..."
+h2 "Streaming startup script output..."
 gcloud compute instances tail-serial-port-output "$INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
     --zone="$GCP_ZONE" | grep "Startup script finished"
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
 
-echo "Endlessly watching serial output for 'STARTUP COMPLETE' message"
+h2 "Endlessly watching serial output for 'STARTUP COMPLETE' message"
 gcloud compute instances get-serial-port-output $INSTANCE_NAME --zone=$GCP_ZONE | grep "STARTUP COMPLETE"
 
 gcloud compute instances remove-metadata INSTANCE_NAME \
