@@ -22,6 +22,7 @@ h2 "apt installing curl, helm, kubectl"
 sudo apt-get install -y curl wireguard
 
 h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
+umask 077
 wg genkey > private.key
 wg pubkey < private.key > public.key
 
@@ -46,6 +47,7 @@ while gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT
     sleep 5
 done
 
+
 gcloud compute instances create "$INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
     --zone="$GCP_ZONE" \
@@ -55,14 +57,17 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --provisioning-model=STANDARD \
     --service-account="$SERVICE_ACCOUNT" \
     --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/trace.append \
-    --tags=http-server,https-server \
-    --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,image=projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2504-plucky-amd64-v20250828,mode=rw,size=15,type=pd-standard \
+    --tags=http-server,https-server,wireguard \
+    --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,size=10,type=pd-standard \
+    --image-family=ubuntu-minimal-2504-plucky-amd64 \
+    --image-project=ubuntu-os-cloud \
     --no-shielded-secure-boot \
     --shielded-vtpm \
     --shielded-integrity-monitoring \
     --labels=goog-ec-src=vm_add-gcloud \
     --reservation-affinity=any \
     --metadata=startup-script-url="$STARTUP_SCRIPT_URL",CILIUM-CA="$CILIUM_CA",PUBLIC-KEY="$PUBLIC_KEY",ALLOWED-IPS="$ALLOWED_IPS"
+
 
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')
