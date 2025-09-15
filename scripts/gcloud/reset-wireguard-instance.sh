@@ -1,12 +1,10 @@
 #!/bin/bash
-
 function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
 function h1() {
     command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
 }
-
 
 # ======================== Style Ends Here ========================
 
@@ -59,8 +57,8 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --zone="$GCP_ZONE" \
     --machine-type="$MACHINE_TYPE" \
     --network-interface=network-tier=STANDARD,stack-type=IPV4_ONLY,subnet=default \
-    --maintenance-policy=MIGRATE \
-    --provisioning-model=STANDARD \
+    --maintenance-policy=TERMINATE \
+    --provisioning-model=SPOT \
     --service-account="$SERVICE_ACCOUNT" \
     --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/trace.append \
     --tags=http-server,https-server \
@@ -74,14 +72,19 @@ gcloud compute instances create "$INSTANCE_NAME" \
 
 h2 "Waiting for instance to be running"
 while true; do
-    STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --format='get(status)')
+    STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" \
+        --project="$GCP_PROJECT" \
+        --zone="$GCP_ZONE" \
+        --format='get(status)' 2>/dev/null)
+
     if [[ "$STATUS" == "RUNNING" ]]; then
-        echo "Instance $INSTANCE_NAME is running."
         break
     fi
-    echo "Waiting for instance $INSTANCE_NAME to be running..."
+
+    h2 "Waiting..."
     sleep 5
 done
+h2 "Wait finished, instance is running..."
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE --ssh-flag="-o UserKnownHostsFile=/dev/null"
 
@@ -93,9 +96,9 @@ gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
 # h2 "Endlessly watching serial output for 'STARTUP COMPLETE' message"
 # gcloud compute instances get-serial-port-output $INSTANCE_NAME --zone=$GCP_ZONE | grep "STARTUP COMPLETE"
 
-gcloud compute instances remove-metadata INSTANCE_NAME \
-    --zone=ZONE_NAME \
-    --keys=CILIUM-CA,PUBLIC-KEY,ALLOWED-IPS
+# gcloud compute instances remove-metadata $INSTANCE_NAME \
+#     --zone=$ZONE \
+#     --keys=CILIUM-CA,PUBLIC-KEY,ALLOWED-IPS
 
 
 

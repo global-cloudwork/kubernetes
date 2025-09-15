@@ -17,6 +17,19 @@ declare -a PEERS=(
     "publickey3 10.0.0.4/32:10.0.0.4/32"
 )
 
+declare -a SERVERS=(
+  $ON_SITE
+)
+
+declare -a AGENTS=(
+  $CLOUD_PROXY
+)
+
+declare -a ALL_CLUSTERS=(
+  $ON_SITE
+  $CLOUD_PROXY
+)
+
 function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }

@@ -1,3 +1,5 @@
+#sudo journalctl -u google-startup-scripts.service --no-pager
+
 append_lines_to_file() {
     # $1 = filename
     # $2 = multiline string
@@ -51,16 +53,9 @@ h2 "apt installing curl"
 sudo apt-get update
 sudo apt-get install -y curl wireguard
 
-
-
-
 h2 "Curl and install rke2 and helm"
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
-
-h2 "Modify configurations to add hostname"
-echo -e "tls-san:\n  - $(hostname -I | awk '{print $1}')" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
-echo -e "node-name: $CLUSTER_NAME" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable --now rke2-server.service
@@ -103,31 +98,31 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl wait --for=condition=running pods --all -A --timeout=100s || true
 done
 
-echo "STARTUP COMPLETE Starting Wireguard Setup"
+# echo "STARTUP COMPLETE Starting Wireguard Setup"
 
-h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
-wg genkey > private.key
-wg pubkey < private.key > public.key
-PRIVATE_KEY=$(cat private.key)
-touch wireguard-configuration.config
-append_lines_to_file wireguard-configuration.config "
-[Interface]
-Address = $ADDRESS
-PrivateKey = $PRIVATE_KEY
-ListenPort = 51820
-SaveConfig = true"
+# h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
+# wg genkey > private.key
+# wg pubkey < private.key > public.key
+# PRIVATE_KEY=$(cat private.key)
+# touch wireguard-configuration.config
+# append_lines_to_file wireguard-configuration.config "
+# [Interface]
+# Address = $ADDRESS
+# PrivateKey = $PRIVATE_KEY
+# ListenPort = 51820
+# SaveConfig = true"
 
-h2 "for each peer, create a new section in the wireguard-configuration.config"
-for peer in "${PEERS[@]}"; do
-    IFS=',' read -r public_key allowed_ips <<< "$peer"
-    append_lines_to_file wireguard-configuration.config "
-    [Peer]
-    PublicKey = $public_key
-    AllowedIPs = $allowed_ips"
-done
+# h2 "for each peer, create a new section in the wireguard-configuration.config"
+# for peer in "${PEERS[@]}"; do
+#     IFS=',' read -r public_key allowed_ips <<< "$peer"
+#     append_lines_to_file wireguard-configuration.config "
+#     [Peer]
+#     PublicKey = $public_key
+#     AllowedIPs = $allowed_ips"
+# done
 
-wg setconf wg0 wireguard-configuration.conf
-ip link set up dev wg0
+# wg setconf wg0 wireguard-configuration.conf
+# ip link set up dev wg0
 
 
 
