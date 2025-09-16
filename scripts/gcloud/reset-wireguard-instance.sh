@@ -23,8 +23,8 @@ IMAGE=projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2504-plucky-amd64-v2
 USER=ubuntu
 INTERFACE=nic0
 
-h2 "apt installing curl, helm, kubectl"
-sudo apt-get install -y curl wireguard
+h2 "apt installing wireguard"
+sudo apt-get install -y wireguard
 
 h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
 wg genkey > private.key

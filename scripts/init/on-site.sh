@@ -1,64 +1,91 @@
-CLUSTER_NAME=on-site
+#sudo journalctl -u google-startup-scripts.service --no-pager
+
+# Static Configuration
+HOST_IP=$(hostname -I | awk '{print $1}')
+CLUSTER_NAME=cloud-proxy
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
 
-declare -a KUSTOMIZE_PATHS=(
-    "components/bootstrap"
-    "components/applications/argocd"
-    "components/environments/development"
-)
+# Values about the node, and it's cluster
+NODE_ROLE=server
+CLUSTER_ID=$(($CLUSTER_NAME + 0))
+## RKE2 Configuration
+RKE2_CONFIGURATION="
+disable-kube-proxy: true
+etcd-expose-metrics: false
+cni: cilium
+write-kubeconfig-mode: '0644'
+node-name: $CLUSTER_NAME
+tls-san:
+  - $HOST_IP"
+echo "define additions to the file"
+## Cilium Configuration
+CILIUM_CONFIGURATION= "
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-cilium
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    kubeProxyReplacement: true
+    k8sServiceHost: localhost
+    k8sServicePort: 6443
+    operator:
+      replicas: 1
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true
+        service: 
+          type: NodePort
+    cluster:
+      name: $CLUSTER_NAME
+      id: $CLUSTER_ID"
 
+
+#Environment Variables - Cluster & Composition
 declare -a PEERS=(
-    "publickey1 10.0.0.2/32"
-    "publickey2 10.0.0.3/32"
-    "publickey3 10.0.0.4/32:10.0.0.4/32"
+    "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
 )
-
-declare -a SERVERS=(
-  $ON_SITE
-)
-
-declare -a AGENTS=(
-  $CLOUD_PROXY
-)
-
-declare -a ALL_CLUSTERS=(
-  $ON_SITE
-  $CLOUD_PROXY
+declare -a KUSTOMIZE_PATHS=(
+  "components/bootstrap"
+  "components/applications/argocd"
+  "components/environments/development"
 )
 
 function h2() {
-    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
+  command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
 function h1() {
   command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
 }
 
 h1 "Configure RKE2 & Deploy Kustomizations"
-sudo apt install wireguard
 
-h2 "apt installing"
+h2 "apt installing curl"
 sudo apt-get update
-sudo apt-get install -y curl wireguard
+sudo apt-get install -y curl git wireguard
 
-h2 "Curl and install rke2 and helm"
+
+
+h2 "Curl and install rke2, helm, and k9s"
+curl -sS https://webinstall.dev/k9s | bash
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
-h2 "Making configuration directories"
-sudo mkdir -p /etc/rancher/rke2/
-sudo mkdir -p /var/lib/rancher/rke2/server/manifests
-
-h2 "Curl cluster config, and helm chart config"
-sudo curl -o /etc/rancher/rke2/config.yaml $RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/rke2-configuration.yaml
-sudo curl -o /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml $RAW_REPOSITORY/configurations/clusters/$CLUSTER_NAME/cilium-configuration.yaml
-
-h2 "Modify configurations to add hostname"
-echo -e "tls-san:\n  - $(hostname -I | awk '{print $1}')" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
-echo -e "node-name: $CLUSTER_NAME" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
+h2 "Create and write configuration files"
+mkdir -p /var/lib/rancher/rke2/server/manifests
+mkdir -p /etc/rancher/rke2
+touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+touch /etc/rancher/rke2/config.yaml
+echo "$CILIUM_CONFIGURATION" | sudo tee -a /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
+echo "$RKE2_CONFIGURATION" | sudo tee -a /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable --now rke2-server.service
