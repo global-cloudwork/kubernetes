@@ -19,7 +19,6 @@ ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
     http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip | base64 -d)
 
 # Values about the node, and it's cluster
-TOKEN=$(sudo cat /var/lib/rancher/rke2/server/node-token)
 NODE_ROLE=server
 CLUSTER_ID=$(($CLUSTER_NAME + 0))
 ## RKE2 Configuration
