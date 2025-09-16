@@ -101,20 +101,20 @@ key:
     #   repoURL: "https://gissilabs.github.io/charts/"
     #   namespace: vaultwarden
 
-    # - name: n8n
-    #   chart: n8n
-    #   version: "1.15.2"
-    #   releaseName: n8n
-    #   repoURL: "https://community-charts.github.io/helm-charts"
-    #   namespace: n8n
-    #   nodePort: 5678
+    - name: n8n
+      chart: n8n
+      version: "1.15.2"
+      releaseName: n8n
+      repoURL: "https://community-charts.github.io/helm-charts"
+      namespace: n8n
+      nodePort: 5678
 
-    # - name: keycloak
-    #   chart: keycloak
-    #   version: "25.2.0"
-    #   releaseName: keycloak
-    #   repoURL: "https://charts.bitnami.com/bitnami"
-    #   namespace: keycloak
+    - name: keycloak
+      chart: keycloak
+      version: "25.2.0"
+      releaseName: keycloak
+      repoURL: "https://charts.bitnami.com/bitnami"
+      namespace: keycloak
 
     # - name: redis
     #   chart: redis
