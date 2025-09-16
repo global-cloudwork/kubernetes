@@ -18,6 +18,11 @@ CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
 ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
     http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip | base64 -d)
 
+echo "AUTHORS_PUBLIC_KEY: $AUTHORS_PUBLIC_KEY"
+echo "AUTHORS_IP: $AUTHORS_IP"
+echo "CILIUM_CA: $CILIUM_CA"
+echo "ADDRESS: $ADDRESS"
+
 # Values about the node, and it's cluster
 NODE_ROLE=server
 CLUSTER_ID=$(($CLUSTER_NAME + 0))
