@@ -2,3 +2,5 @@
 env
 private/
 *.key
+public.key
+private.key
