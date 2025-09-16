@@ -83,7 +83,10 @@ h2 "apt installing curl"
 sudo apt-get update
 sudo apt-get install -y curl git wireguard
 
-h2 "Curl and install rke2 and helm"
+
+
+h2 "Curl and install rke2, helm, and k9s"
+curl -sS https://webinstall.dev/k9s | bash
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
