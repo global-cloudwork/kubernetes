@@ -16,12 +16,23 @@ AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" \
 CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
     http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca)
 ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/external-ip)
+    http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
 
-echo "AUTHORS_PUBLIC_KEY: $AUTHORS_PUBLIC_KEY"
-echo "AUTHORS_IP: $AUTHORS_IP"
-echo "CILIUM_CA: $CILIUM_CA"
-echo "ADDRESS: $ADDRESS"
+# Function to check for HTML 404 errors and exit if found
+check_metadata_response() {
+    local response=$1
+    local key_name=$2
+    if [[ "$response" == \<!DOCTYPE* ]]; then
+        echo "Error: Received HTML 404 response for metadata key '$key_name'." >&2
+        exit 1
+    fi
+    echo "$key_name: $(echo "$response" | base64 -w0)"
+}
+
+echo "AUTHORS_PUBLIC_KEY: $(check_metadata_response "$AUTHORS_PUBLIC_KEY" "AUTHORS_PUBLIC_KEY")"
+echo "AUTHORS_IP: $(check_metadata_response "$AUTHORS_IP" "AUTHORS_IP")"
+echo "CILIUM_CA: $(check_metadata_response "$CILIUM_CA" "CILIUM_CA")"
+echo "ADDRESS: $(check_metadata_response "$ADDRESS" "ADDRESS")"
 
 # Values about the node, and it's cluster
 NODE_ROLE=server
@@ -176,7 +187,7 @@ done
 #   | base64 -d | kubectl create -f -
 
 #     # Commented-out secret creation (as in the original code)
-#     # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem 
+#     # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
 # fi
 
 

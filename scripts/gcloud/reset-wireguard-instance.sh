@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
@@ -68,7 +70,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --shielded-integrity-monitoring \
     --labels=goog-ec-src=vm_add-gcloud \
     --reservation-affinity=any \
-    --metadata=startup-script-url="$STARTUP_SCRIPT_URL",CILIUM-CA="$CILIUM_CA",PUBLIC-KEY="$PUBLIC_KEY",ALLOWED-IPS="$ALLOWED_IPS"
+    --metadata=startup-script-url="$STARTUP_SCRIPT_URL",cilium-ca="$CILIUM_CA",public-key="$PUBLIC_KEY",allowed-ips="$ALLOWED_IPS"
 
 h2 "Waiting for instance to be running"
 while true; do
@@ -99,9 +101,3 @@ gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE
 # gcloud compute instances remove-metadata $INSTANCE_NAME \
 #     --zone=$ZONE \
 #     --keys=CILIUM-CA,PUBLIC-KEY,ALLOWED-IPS
-
-
-
-
-
-
