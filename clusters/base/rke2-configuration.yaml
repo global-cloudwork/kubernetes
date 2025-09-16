@@ -1,3 +1,0 @@
-disable-kube-proxy: true
-etcd-expose-metrics: false
-cni: cilium

@@ -1,27 +1,14 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 
-append_lines_to_file() {
-    # $1 = filename
-    # $2 = multiline string
-
-    # Negate the AND: return if file not writable OR text is empty
-    if ! [[ -w "$1" && -n "$2" ]]; then
-      echo "Error: File not writable or text is empty." >&2
-      exit 1
-    fi
-
-    # Append each line safely
-    while IFS= read -r current; do
-      printf "%s\n" "$current" >> "$1"
-    done <<< "$2"
-}
-
+# Static Configuration
 CLUSTER_NAME=cloud-proxy
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
+
+# Values passed to the startup script using encrypted metadata
 AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" \
     http://metadata.google.internal/computeMetadata/v1/instance/attributes/authors-public-key | base64 -d)
 AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" \
@@ -31,6 +18,50 @@ CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
 ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
     http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip | base64 -d)
 
+# Values about the node, and it's cluster
+TOKEN=$(sudo cat /var/lib/rancher/rke2/server/node-token)
+NODE_ROLE=server
+CLUSTER_ID=$(($CLUSTER_NAME + 0))
+## RKE2 Configuration
+RKE2_CONFIGURATION="
+disable-kube-proxy: true
+etcd-expose-metrics: false
+cni: cilium
+write-kubeconfig-mode: '0644'
+tls-san:
+ - $HOST_IP
+node-name: $CLUSTER_NAME
+tls-san:
+  - $HOST_IP"
+echo "define additions to the file"
+## Cilium Configuration
+CILIUM_CONFIGURATION= "
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-cilium
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    kubeProxyReplacement: true
+    k8sServiceHost: $ADDRESS
+    k8sServicePort: 6443
+    operator:
+      replicas: 1
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true
+        service: 
+          type: NodePort
+    cluster:
+      name: $CLUSTER_NAME
+      id: $CLUSTER_ID"
+
+
+#Environment Variables - Cluster & Composition
 declare -a PEERS=(
     "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
 )
@@ -56,6 +87,14 @@ sudo apt-get install -y curl wireguard
 h2 "Curl and install rke2 and helm"
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
+
+h2 "Create and write configuration files"
+mkdir -p /var/lib/rancher/rke2/server/manifests
+mkdir -p /etc/rancher/rke2
+touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+touch /etc/rancher/rke2/config.yaml
+echo "$CILIUM_CONFIGURATION" | sudo tee -a /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
+echo "$RKE2_CONFIGURATION" | sudo tee -a /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable --now rke2-server.service
