@@ -10,9 +10,9 @@ RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
 
 # Values passed to the startup script using encrypted metadata
 AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/authors-public-key | base64 -d)
+    http://metadata.google.internal/computeMetadata/v1/instance/public-key | base64 -d)
 AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/allowed-ip | base64 -d)
+    http://metadata.google.internal/computeMetadata/v1/instance/allowed-ips | base64 -d)
 CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
     http://metadata.google.internal/computeMetadata/v1/instance/cilium-ca | base64 -d)
 ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
