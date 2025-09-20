@@ -16,9 +16,7 @@ NODE_ROLE=server
 CLUSTER_ID=$(($CLUSTER_NAME + 0))
 ## RKE2 Configuration
 RKE2_CONFIGURATION="
-cni: cilium
-write-kubeconfig-mode: '0644'
-cluster-init: true"
+cni: cilium"
 
 ## Cilium Configuration
 CILIUM_CONFIGURATION="
@@ -44,10 +42,10 @@ spec:
       ui:
         enabled: true
         service: 
-          type: NodePort
-    cluster:
-      name: $CLUSTER_NAME
-      id: $CLUSTER_ID"
+          type: NodePort"
+      #         cluster:
+      # name: $CLUSTER_NAME
+      # id: $CLUSTER_ID
 
 #Environment Variables - Cluster & Composition
 declare -a PEERS=(
