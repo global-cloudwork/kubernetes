@@ -16,7 +16,8 @@ NODE_ROLE=server
 CLUSTER_ID=$(($CLUSTER_NAME + 0))
 ## RKE2 Configuration
 RKE2_CONFIGURATION="
-cni: cilium"
+cni: cilium
+write-kubeconfig-mode: \"0600\""
 
 ## Cilium Configuration
 CILIUM_CONFIGURATION="
@@ -42,10 +43,10 @@ spec:
       ui:
         enabled: true
         service: 
-          type: NodePort"
-      #         cluster:
-      # name: $CLUSTER_NAME
-      # id: $CLUSTER_ID
+          type: NodePort
+    cluster:
+      name: $CLUSTER_NAME
+      id: $CLUSTER_ID"
 
 #Environment Variables - Cluster & Composition
 declare -a PEERS=(
@@ -82,8 +83,8 @@ sudo tee /etc/rancher/rke2/config.yaml <<< "$RKE2_CONFIGURATION"
 
 h2 "Create and write cilium configuration files"
 mkdir -p /var/lib/rancher/rke2/server/manifests
-sudo touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
-sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml <<< "$CILIUM_CONFIGURATION"
+sudo touch /var/lib/rancher/rke2/server/manifests/rke2-cilium.yaml
+sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium.yaml <<< "$CILIUM_CONFIGURATION"
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
