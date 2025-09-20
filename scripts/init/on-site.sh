@@ -16,20 +16,9 @@ NODE_ROLE=server
 CLUSTER_ID=$(($CLUSTER_NAME + 0))
 ## RKE2 Configuration
 RKE2_CONFIGURATION="
-encryption:
-  enabled: true
-  type: wireguard
-disable-kube-proxy: true
 cni: cilium
-kubeProxyReplacement: true
 write-kubeconfig-mode: '0644'
-cluster-init: true
-hubble:
-  enabled: true
-  relay:
-    enabled: true
-  ui:
-    enabled: true"
+cluster-init: true"
 
 ## Cilium Configuration
 CILIUM_CONFIGURATION="
@@ -40,9 +29,12 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
+    encryption:
+      enabled: true
+      type: wireguard
     kubeProxyReplacement: true
-    k8sServiceHost: localhost
-    k8sServicePort: 6443
+    k8sServiceHost: "localhost"
+    k8sServicePort: "6443"
     operator:
       replicas: 1
     hubble:
@@ -56,7 +48,6 @@ spec:
     cluster:
       name: $CLUSTER_NAME
       id: $CLUSTER_ID"
-
 
 #Environment Variables - Cluster & Composition
 declare -a PEERS=(
@@ -86,13 +77,15 @@ curl -sS https://webinstall.dev/k9s | bash
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
-h2 "Create and write configuration files"
+h2 "Create and write rke2 configuration files"
 mkdir -p /etc/rancher/rke2
-mkdir -p /var/lib/rancher/rke2/server/manifests
 sudo touch /etc/rancher/rke2/config.yaml
+sudo tee /etc/rancher/rke2/config.yaml <<< "$RKE2_CONFIGURATION"
+
+h2 "Create and write cilium configuration files"
+mkdir -p /var/lib/rancher/rke2/server/manifests
 sudo touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
-echo "$RKE2_CONFIGURATION" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
-echo "$CILIUM_CONFIGURATION" | sudo tee -a /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
+sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml <<< "$CILIUM_CONFIGURATION"
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service

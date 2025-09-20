@@ -1,3 +1,0 @@
-node-name: "worker-01"
-kube-apiserver-arg: "audit-log-path=/var/log/kube-audit.log"
-tls-san: "example.com"
