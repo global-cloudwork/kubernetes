@@ -8,22 +8,31 @@ RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
+CLUSTER_INIT=true
+FQDN=$(hostname -f)
 
 # Values about the node, and it's cluster
 NODE_ROLE=server
 CLUSTER_ID=$(($CLUSTER_NAME + 0))
 ## RKE2 Configuration
 RKE2_CONFIGURATION="
+encryption:
+  enabled: true
+  type: wireguard
 disable-kube-proxy: true
-etcd-expose-metrics: false
 cni: cilium
+kubeProxyReplacement: true
 write-kubeconfig-mode: '0644'
-node-name: $CLUSTER_NAME
-tls-san:
-  - $HOST_IP"
-echo "define additions to the file"
+cluster-init: true
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true"
+
 ## Cilium Configuration
-CILIUM_CONFIGURATION= "
+CILIUM_CONFIGURATION="
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
@@ -72,23 +81,22 @@ h2 "apt installing curl"
 sudo apt-get update
 sudo apt-get install -y curl git wireguard
 
-
-
 h2 "Curl and install rke2, helm, and k9s"
 curl -sS https://webinstall.dev/k9s | bash
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
 h2 "Create and write configuration files"
-mkdir -p /var/lib/rancher/rke2/server/manifests
 mkdir -p /etc/rancher/rke2
-touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
-touch /etc/rancher/rke2/config.yaml
+mkdir -p /var/lib/rancher/rke2/server/manifests
+sudo touch /etc/rancher/rke2/config.yaml
+sudo touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+echo "$RKE2_CONFIGURATION" | sudo tee -a /etc/rancher/rke2/config.yaml > /dev/null
 echo "$CILIUM_CONFIGURATION" | sudo tee -a /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
-echo "$RKE2_CONFIGURATION" | sudo tee -a /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
 h2 "Enable, then start the rke2-server service"
-sudo systemctl enable --now rke2-server.service
+sudo systemctl enable rke2-server.service
+sudo systemctl start rke2-server.service
 
 while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
   h2 "kubeconfig not found yet, waiting"
