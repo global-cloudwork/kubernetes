@@ -1,0 +1,5 @@
+cni: cilium
+write-kubeconfig-mode: "0600"
+tls-sans:
+  - "localhost"
+debug: true

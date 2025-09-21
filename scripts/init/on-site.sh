@@ -2,7 +2,7 @@
 
 # Static Configuration
 HOST_IP=$(hostname -I | awk '{print $1}')
-CLUSTER_NAME=cloud-proxy
+CLUSTER_NAME=on-site
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
@@ -14,42 +14,6 @@ FQDN=$(hostname -f)
 # Values about the node, and it's cluster
 NODE_ROLE=server
 CLUSTER_ID=$(($CLUSTER_NAME + 0))
-## RKE2 Configuration
-RKE2_CONFIGURATION="
-cni: cilium
-write-kubeconfig-mode: \"0600\"
-tls-sans:
-  - \"localhost\"
-debug: true"
-
-## Cilium Configuration
-CILIUM_CONFIGURATION="
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: rke2-cilium
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    encryption:
-      enabled: true
-      type: wireguard
-    kubeProxyReplacement: true
-    k8sServiceHost: "127.0.0.1"
-    k8sServicePort: "6443"
-    operator:
-      replicas: 1
-    hubble:
-      enabled: true
-      relay:
-        enabled: true
-      ui:
-        enabled: true
-        service: 
-          type: NodePort
-    cluster:
-      name: $CLUSTER_NAME
-      id: $CLUSTER_ID"
 
 #Environment Variables - Cluster & Composition
 declare -a PEERS=(
@@ -80,14 +44,12 @@ curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | ba
 curl -sfL https://get.rke2.io | sudo sh -
 
 h2 "Create and write rke2 configuration files"
-mkdir -p /etc/rancher/rke2
-sudo touch /etc/rancher/rke2/config.yaml
-sudo tee /etc/rancher/rke2/config.yaml <<< "$RKE2_CONFIGURATION"
+sudo mkdir -p /etc/rancher/rke2
+envsubst < ../configurations/rke2.yaml | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
 
 h2 "Create and write cilium configuration files"
-mkdir -p /var/lib/rancher/rke2/server/manifests
-sudo touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
-sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml <<< "$CILIUM_CONFIGURATION"
+sudo mkdir -p /var/lib/rancher/rke2/server/manifests
+envsubst < ../configurations/cilium.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
