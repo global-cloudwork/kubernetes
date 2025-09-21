@@ -83,7 +83,12 @@ h2 "apt installing curl"
 sudo apt-get update
 sudo apt-get install -y curl git wireguard
 
+h2 "Setting up headscale configuration."
+sudo mkdir -p /etc/headscale
+sudo curl -o /etc/headscale/config.yaml https://raw.githubusercontent.com/juanfont/headscale/v0.26.1/config-example.yaml
 
+curl the following in to this location /etc/headscale
+curl -o config.yaml https://raw.githubusercontent.com/juanfont/headscale/v0.26.1/config-example.yaml
 
 h2 "Curl and install rke2, helm, and k9s"
 curl -sS https://webinstall.dev/k9s | bash

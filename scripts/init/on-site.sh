@@ -17,7 +17,10 @@ CLUSTER_ID=$(($CLUSTER_NAME + 0))
 ## RKE2 Configuration
 RKE2_CONFIGURATION="
 cni: cilium
-write-kubeconfig-mode: \"0600\""
+write-kubeconfig-mode: \"0600\"
+tls-sans:
+  - \"localhost\"
+debug: true"
 
 ## Cilium Configuration
 CILIUM_CONFIGURATION="
@@ -32,7 +35,7 @@ spec:
       enabled: true
       type: wireguard
     kubeProxyReplacement: true
-    k8sServiceHost: "localhost"
+    k8sServiceHost: "127.0.0.1"
     k8sServicePort: "6443"
     operator:
       replicas: 1
@@ -83,8 +86,8 @@ sudo tee /etc/rancher/rke2/config.yaml <<< "$RKE2_CONFIGURATION"
 
 h2 "Create and write cilium configuration files"
 mkdir -p /var/lib/rancher/rke2/server/manifests
-sudo touch /var/lib/rancher/rke2/server/manifests/rke2-cilium.yaml
-sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium.yaml <<< "$CILIUM_CONFIGURATION"
+sudo touch /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml <<< "$CILIUM_CONFIGURATION"
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
@@ -104,10 +107,13 @@ mkdir -p "$HOME/.kube/$CLUSTER_NAME"
 
 h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
 ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
-export KUBECONFIG=$(find "$HOME/.kube/" \( -type f -o -type l \) -name config | paste -sd:)
+
+# Debugging output to show which files are being merged
+echo "Merging kubeconfigs from: $KUBECONFIG"
+export KUBECONFIG=$(find "$HOME/.kube" -maxdepth 2 -type f -name config | paste -sd:)
 
 # Flatten all merged kubeconfigs into the default config file
-kubectl config view --flatten > "$HOME/.kube/config"
+kubectl --kubeconfig="$KUBECONFIG" config view --flatten > "$HOME/.kube/config"
 
 h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=100s
@@ -127,7 +133,6 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl wait --for=condition=complete jobs --all -A --timeout=100s || true
     kubectl wait --for=condition=running pods --all -A --timeout=100s || true
 done
-
 
 # # Conditional block to run only if CLUSTER_NAME is "cloud-proxy"
 # if [ "$CLUSTER_NAME" == "cloud-proxy" ]; then

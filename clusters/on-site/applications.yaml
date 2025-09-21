@@ -86,7 +86,14 @@ key:
     #   repoURL: "https://charts.longhorn.io"
     #   namespace: longhorn-system
     #   nodePort: 10111
-        
+
+    - name: tailscale-operator
+      chart: tailscale-operator
+      version: "0.0.1"       # replace with the actual chart version you want
+      releaseName: tailscale-operator
+      repoURL: "https://pkgs.tailscale.com/helmcharts"
+      namespace: tailscale
+
     # - name: vault
     #   chart: vault
     #   version: "0.30.1"
