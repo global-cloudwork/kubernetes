@@ -14,7 +14,7 @@ spec:
             repoURL: https://github.com/global-cloudwork/kubernetes.git
             revision: main
             files:
-            - path: applications.yaml
+            - path: clusters/on-site/applications.yaml
         - list:
             elements: []
             elementsYaml: '{{ .key.components | toJson }}'
