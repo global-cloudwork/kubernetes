@@ -91,8 +91,8 @@ curl the following in to this location /etc/headscale
 curl -o config.yaml https://raw.githubusercontent.com/juanfont/headscale/v0.26.1/config-example.yaml
 
 h2 "Curl and install rke2, helm, and k9s"
-curl -sS https://webinstall.dev/k9s | bash
-curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# curl -sS https://webinstall.dev/k9s | bash
+# curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
 h2 "Create and write configuration files"
@@ -112,14 +112,16 @@ while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
 done
 
 h2 "setting up kubectl"
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+sudo cp /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+sudo chown "$USER":"$USER" /usr/local/bin/kubectl
 PATH=$PATH:/var/lib/rancher/rke2/bin/
 
 h2 "making kubeconfig directories"
 mkdir -p "$HOME/.kube/$CLUSTER_NAME"
 
 h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
-ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+cp /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 export KUBECONFIG=$(find "$HOME/.kube/" \( -type f -o -type l \) -name config | paste -sd:)
 
 # Flatten all merged kubeconfigs into the default config file

@@ -9,22 +9,30 @@ function h1() {
   command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
 }
 
+function h2() {
+    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
+}
+
 h1 "Removing Existing RKE2 Resources"
 
-echo "remove symbolic links before re-installing"
+h2 "stop and remove rke2-server.service"
+sudo systemctl stop rke2-server.service
+sudo systemctl disable rke2-server.service
+
+h2 "remove symbolic links before re-installing"
 rm $HOME/.kube/config
 sudo rm /usr/local/bin/kubectl
 
-echo "rke2 kill all script"
+h2 "rke2 kill all script"
 sudo /usr/local/bin/rke2-killall.sh
 
-echo "rke2 uninstall script"
+h2 "rke2 uninstall script"
 sudo /usr/local/bin/rke2-uninstall.sh &>/dev/null
 
-echo "System agent uninstall script"
+h2 "System agent uninstall script"
 curl -sS https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh &>/dev/null
 
-echo "Folder removal"
+h2 "Folder removal"
 rm -rf /etc/ceph \
        /etc/cni \
        /etc/kubernetes \
@@ -43,5 +51,5 @@ rm -rf /etc/ceph \
        /var/log/pods \
        /var/run/calico &>/dev/null
 
-echo "iptables removal"
+h2 "iptables removal"
 sudo iptables -t nat -X FLANNEL-POSTRTG &>/dev/null

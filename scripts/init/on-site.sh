@@ -39,8 +39,8 @@ sudo apt-get update
 sudo apt-get install -y curl git wireguard
 
 h2 "Curl and install rke2, helm, and k9s"
-curl -sS https://webinstall.dev/k9s | bash
-curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# curl -sS https://webinstall.dev/k9s | bash
+# curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
 h2 "Create and write rke2 configuration files"
@@ -50,10 +50,6 @@ envsubst < ../configurations/rke2.yaml | sudo tee /etc/rancher/rke2/config.yaml 
 h2 "Create and write cilium configuration files"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 envsubst < ../configurations/cilium.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
-
-h2 "Enable, then start the rke2-server service"
-sudo systemctl enable rke2-server.service
-sudo systemctl start rke2-server.service
 
 while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
   h2 "kubeconfig not found yet, waiting"
@@ -68,14 +64,17 @@ h2 "making kubeconfig directories"
 mkdir -p "$HOME/.kube/$CLUSTER_NAME"
 
 h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
-ln -sf /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+sudo cp /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
-# Debugging output to show which files are being merged
-echo "Merging kubeconfigs from: $KUBECONFIG"
-export KUBECONFIG=$(find "$HOME/.kube" -maxdepth 2 -type f -name config | paste -sd:)
-
-# Flatten all merged kubeconfigs into the default config file
+h2 "Find and flatten csv of clusters stored in $KUBECONFIG"
+KUBECONFIG=$(find -L "$HOME/.kube" -mindepth 2 -type f -name config | paste -sd:)
 kubectl --kubeconfig="$KUBECONFIG" config view --flatten > "$HOME/.kube/config"
+
+
+h2 "Enable, then start the rke2-server service"
+sudo systemctl enable rke2-server.service
+sudo systemctl start rke2-server.service
 
 h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=100s
