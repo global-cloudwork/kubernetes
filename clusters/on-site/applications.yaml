@@ -1,6 +1,26 @@
 #ARGO - 30080
 #N8N - 30691
 #HUBBLE - 31235
+
+# Full Application List:
+# - actualbudget
+# - argocd
+# - cert-manager
+# - external-secrets
+# - falco
+# - foundry-vtt
+# - homer
+# - keycloak
+# - kube-prometheus-stack
+# - kubeview
+# - longhorn
+# - n8n
+# - redis
+# - tailscale-operator
+# - trust-manager
+# - vault
+# - vaultwarden
+
 key:
   components:
     #   hubble
@@ -15,20 +35,13 @@ key:
     #   repoURL: "https://"
     #   namespace:
 
-    # - name: homer
-    #   chart: homer
-    #   version: "0.13.0"
-    #   releaseName: my-homer
-    #   repoURL: "https://charts.gabe565.com"
-    #   namespace: homer
+    # - name: actualbudget
+    #   chart: actualbudget
+    #   version: "1.8.1"
+    #   releaseName: actualbudget
+    #   repoURL: "https://community-charts.github.io/helm-charts"
+    #   namespace: actualbudget
 
-    # - name: trust-manager
-    #   chart: trust-manager
-    #   version: "0.19.0"
-    #   releaseName: trust-manager
-    #   repoURL: "https://charts.jetstack.io"
-    #   namespace: cert-manager
-    
     # - name: argocd
     #   chart: argo-cd
     #   version: "8.3.1"
@@ -36,13 +49,6 @@ key:
     #   repoURL: "https://argoproj.github.io/argo-helm"
     #   namespace: argocd
     #   nodePort: 30080
-
-    # - name: actualbudget
-    #   chart: actualbudget
-    #   version: "1.8.1"
-    #   releaseName: actualbudget
-    #   repoURL: "https://community-charts.github.io/helm-charts"
-    #   namespace: actualbudget
 
     - name: cert-manager
       chart: cert-manager
@@ -72,12 +78,34 @@ key:
     #   repoURL: "https://hugoprudente.github.io/helm-charts/incubator"
     #   namespace: foundry-vtt
 
+    # - name: homer
+    #   chart: homer
+    #   version: "0.13.0"
+    #   releaseName: my-homer
+    #   repoURL: "https://charts.gabe565.com"
+    #   namespace: homer
+
+    - name: keycloak
+      chart: keycloak
+      version: "25.2.0"
+      releaseName: keycloak
+      repoURL: "https://charts.bitnami.com/bitnami"
+      namespace: keycloak
+
     # - name: kube-prometheus-stack
     #   chart: kube-prometheus-stack
     #   version: "77.0.2"
     #   releaseName: my-kube-prometheus-stack
     #   repoURL: "https://prometheus-community.github.io/helm-charts"
     #   namespace: kube-prometheus-stack
+
+    # - name: kubeview
+    #   chart: kubeview/kubeview
+    #   version: "2.0.5"
+    #   releaseName: kubeview
+    #   repoURL: "https://code.benco.io/kubeview/deploy/helm"
+    #   namespace: kubeview
+    #   nodePort: 30000
 
     # - name: longhorn
     #   chart: longhorn
@@ -87,12 +115,41 @@ key:
     #   namespace: longhorn-system
     #   nodePort: 10111
 
+    # - name: n8n
+    #   chart: n8n
+    #   version: "1.15.2"
+    #   releaseName: n8n
+    #   repoURL: "https://community-charts.github.io/helm-charts"
+    #   namespace: n8n
+    #   nodePort: 5678
+
+    # - name: redis
+    #   chart: redis
+    #   version: "22.0.6"
+    #   releaseName: redis
+    #   repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
+    #   namespace: default
+
     - name: tailscale-operator
       chart: tailscale-operator
       version: "0.0.1"       # replace with the actual chart version you want
       releaseName: tailscale-operator
       repoURL: "https://pkgs.tailscale.com/helmcharts"
       namespace: tailscale
+
+    - name: homepage
+      chart: homepage
+      version: "4.1.4"
+      releaseName: my-homepage
+      repoURL: "oci://ghcr.io/m0nsterrr/helm-charts/homepage"
+      namespace: homepage
+
+    # - name: trust-manager
+    #   chart: trust-manager
+    #   version: "0.19.0"
+    #   releaseName: trust-manager
+    #   repoURL: "https://charts.jetstack.io"
+    #   namespace: cert-manager
 
     # - name: vault
     #   chart: vault
@@ -107,33 +164,3 @@ key:
     #   releaseName: vaultwarden
     #   repoURL: "https://gissilabs.github.io/charts/"
     #   namespace: vaultwarden
-
-    - name: n8n
-      chart: n8n
-      version: "1.15.2"
-      releaseName: n8n
-      repoURL: "https://community-charts.github.io/helm-charts"
-      namespace: n8n
-      nodePort: 5678
-
-    # - name: keycloak
-    #   chart: keycloak
-    #   version: "25.2.0"
-    #   releaseName: keycloak
-    #   repoURL: "https://charts.bitnami.com/bitnami"
-    #   namespace: keycloak
-
-    # - name: redis
-    #   chart: redis
-    #   version: "22.0.6"
-    #   releaseName: redis
-    #   repoURL: "oci://registry-1.docker.io/bitnamicharts/redis"
-    #   namespace: default
-
-    # - name: kubeview
-    #   chart: kubeview/kubeview
-    #   version: "2.0.5"
-    #   releaseName: kubeview
-    #   repoURL: "https://code.benco.io/kubeview/deploy/helm"
-    #   namespace: kubeview
-    #   nodePort: 30000

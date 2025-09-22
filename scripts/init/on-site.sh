@@ -2,7 +2,6 @@
 
 # Static Configuration
 HOST_IP=$(hostname -I | awk '{print $1}')
-CLUSTER_NAME=on-site
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
@@ -12,8 +11,9 @@ CLUSTER_INIT=true
 FQDN=$(hostname -f)
 
 # Values about the node, and it's cluster
+export CLUSTER_NAME=on-site
 NODE_ROLE=server
-CLUSTER_ID=$(($CLUSTER_NAME + 0))
+export CLUSTER_ID=$(($CLUSTER_NAME + 0))
 
 #Environment Variables - Cluster & Composition
 declare -a PEERS=(
