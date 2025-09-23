@@ -98,12 +98,12 @@ key:
     #   repoURL: "https://prometheus-community.github.io/helm-charts"
     #   namespace: kube-prometheus-stack
 
-    - name: longhorn
-      chart: longhorn
-      version: "1.9.1"
-      releaseName: longhorn
-      repoURL: "https://charts.longhorn.io"
-      namespace: longhorn-system
+    # - name: longhorn
+    #   chart: longhorn
+    #   version: "1.9.1"
+    #   releaseName: longhorn
+    #   repoURL: "https://charts.longhorn.io"
+    #   namespace: longhorn-system
 
     - name: n8n
       chart: n8n
