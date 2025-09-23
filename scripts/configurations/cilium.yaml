@@ -19,8 +19,6 @@ spec:
         enabled: true
       ui:
         enabled: true
-        service: 
-          type: NodePort
     cluster:
       name: ${CLUSTER_NAME}
       id: ${CLUSTER_ID}
