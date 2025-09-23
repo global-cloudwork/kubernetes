@@ -42,13 +42,12 @@ key:
     #   repoURL: "https://community-charts.github.io/helm-charts"
     #   namespace: actualbudget
 
-    # - name: argocd
-    #   chart: argo-cd
-    #   version: "8.3.1"
-    #   releaseName: argocd
-    #   repoURL: "https://argoproj.github.io/argo-helm"
-    #   namespace: argocd
-    #   nodePort: 30080
+    - name: argocd
+      chart: argo-cd
+      version: "8.3.1"
+      releaseName: argocd
+      repoURL: "https://argoproj.github.io/argo-helm"
+      namespace: argocd
 
     - name: cert-manager
       chart: cert-manager
@@ -99,13 +98,12 @@ key:
     #   repoURL: "https://prometheus-community.github.io/helm-charts"
     #   namespace: kube-prometheus-stack
 
-    # - name: longhorn
-    #   chart: longhorn
-    #   version: "1.9.1"
-    #   releaseName: longhorn
-    #   repoURL: "https://charts.longhorn.io"
-    #   namespace: longhorn-system
-    #   nodePort: 10111
+    - name: longhorn
+      chart: longhorn
+      version: "1.9.1"
+      releaseName: longhorn
+      repoURL: "https://charts.longhorn.io"
+      namespace: longhorn-system
 
     - name: n8n
       chart: n8n
@@ -113,7 +111,6 @@ key:
       releaseName: n8n
       repoURL: "https://community-charts.github.io/helm-charts"
       namespace: n8n
-      nodePort: 5678
 
     # - name: redis
     #   chart: redis
