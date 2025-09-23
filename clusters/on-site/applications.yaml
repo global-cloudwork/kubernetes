@@ -85,12 +85,12 @@ key:
     #   repoURL: "https://charts.gabe565.com"
     #   namespace: homer
 
-    - name: keycloak
-      chart: keycloak
-      version: "25.2.0"
-      releaseName: keycloak
-      repoURL: "https://charts.bitnami.com/bitnami"
-      namespace: keycloak
+    # - name: keycloak
+    #   chart: keycloak
+    #   version: "25.2.0"
+    #   releaseName: keycloak
+    #   repoURL: "https://charts.bitnami.com/bitnami"
+    #   namespace: keycloak
 
     # - name: kube-prometheus-stack
     #   chart: kube-prometheus-stack
@@ -98,14 +98,6 @@ key:
     #   releaseName: my-kube-prometheus-stack
     #   repoURL: "https://prometheus-community.github.io/helm-charts"
     #   namespace: kube-prometheus-stack
-
-    # - name: kubeview
-    #   chart: kubeview/kubeview
-    #   version: "2.0.5"
-    #   releaseName: kubeview
-    #   repoURL: "https://code.benco.io/kubeview/deploy/helm"
-    #   namespace: kubeview
-    #   nodePort: 30000
 
     # - name: longhorn
     #   chart: longhorn
@@ -115,13 +107,13 @@ key:
     #   namespace: longhorn-system
     #   nodePort: 10111
 
-    # - name: n8n
-    #   chart: n8n
-    #   version: "1.15.2"
-    #   releaseName: n8n
-    #   repoURL: "https://community-charts.github.io/helm-charts"
-    #   namespace: n8n
-    #   nodePort: 5678
+    - name: n8n
+      chart: n8n
+      version: "1.15.8"
+      releaseName: n8n
+      repoURL: "https://community-charts.github.io/helm-charts"
+      namespace: n8n
+      nodePort: 5678
 
     # - name: redis
     #   chart: redis

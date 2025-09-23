@@ -62,7 +62,7 @@ service:
   # -- Whether to enable the service
   enabled: true
   # -- This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-  type: NodePort
+  type: ClusterIP
   # -- This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 5678
   # -- Default Service name
@@ -197,6 +197,46 @@ db:
     # -- Runs VACUUM operation on startup to rebuild the database. Reduces file size and optimizes indexes. This is a long running blocking operation and increases start-up time.
     vacuum: false
 
+  postgresdb:
+    # -- Control how many parallel open Postgres connections n8n should have. Increasing it may help with resource utilization, but too many connections may degrade performance.
+    poolSize: 2
+    # -- Postgres connection timeout (ms).
+    connectionTimeout: 20000
+    # -- Amount of time before an idle connection is eligible for eviction for being idle.
+    idleConnectionTimeout: 30000
+    # -- The PostgreSQL schema.
+    schema: public
+    # -- The PostgreSQL connection SSL settings. Find more information from here: https://docs.n8n.io/hosting/configuration/supported-databases-settings/#postgresdb
+    ssl:
+      # -- Whether to enable SSL.
+      enabled: false
+      # -- The PostgreSQL base64 encoded version of SSL certificate authority file content.
+      base64EncodedCertificateAuthorityFile: ""
+      # -- The PostgreSQL base64 encoded version of SSL certificate file content.
+      base64EncodedCertFile: ""
+      # -- The PostgreSQL base64 encoded version of SSL private key file content.
+      base64EncodedPrivateKeyFile: ""
+      # -- The PostgreSQL existing certificate authority file secret.
+      existingCertificateAuthorityFileSecret:
+        # -- The name of the existing secret.
+        name: ""
+        # -- The key of the certificate authority file in the existing secret.
+        key: "ca.crt"
+      # -- The PostgreSQL existing certificate file secret.
+      existingCertFileSecret:
+        # -- The name of the existing secret.
+        name: ""
+        # -- The key of the certificate file in the existing secret.
+        key: "cert.crt"
+      # -- The PostgreSQL existing SSL private key file secret.
+      existingPrivateKeyFileSecret:
+        # -- The name of the existing secret.
+        name: ""
+        # -- The key of the SSL private key file in the existing secret.
+        key: "cert.key"
+      # -- If n8n should reject unauthorized SSL connections (true) or not (false).
+      rejectUnauthorized: true
+
 sentry:
   # -- Whether sentry is enabled.
   enabled: false
@@ -262,6 +302,9 @@ license:
 main:
   # -- Number of main nodes. Only enterprise license users can have one leader main node and mutiple follower main nodes.
   count: 1
+
+  # -- Editor based URL. If it's not defined and ingress definition exists, ingress host will be used.
+  editorBaseUrl: ""
 
   # -- Whether to enable the PodDisruptionBudget for the main pod.
   pdb:
@@ -954,14 +997,31 @@ dnsConfig: {}
 redis:
   # -- Enable redis
   enabled: false
+  # -- Enable redis architecture.
   architecture: standalone
 
+  image:
+    # -- This is temporary workaround because of bitnami's deprecation until to completely replace it with our solution.
+    repository: bitnamilegacy/redis
+
+  # -- This is for setting up the auth.
+  auth:
+    # -- Enable password authentication
+    enabled: true
+
   master:
+    service:
+      ports:
+        # -- Redis master service port
+        redis: 6379
+
     persistence:
       enabled: false
 
 # -- External Redis parameters
 externalRedis:
+  # -- Redis database for Bull queue.
+  database: 0
   # -- External Redis server host
   host: ""
   # -- External Redis username
@@ -973,24 +1033,51 @@ externalRedis:
   # -- The name of an existing secret with Redis (must contain key `redis-password`) and Sentinel credentials.
   # When it's set, the `externalRedis.password` parameter is ignored
   existingSecret: ""
+  # -- List of Redis Cluster nodes. Setting this variable will create a Redis Cluster client instead of a Redis client, and n8n will ignore `externalRedis.host` and `externalRedis.port`.
+  clusterNodes: []
+    # - host: redis-1
+    #   port: 6379
+    # - host: redis-2
+    #   port: 6379
+  # -- Placeholder for future Redis TLS certificates
+  tls:
+    # -- Enable TLS on Redis connections.
+    enabled: false
+  # -- Enable dual-stack support (IPv4 and IPv6) on Redis connections.
+  dualStack: false
 
 # -- Bitnami PostgreSQL configuration
 postgresql:
   # -- Enable postgresql
   enabled: false
+  # -- Enable postgresql architecture.
   architecture: standalone
 
+  image:
+    # -- This is temporary workaround because of bitnami's deprecation until to completely replace it with our solution.
+    repository: bitnamilegacy/postgresql
+
+  # -- This is for setting up the primary service.
   primary:
+    # -- This is for setting up the primary service.
     service:
+      # -- This is for setting up the service ports.
       ports:
+        # -- This is for setting up the postgresql port.
         postgresql: 5432
 
+    # -- This is for setting up the persistence.
     persistence:
+      # -- This is for setting up the persistence enabled.
       enabled: true
+      # -- This is for setting up the persistence existing claim.
       existingClaim: ""
 
+  # -- This is for setting up the auth.
   auth:
+    # -- This is for setting up the auth username.
     username: ""
+    # -- This is for setting up the auth password.
     password: ""
     # -- The name of the PostgreSQL database. For more information: https://docs.n8n.io/hosting/configuration/supported-databases-settings/#required-permissions
     database: "n8n"
