@@ -7,12 +7,12 @@ spec:
   generators:
     - git:
         repoURL: 'https://github.com/global-cloudwork/kubernetes'
-        revision: 'main' 
-        directories:
-          - path: 'components/base/core/namespaces/'
+        revision: 'main'
+        files:
+          - path: 'components/base/core/**/*.yaml'  
   template:
     metadata:
-      name: '{{path[3]}}-{{path[4]}}' 
+      name: '{{path.basename}}-{{path.filename}}' 
     spec:
       project: default
       source:
