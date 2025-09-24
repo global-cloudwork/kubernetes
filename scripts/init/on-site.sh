@@ -74,7 +74,7 @@ KUBECONFIG=$(find -L "$HOME/.kube" -mindepth 2 -type f -name config | paste -sd:
 kubectl --kubeconfig="$KUBECONFIG" config view --flatten > "$HOME/.kube/config"
 
 h2 "Enable, then start the rke2-server service"
-
+sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
 h2 "waiting for the node, then all of its pods"
