@@ -58,22 +58,23 @@ done
 
 h2 "setting up kubectl"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-PATH=$PATH:/var/lib/rancher/rke2/bin/
+
+h2 "check for if Path does not contain /var/lib/rancher/rke2/bin append"
+[[ ":$PATH:" != *":/var/lib/rancher/rke2/bin:"* ]] && export PATH="/var/lib/rancher/rke2/bin:$PATH"
 
 h2 "making kubeconfig directories"
 mkdir -p "$HOME/.kube/$CLUSTER_NAME"
 
 h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
-sudo cp /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+sudo cp -f /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
 sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
 h2 "Find and flatten csv of clusters stored in $KUBECONFIG"
 KUBECONFIG=$(find -L "$HOME/.kube" -mindepth 2 -type f -name config | paste -sd:)
 kubectl --kubeconfig="$KUBECONFIG" config view --flatten > "$HOME/.kube/config"
 
-
 h2 "Enable, then start the rke2-server service"
-sudo systemctl enable rke2-server.service
+
 sudo systemctl start rke2-server.service
 
 h2 "waiting for the node, then all of its pods"
