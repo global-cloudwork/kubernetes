@@ -14,7 +14,7 @@ spec:
           - path: 'components/base/data'  
   template:
     metadata:
-      name: '{{path.basename}}-{{path.filename}}' 
+      name: '{{path.basename}}' 
     spec:
       project: default
       source:
