@@ -1,18 +1,18 @@
-    apiVersion: "cilium.io/v2"
-    kind: CiliumNetworkPolicy
-    metadata:
-      name: allow-nfs-access
-    spec:
-      endpointSelector:
-        matchLabels:
-          role: data # Label of your application pods needing NFS access
-      egress:
-        - toPorts:
-            - ports:
-                - port: "2049"
-                  protocol: TCP
-                - port: "111"
-                  protocol: TCP
-          toCIDR:
-            - 192.168.1.10/32 # IP address of your NFS server
----
+#     apiVersion: "cilium.io/v2"
+#     kind: CiliumNetworkPolicy
+#     metadata:
+#       name: allow-nfs-access
+#     spec:
+#       endpointSelector:
+#         matchLabels:
+#           role: data # Label of your application pods needing NFS access
+#       egress:
+#         - toPorts:
+#             - ports:
+#                 - port: "2049"
+#                   protocol: TCP
+#                 - port: "111"
+#                   protocol: TCP
+#           toCIDR:
+#             - 192.168.1.10/32 # IP address of your NFS server
+# ---

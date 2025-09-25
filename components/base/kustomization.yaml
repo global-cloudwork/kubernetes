@@ -2,7 +2,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - edge/edge-application-set.yaml
-  - core/core-application-set.yaml
-  - data/data-application-set.yaml
+  - base-application-set.yaml
   - tenant/tenant-application-set.yaml
