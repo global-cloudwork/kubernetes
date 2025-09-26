@@ -51,13 +51,12 @@ h2 "Create and write cilium configuration files"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 envsubst < ../configurations/cilium.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
-while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
-  h2 "kubeconfig not found yet, waiting"
-  sleep 5
-done
-
 h2 "setting up kubectl"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+
+h2 "Create symlinks for rke2-killall.sh and rke2-uninstall.sh"
+sudo ln -s /var/lib/rancher/rke2/bin/rke2-killall.sh /usr/local/bin/rke2-killall.sh
+sudo ln -s /var/lib/rancher/rke2/bin/rke2-uninstall.sh /usr/local/bin/rke2-uninstall.sh
 
 h2 "check for if Path does not contain /var/lib/rancher/rke2/bin append"
 [[ ":$PATH:" != *":/var/lib/rancher/rke2/bin:"* ]] && export PATH="/var/lib/rancher/rke2/bin:$PATH"
@@ -76,6 +75,11 @@ kubectl --kubeconfig="$KUBECONFIG" config view --flatten > "$HOME/.kube/config"
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
+
+while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
+  h2 "kubeconfig not found yet, waiting"
+  sleep 5
+done
 
 h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=100s
@@ -103,7 +107,7 @@ done
 #   | base64 -d | kubectl create -f -
 
 #     # Commented-out secret creation (as in the original code)
-#     # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem 
+#     # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
 # fi
 
 
