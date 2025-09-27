@@ -10,7 +10,7 @@
     {
       "label": "Replace On Site Cluster",
       "type": "shell",
-      "command": "cd ${workspaceFolder}/scripts/tools && ./replace-on-site.sh",
+      "command": "cd ${workspaceFolder}/scripts/tools && source ./replace-on-site.sh",
       "problemMatcher": [],
       "dependsOn": [],
       "options": {

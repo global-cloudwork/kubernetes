@@ -42,6 +42,7 @@ h2 "Curl and install rke2, helm, and k9s"
 # curl -sS https://webinstall.dev/k9s | bash
 # curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
+export PATH=$PATH:/opt/rke2/bin
 
 h2 "Create and write rke2 configuration files"
 sudo mkdir -p /etc/rancher/rke2
@@ -51,12 +52,12 @@ h2 "Create and write cilium configuration files"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 envsubst < ../configurations/cilium.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
-h2 "setting up kubectl"
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+# h2 "setting up kubectl"
+# sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
-h2 "Create symlinks for rke2-killall.sh and rke2-uninstall.sh"
-sudo ln -s /var/lib/rancher/rke2/bin/rke2-killall.sh /usr/local/bin/rke2-killall.sh
-sudo ln -s /var/lib/rancher/rke2/bin/rke2-uninstall.sh /usr/local/bin/rke2-uninstall.sh
+# h2 "Create symlinks for rke2-killall.sh and rke2-uninstall.sh"
+# sudo ln -s /var/lib/rancher/rke2/bin/rke2-killall.sh /usr/local/bin/rke2-killall.sh
+# sudo ln -s /var/lib/rancher/rke2/bin/rke2-uninstall.sh /usr/local/bin/rke2-uninstall.sh
 
 h2 "check for if Path does not contain /var/lib/rancher/rke2/bin append"
 [[ ":$PATH:" != *":/var/lib/rancher/rke2/bin:"* ]] && export PATH="/var/lib/rancher/rke2/bin:$PATH"

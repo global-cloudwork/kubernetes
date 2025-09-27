@@ -20,10 +20,10 @@ rm $HOME/.kube/config
 sudo rm /usr/local/bin/kubectl
 
 h2 "rke2 kill all script"
-sudo /usr/local/bin/rke2-killall.sh
+sudo /opt/rke2/bin/rke2-killall.sh
 
 h2 "rke2 uninstall script"
-sudo /usr/local/bin/rke2-uninstall.sh
+sudo /opt/rke2/bin/rke2-uninstall.sh
 
 h2 "System agent uninstall script"
 curl -sS https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh &>/dev/null
