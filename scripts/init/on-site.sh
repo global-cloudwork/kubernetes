@@ -53,25 +53,10 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests
 envsubst < ../configurations/cilium.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
 # h2 "setting up kubectl"
-# sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-
-# h2 "Create symlinks for rke2-killall.sh and rke2-uninstall.sh"
-# sudo ln -s /var/lib/rancher/rke2/bin/rke2-killall.sh /usr/local/bin/rke2-killall.sh
-# sudo ln -s /var/lib/rancher/rke2/bin/rke2-uninstall.sh /usr/local/bin/rke2-uninstall.sh
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
 h2 "check for if Path does not contain /var/lib/rancher/rke2/bin append"
-[[ ":$PATH:" != *":/var/lib/rancher/rke2/bin:"* ]] && export PATH="/var/lib/rancher/rke2/bin:$PATH"
-
-h2 "making kubeconfig directories"
-mkdir -p "$HOME/.kube/$CLUSTER_NAME"
-
-h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
-sudo cp -f /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
-sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
-
-h2 "Find and flatten csv of clusters stored in $KUBECONFIG"
-KUBECONFIG=$(find -L "$HOME/.kube" -mindepth 2 -type f -name config | paste -sd:)
-kubectl --kubeconfig="$KUBECONFIG" config view --flatten > "$HOME/.kube/config"
+export PATH=/var/lib/rancher/rke2/bin:$PATH
 
 h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
@@ -81,6 +66,16 @@ while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
   h2 "kubeconfig not found yet, waiting"
   sleep 5
 done
+h2 "making kubeconfig directories"
+mkdir -p "$HOME/.kube/$CLUSTER_NAME"
+
+h2 "Find and flatten csv of clusters stored in $KUBECONFIG"
+KUBECONFIG=$(find -L "$HOME/.kube" -mindepth 2 -type f -name config | paste -sd:)
+kubectl --kubeconfig="$KUBECONFIG" config view --flatten > "$HOME/.kube/config"
+
+h2 "linking kubeconfig to subfolder, and merging all kubeconfigs into default location"
+sudo cp -f /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
 h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=100s
