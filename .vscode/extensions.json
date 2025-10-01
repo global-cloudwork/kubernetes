@@ -5,7 +5,6 @@
     "esbenp.prettier-vscode", //easy readable code
     "pkief.material-icon-theme", //my folders have these
     "saoudrizwan.claude-dev", //ai assistant
-    "ms-vscode.remote-server", //hoping to make this declarative, it ssh's in to vscode servers
-    "formulahendry.code-runner" //runs the current file when play is clicked
+    "ms-vscode.remote-server" //hoping to make this declarative, it ssh's in to vscode servers
   ] 
 }

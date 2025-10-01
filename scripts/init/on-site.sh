@@ -1,20 +1,19 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 
 # Static Configuration
-HOST_IP=$(hostname -I | awk '{print $1}')
 DEFAULT_KUBECONFIG=$HOME/.kube/config
 RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
-export PATH=$PATH:/opt/rke2/bin
 
-# Values about the node, and it's cluster
+# For enviroment variable substitution
+export PATH=$PATH:/opt/rke2/bin
+export HOST_IP=$(hostname -I | awk '{print $1}')
 export CLUSTER_NAME=on-site
-NODE_ROLE=server
 export CLUSTER_ID=$(($CLUSTER_NAME + 0))
 
-#Environment Variables - Cluster & Composition
+# Cluster details
 declare -a PEERS=(
     "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
 )
@@ -44,7 +43,7 @@ curl -sfL https://get.rke2.io | sudo sh -
 
 h2 "Create and write rke2 configuration files"
 sudo mkdir -p /etc/rancher/rke2
-envsubst < /scripts/configurations/rke2.yaml | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
+envsubst < ../configurations/rke2.yaml | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
 
 h2 "Create and write cilium configuration files"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests

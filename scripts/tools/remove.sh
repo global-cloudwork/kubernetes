@@ -16,14 +16,12 @@ function h2() {
 h1 "Removing Existing RKE2 Resources"
 
 h2 "remove symbolic links before re-installing"
-rm $HOME/.kube/config
+rm $HOME/.kube/
 sudo rm /usr/local/bin/kubectl
 
-h2 "rke2 kill all script"
-sudo /opt/rke2/bin/rke2-killall.sh
-
-h2 "rke2 uninstall script"
-sudo /opt/rke2/bin/rke2-uninstall.sh
+h2 "rke2 scripts, kill all and uninstall"
+sudo /usr/local/bin/rke2-killall.sh
+sudo /usr/local/bin/rke2-uninstall.sh
 
 h2 "System agent uninstall script"
 curl -sS https://raw.githubusercontent.com/rancher/system-agent/main/system-agent-uninstall.sh | sudo sh &>/dev/null
@@ -48,7 +46,6 @@ rm -rf /etc/ceph \
        /var/run/calico &>/dev/null
 
 h2 "iptables removal (optional but good for a fresh start)"
-# Flushes the specific NAT chain created by Flannel/CNI
 sudo iptables -t nat -X FLANNEL-POSTRTG &>/dev/null
 sudo iptables -t nat -F &>/dev/null # Optional: Also flush the NAT table entirely
 
