@@ -7,8 +7,7 @@ RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 REVISION=main
 REPOSITORY=global-cloudwork/kubernetes
 RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
-CLUSTER_INIT=true
-FQDN=$(hostname -f)
+export PATH=$PATH:/opt/rke2/bin
 
 # Values about the node, and it's cluster
 export CLUSTER_NAME=on-site
@@ -34,19 +33,18 @@ function h1() {
 
 h1 "Configure RKE2 & Deploy Kustomizations"
 
-h2 "apt installing curl"
+h2 "apt update & install"
 sudo apt-get update
-sudo apt-get install -y curl git wireguard
+#sudo apt-get install -y curl git wireguard
 
 h2 "Curl and install rke2, helm, and k9s"
 # curl -sS https://webinstall.dev/k9s | bash
 # curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
-export PATH=$PATH:/opt/rke2/bin
 
 h2 "Create and write rke2 configuration files"
 sudo mkdir -p /etc/rancher/rke2
-envsubst < ../configurations/rke2.yaml | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
+envsubst < /scripts/configurations/rke2.yaml | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
 
 h2 "Create and write cilium configuration files"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
@@ -78,8 +76,8 @@ sudo cp -f /etc/rancher/rke2/rke2.yaml "$HOME/.kube/$CLUSTER_NAME/config"
 sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
 h2 "waiting for the node, then all of its pods"
-kubectl wait --for=condition=Ready node --all --timeout=100s
-kubectl wait --for=condition=Ready pods --all --timeout=100s
+kubectl wait --for=condition=Ready node --all --timeout=100s --insecure-skip-tls-verify
+kubectl wait --for=condition=Ready pods --all --timeout=100s --insecure-skip-tls-verify
 
 # h2 "deleting pods to enable cilium hostNetwork"
 # kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod

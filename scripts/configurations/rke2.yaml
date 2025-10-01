@@ -1,6 +1,6 @@
 cni: cilium
 write-kubeconfig-mode: "0600"
 tls-sans:
-  - "192.168.0.42"
+  - ${HOST_IP}
   - "localhost"
 debug: true
