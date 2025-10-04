@@ -14,14 +14,14 @@ export CLUSTER_NAME=on-site
 export CLUSTER_ID=$(($CLUSTER_NAME + 0))
 
 # Values passed to the startup script using encrypted metadata
-AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/public-key)
-AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/allowed-ips)
-CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca)
-ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip) 
+# AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" \
+#     http://metadata.google.internal/computeMetadata/v1/instance/attributes/public-key)
+# AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" \
+#     http://metadata.google.internal/computeMetadata/v1/instance/attributes/allowed-ips)
+# CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
+#     http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca)
+# ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
+#     http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip) 
 
 # Cluster details
 declare -a PEERS=(
@@ -44,7 +44,7 @@ h1 "Configure RKE2 & Deploy Kustomizations"
 
 h2 "apt update & install"
 sudo apt-get update
-#sudo apt-get install -y curl git wireguard
+# sudo apt-get install -y curl
 
 h2 "Curl and install rke2, helm, and k9s"
 # curl -sS https://webinstall.dev/k9s | bash
