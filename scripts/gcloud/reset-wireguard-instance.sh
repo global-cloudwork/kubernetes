@@ -70,7 +70,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --shielded-integrity-monitoring \
     --labels=goog-ec-src=vm_add-gcloud \
     --reservation-affinity=any \
-    --metadata=startup-script-url="$STARTUP_SCRIPT_URL",cilium-ca="$CILIUM_CA",public-key="$PUBLIC_KEY",allowed-ips="$ALLOWED_IPS"
+    # --metadata=startup-script-url="$STARTUP_SCRIPT_URL",cilium-ca="$CILIUM_CA",public-key="$PUBLIC_KEY",allowed-ips="$ALLOWED_IPS"
 
 h2 "Waiting for instance to be running"
 while true; do
