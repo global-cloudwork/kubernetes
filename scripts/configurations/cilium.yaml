@@ -22,3 +22,5 @@ spec:
     cluster:
       name: ${CLUSTER_NAME}
       id: ${CLUSTER_ID}
+    gatewayAPI:
+      enabled: true
