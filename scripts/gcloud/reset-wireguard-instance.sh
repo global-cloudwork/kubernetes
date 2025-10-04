@@ -23,22 +23,22 @@ IMAGE=projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2504-plucky-amd64-v2
 USER=ubuntu
 INTERFACE=nic0
 
-h2 "apt installing wireguard"
-sudo apt-get install -y wireguard
+# h2 "apt installing wireguard"
+# sudo apt-get install -y wireguard
 
-h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
-wg genkey > private.key
-wg pubkey < private.key > public.key
+# h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
+# wg genkey > private.key
+# wg pubkey < private.key > public.key
 
 #Set metadata values for sending to startup script
-CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml)
-PUBLIC_KEY=$(cat public.key)
-ALLOWED_IPS=$(hostname -I)
+# CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml)
+# PUBLIC_KEY=$(cat public.key)
+# ALLOWED_IPS=$(hostname -I)
 
 #Encrypt metadata values
-CILIUM_CA=$(echo "$CILIUM_CA" | base64 -w0)
-PUBLIC_KEY=$(echo "$PUBLIC_KEY" | base64 -w0)
-ALLOWED_IPS=$(echo "$ALLOWED_IPS" | base64 -w0)
+# CILIUM_CA=$(echo "$CILIUM_CA" | base64 -w0)
+# PUBLIC_KEY=$(echo "$PUBLIC_KEY" | base64 -w0)
+# ALLOWED_IPS=$(echo "$ALLOWED_IPS" | base64 -w0)
 
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 
