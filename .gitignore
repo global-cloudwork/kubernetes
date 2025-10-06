@@ -3,4 +3,5 @@
 
 #All key files
 *.key
-.key.*
+#All env files
+*.env
