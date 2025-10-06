@@ -1,11 +1,6 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 
-# Static Configuration
-DEFAULT_KUBECONFIG=$HOME/.kube/config
-RKE2_KUBECONFIG=/etc/rancher/rke2/rke2.yaml
-REVISION=main
-REPOSITORY=global-cloudwork/kubernetes
-RAW_REPOSITORY=https://raw.githubusercontent.com/$REPOSITORY/$REVISION
+source ../../.env
 
 # For enviroment variable substitution
 export PATH=$PATH:/opt/rke2/bin
@@ -87,7 +82,7 @@ kubectl wait --for=condition=Ready pods --all --timeout=100s
 
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     h2 "Applying Kustomize PATH: $CURRENT_PATH"
-    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$REVISION" | \
+    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
       kubectl apply --server-side --force-conflicts -f -
     kubectl wait --for=condition=complete jobs --all -A --timeout=100s || true
     kubectl wait --for=condition=running pods --all -A --timeout=100s || true

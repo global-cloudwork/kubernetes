@@ -12,7 +12,7 @@ function h1() {
 
 h1 "Resetting Wireguard Instance"
 
-source .env
+source ../../.env
 
 USER=ubuntu
 INTERFACE=nic0
