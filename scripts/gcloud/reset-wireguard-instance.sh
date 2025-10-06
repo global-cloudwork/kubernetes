@@ -56,7 +56,6 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --maintenance-policy=TERMINATE \
     --provisioning-model=SPOT \
     --service-account="$SERVICE_ACCOUNT" \
-    # --scopes="$SCOPES" \
     --tags=http-server,https-server \
     --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,image="$IMAGE",mode=rw,size=10,type=pd-standard \
     --no-shielded-secure-boot \
@@ -66,7 +65,8 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --reservation-affinity=any \
     --metadata=startup-script-url="$STARTUP_SCRIPT_URL"
     #,cilium-ca="$CILIUM_CA",public-key="$PUBLIC_KEY",allowed-ips="$ALLOWED_IPS"
-
+    # --scopes="$SCOPES" \
+    
 h2 "Waiting for instance to be running"
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" \
