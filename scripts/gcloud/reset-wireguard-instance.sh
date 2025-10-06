@@ -14,12 +14,6 @@ h1 "Resetting Wireguard Instance"
 
 source .env
 
-INSTANCE_NAME=wireguard
-GCP_ZONE=us-central1-a
-MACHINE_TYPE=e2-micro
-STARTUP_SCRIPT_URL=https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/init/cloud-proxy.sh
-IMAGE=projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2504-plucky-amd64-v20250911
-
 USER=ubuntu
 INTERFACE=nic0
 
