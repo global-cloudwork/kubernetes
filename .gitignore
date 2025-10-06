@@ -1,6 +1,6 @@
-.env
-env
-private/
+#All hidden files
+.*
+
+#All key files
 *.key
-public.key
-private.key
+.key.*
