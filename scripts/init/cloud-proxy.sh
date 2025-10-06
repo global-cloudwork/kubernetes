@@ -48,11 +48,13 @@ curl -sfL https://get.rke2.io | sudo sh -
 
 h2 "Create and write rke2 configuration files"
 sudo mkdir -p /etc/rancher/rke2
-envsubst < ../configurations/rke2.yaml | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
+curl -sL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/rke2.yaml \
+  | envsubst | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
 
 h2 "Create and write cilium configuration files"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
-envsubst < ../configurations/cilium.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
+curl -sL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/cilium.yaml \
+  | envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
 # h2 "setting up kubectl"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
