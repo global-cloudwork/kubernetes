@@ -1,30 +1,11 @@
-# HTTP Redirection Route
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
-metadata:
-  name: http-rke2
-  namespace: gateway
-  labels:
-    app.kubernetes.io/name: rke2
-spec:
-  parentRefs:
-  - name: gateway
-    namespace: gateway
-    sectionName: http
-  hostnames:
-  - "*.promotesudbury.ca"
-  rules:
-  - backendRefs:
-    - name: rke2
-      port: 8080
----
-
 # # HTTP Redirection Route
 # apiVersion: gateway.networking.k8s.io/v1beta1
 # kind: HTTPRoute
 # metadata:
-#   name: http-redirect
+#   name: http-rke2
 #   namespace: gateway
+#   labels:
+#     app.kubernetes.io/name: rke2
 # spec:
 #   parentRefs:
 #   - name: gateway
@@ -33,29 +14,48 @@ spec:
 #   hostnames:
 #   - "*.promotesudbury.ca"
 #   rules:
-#   - filters:
-#     - type: RequestRedirect
-#       requestRedirect:
-#         scheme: https
-#         statusCode: 301
-# ---
-# # ArgoCD UI
-# apiVersion: gateway.networking.k8s.io/v1beta1
-# kind: HTTPRoute
-# metadata:
-#   name: argocd-http-route
-#   namespace: gateway
-# spec:
-#   parentRefs:
-#   - name: gateway
-#     namespace: gateway
-#     sectionName: https
-#   hostnames:
-#   - "argo.promotesudbury.ca"
-#   rules:
 #   - backendRefs:
-#     - name: argocd-server
-#       port: 30080
+#     - name: rke2
+#       port: 8080
+---
+
+# HTTP Redirection Route
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: http-redirect
+  namespace: gateway
+spec:
+  parentRefs:
+  - name: gateway
+    namespace: gateway
+    sectionName: http
+  hostnames:
+  - "*.promotesudbury.ca"
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301
+---
+# ArgoCD UI
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: argocd-http-route
+  namespace: gateway
+spec:
+  parentRefs:
+  - name: gateway
+    namespace: gateway
+    sectionName: https
+  hostnames:
+  - "argo.promotesudbury.ca"
+  rules:
+  - backendRefs:
+    - name: argocd-server
+      port: 30080
 ---
 # # n8n HTTPRoute
 # apiVersion: gateway.networking.k8s.io/v1beta1
