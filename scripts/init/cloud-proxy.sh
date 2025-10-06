@@ -1,6 +1,11 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 
-source ../../.env
+projects/714519505181/secrets/development-environment-file
+
+SECRET_NAME="development-environmnet-file"
+SECRET_VERSION="latest" # Or a specific version number
+
+export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
 # For enviroment variable substitution
 export PATH=$PATH:/opt/rke2/bin
