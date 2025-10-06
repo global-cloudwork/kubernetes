@@ -56,7 +56,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --maintenance-policy=TERMINATE \
     --provisioning-model=SPOT \
     --service-account="$SERVICE_ACCOUNT" \
-    --scopes="$SCOPES" \
+    # --scopes="$SCOPES" \
     --tags=http-server,https-server \
     --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,image="$IMAGE",mode=rw,size=10,type=pd-standard \
     --no-shielded-secure-boot \
