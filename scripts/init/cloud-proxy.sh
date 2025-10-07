@@ -1,4 +1,5 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
+#sudo systemctl status rke2-server.service
 
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
@@ -43,7 +44,7 @@ sudo apt-get update
 
 h2 "Curl and install rke2, helm, and k9s"
 # curl -sS https://webinstall.dev/k9s | bash
-# curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
 h2 "Create and write rke2 configuration files"
