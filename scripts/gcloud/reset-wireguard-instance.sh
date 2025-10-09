@@ -83,11 +83,6 @@ done
 h2 "Wait finished, instance is running..."
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME \
-    --project=$GCP_PROJECT \
-    --zone=$GCP_ZONE \
-    --command='curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash'
-
-gcloud compute ssh ubuntu@$INSTANCE_NAME \
     --project=$GCP_PROJECT 
     --zone=$GCP_ZONE 
     --ssh-flag="-o UserKnownHostsFile=/dev/null"

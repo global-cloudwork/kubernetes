@@ -1,3 +1,9 @@
+# gcloud compute ssh ubuntu@cloud-proxy \
+#     --project=global-cloudworks \
+#     --zone=$GCP_ZONE \
+#     --command='curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash'
+
+
 #curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash
 function h1() {
   command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
