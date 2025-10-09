@@ -78,11 +78,19 @@ while true; do
     fi
 
     h2 "Waiting..."
-    sleep 5
+    sleep 30
 done
 h2 "Wait finished, instance is running..."
 
-gcloud compute ssh ubuntu@$INSTANCE_NAME --project=$GCP_PROJECT --zone=$GCP_ZONE --ssh-flag="-o UserKnownHostsFile=/dev/null"
+gcloud compute ssh ubuntu@$INSTANCE_NAME \
+    --project=$GCP_PROJECT \
+    --zone=$GCP_ZONE \
+    --command='curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash'
+
+gcloud compute ssh ubuntu@$INSTANCE_NAME \
+    --project=$GCP_PROJECT 
+    --zone=$GCP_ZONE 
+    --ssh-flag="-o UserKnownHostsFile=/dev/null"
 
 # h2 "Streaming startup script output..."
 # gcloud compute instances tail-serial-port-output "$INSTANCE_NAME" \

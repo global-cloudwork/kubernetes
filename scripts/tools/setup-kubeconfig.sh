@@ -10,6 +10,7 @@ function h2() {
 h1 "Replacing kubeconfig"
 
 h2 "copying kubeconfig"
+sudo mkdir -p /home/ubuntu/.kube/cloud-proxy
 sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
 sudo chown ubuntu:ubuntu /home/ubuntu/.kube/cloud-proxy/config
 
