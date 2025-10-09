@@ -1,6 +1,6 @@
 # gcloud compute ssh ubuntu@cloud-proxy \
 #     --project=global-cloudworks \
-#     --zone=$GCP_ZONE \
+#     --zone=us-central1-a \
 #     --command='curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash'
 
 
