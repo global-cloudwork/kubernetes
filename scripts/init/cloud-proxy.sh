@@ -1,6 +1,10 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
+#Run as ubuntu after ssh
+#curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash
+global-cloudwork/kubernetes/main/
+
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
 # For enviroment variable substitution
@@ -71,16 +75,9 @@ while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
   h2 "kubeconfig not found yet, waiting"
   sleep 5
 done
-h2 "making kubeconfig directories"
+
+h2 "LOOK HERE - Deploy the kubeconfig setup script after ssh"
 mkdir -p /home/ubuntu/.kube/$CLUSTER_NAME
-
-h2 "copying kubeconfig"
-sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/$CLUSTER_NAME/config
-sudo chown ubuntu:ubuntu /home/ubuntu/.kube/$CLUSTER_NAME/config
-
-h2 "Find and flatten csv of clusters stored in $KUBECONFIG"
-KUBECONFIG=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-kubectl --kubeconfig="$KUBECONFIG" config view --flatten > /home/ubuntu/.kube/config
 
 h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=100s --insecure-skip-tls-verify
