@@ -3,7 +3,6 @@
 
 #Run as ubuntu after ssh
 #curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash
-global-cloudwork/kubernetes/main/
 
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
