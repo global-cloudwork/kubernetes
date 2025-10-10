@@ -13,10 +13,6 @@ export CLUSTER_NAME=cloud-proxy
 export CLUSTER_ID=$(($CLUSTER_NAME + 0))
 
 # Values passed to the startup script using encrypted metadata
-PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" $PUBLIC_KEY)
-AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" $AUTHORS_IP)
-CERTIFICATE=$(curl -s -H "Metadata-Flavor: Google" $CERTIFICATE)
-TOKEN=$(curl -s -H "Metadata-Flavor: Google" $TOKEN)
 EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" $EXTERNAL_IP)
 
 # Cluster details

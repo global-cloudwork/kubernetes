@@ -10,7 +10,7 @@ function h1() {
 
 # ======================== Style Ends Here ========================
 
-h1 "Resetting Wireguard Instance"
+h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 
 source ../../.development.env
 
@@ -21,15 +21,17 @@ h2 "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
 wg genkey > $PRIVATE_KEY
 wg pubkey < $PRIVATE_KEY > $PUBLIC_KEY
 
+h2 "Getting environment variables from rke2 cluster"
 CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml)
+TOKEN=$(sudo cat /var/lib/rancher/rke2/server/node-token)
 
+h2 "updating secrets in secret manager"
 gcloud secrets versions add public-key \
     --data-file=- < "$PUBLIC_KEY"
-
 gcloud secrets versions add cilium-certificate \
     --data-file=- < "$CILIUM_CA"
-
-h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
+gcloud secrets versions add on-site-token \
+    --data-file=- < "$TOKEN"
 
 h2 "checking if instance exists..."
 if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --format="value(name)" --project="$GCP_PROJECT" --zones="$GCP_ZONE")" ]; then
