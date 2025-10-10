@@ -4,3 +4,5 @@ tls-sans:
   - ${HOST_IP}
   - "localhost"
 debug: true
+disable:
+  - rke2-ingress-nginx
