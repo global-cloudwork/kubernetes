@@ -29,9 +29,9 @@ h2 "updating secrets in secret manager"
 gcloud secrets versions add public-key \
     --data-file=- < "$PUBLIC_KEY"
 gcloud secrets versions add cilium-certificate \
-    --data-file=- < "$CILIUM_CA"
+    --data-file=- <<< "$CILIUM_CA"
 gcloud secrets versions add on-site-token \
-    --data-file=- < "$TOKEN"
+    --data-file=- <<< "$TOKEN"
 
 h2 "checking if instance exists..."
 if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --format="value(name)" --project="$GCP_PROJECT" --zones="$GCP_ZONE")" ]; then
