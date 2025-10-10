@@ -18,17 +18,6 @@ h1 "Replacing kubeconfig"
 h2 "Getting environment variables from Secret Manager"
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
-while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
-  h2 "kubeconfig not found..."
-  sleep 5
-done
-
-# Wait for API to become available
-until kubectl get nodes >/dev/null 2>&1; do
-  h2 "kubernetes API not ready..."
-  sleep 10
-done
-
 h2 "create kubeconfig directory"
 mkdir -p $HOME/.kube/$CLUSTER_NAME
 
