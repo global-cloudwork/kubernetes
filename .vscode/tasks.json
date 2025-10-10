@@ -17,6 +17,15 @@
       }
     },
     {
+      "label": "Update .env File",
+      "type": "shell",
+      "command": "cd ${workspaceFolder}/scripts/tools && source ./upload-env-secret.sh",
+      "problemMatcher": [],
+      "dependsOn": [],
+      "options": {
+      }
+    },
+    {
       "label": "Replace Cloud Proxy Cluster",
       "type": "shell",
       "command": "cd ${workspaceFolder}/scripts/gcloud/ && ./reset-wireguard-instance.sh",
