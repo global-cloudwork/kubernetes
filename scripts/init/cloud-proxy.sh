@@ -43,7 +43,7 @@ h1 "Configure RKE2 & Deploy Kustomizations"
 
 h2 "apt update & install"
 sudo apt-get update
-# sudo apt-get install -y curl
+sudo apt-get install -y git
 
 h2 "Curl and install rke2, helm, and k9s"
 # curl -sS https://webinstall.dev/k9s | bash
