@@ -26,11 +26,6 @@ export CLUSTER_ID=$(($CLUSTER_NAME + 0))
 declare -a PEERS=(
     "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
 )
-declare -a KUSTOMIZE_PATHS=(
-  "components/bootstrap"
-  "components/applications/argocd"
-  "components/environments/development"
-)
 
 function h2() {
   command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"

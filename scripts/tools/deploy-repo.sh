@@ -13,6 +13,12 @@ function h2() {
     command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
 }
 
+declare -a KUSTOMIZE_PATHS=(
+  "components/bootstrap"
+  "components/applications/argocd"
+  "components/environments/development"
+)
+
 h1 "Replacing kubeconfig"
 
 h2 "Getting environment variables from Secret Manager"
