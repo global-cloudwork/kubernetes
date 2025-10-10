@@ -10,6 +10,8 @@ function h1() {
 
 # ======================== Style Ends Here ========================
 
+export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
+
 h1 "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 
 source ../../.development.env
