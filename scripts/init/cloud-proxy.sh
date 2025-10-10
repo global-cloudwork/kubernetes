@@ -13,18 +13,15 @@ export CLUSTER_NAME=cloud-proxy
 export CLUSTER_ID=$(($CLUSTER_NAME + 0))
 
 # Values passed to the startup script using encrypted metadata
-AUTHORS_PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/public-key)
-AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/allowed-ips)
-CILIUM_CA=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca)
-ADDRESS=$(curl -s -H "Metadata-Flavor: Google" \
-    http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip) 
+PUBLIC_KEY=$(curl -s -H "Metadata-Flavor: Google" $PUBLIC_KEY)
+AUTHORS_IP=$(curl -s -H "Metadata-Flavor: Google" $AUTHORS_IP)
+CERTIFICATE=$(curl -s -H "Metadata-Flavor: Google" $CERTIFICATE)
+TOKEN=$(curl -s -H "Metadata-Flavor: Google" $TOKEN)
+EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" $EXTERNAL_IP)
 
 # Cluster details
 declare -a PEERS=(
-    "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
+    "${PUBLIC_KEY},${AUTHORS_IP}"
 )
 
 function h2() {
