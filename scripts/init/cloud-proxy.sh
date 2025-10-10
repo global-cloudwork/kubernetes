@@ -2,7 +2,7 @@
 #sudo systemctl status rke2-server.service
 
 #Run as ubuntu after ssh
-#curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash
+#curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/deploy-repo.sh | bash
 
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
