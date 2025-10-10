@@ -55,7 +55,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --scopes=cloud-platform \
     --service-account="$SERVICE_ACCOUNT" \
     --tags=http-server,https-server \
-    --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,image="$IMAGE",mode=rw,size=10,type=pd-standard \
+    --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,image="$IMAGE",mode=rw,size=15,type=pd-standard \
     --no-shielded-secure-boot \
     --shielded-vtpm \
     --shielded-integrity-monitoring \
