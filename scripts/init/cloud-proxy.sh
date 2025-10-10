@@ -70,17 +70,6 @@ h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
-while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
-  h2 "kubeconfig not found..."
-  sleep 5
-done
-
-# Wait for API to become available
-until kubectl get nodes >/dev/null 2>&1; do
-  h2 "kubernetes API not ready..."
-  sleep 10
-done
-
 # # Conditional block to run only if CLUSTER_NAME is "cloud-proxy"
 # if [ "$CLUSTER_NAME" == "cloud-proxy" ]; then
 #   # Download and apply Cilium CA
