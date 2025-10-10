@@ -71,30 +71,14 @@ sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
 while [ ! -f /etc/rancher/rke2/rke2.yaml ]; do
-  h2 "kubeconfig not found yet, waiting"
+  h2 "kubeconfig not found..."
   sleep 5
 done
 
-h2 "LOOK HERE - Deploy the kubeconfig setup script after ssh"
-mkdir -p /home/ubuntu/.kube/$CLUSTER_NAME
-
-h2 "waiting for the node, then all of its pods"
-kubectl wait --for=condition=Ready node --all --timeout=100s --insecure-skip-tls-verify
-kubectl wait --for=condition=Ready pods --all --timeout=100s --insecure-skip-tls-verify
-
-# h2 "deleting pods to enable cilium hostNetwork"
-# kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod
-
-h2 "waiting for the node, then all of its pods"
-kubectl wait --for=condition=Ready node --all --timeout=100s
-kubectl wait --for=condition=Ready pods --all --timeout=100s
-
-for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
-    h2 "Applying Kustomize PATH: $CURRENT_PATH"
-    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
-      kubectl apply --server-side --force-conflicts -f -
-    kubectl wait --for=condition=complete jobs --all -A --timeout=100s || true
-    kubectl wait --for=condition=running pods --all -A --timeout=100s || true
+# Wait for API to become available
+until kubectl get nodes >/dev/null 2>&1; do
+  h2 "kubernetes API not ready..."
+  sleep 10
 done
 
 # # Conditional block to run only if CLUSTER_NAME is "cloud-proxy"
