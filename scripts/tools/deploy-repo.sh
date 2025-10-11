@@ -55,6 +55,5 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     h2 "Applying Kustomize PATH: $CURRENT_PATH"
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
       kubectl apply --server-side --force-conflicts -f -
-    # kubectl wait --for=condition=complete jobs --all -A --timeout=100s || true
-    # kubectl wait --for=condition=running pods --all -A --timeout=100s || true
+    sleep 10
 done
