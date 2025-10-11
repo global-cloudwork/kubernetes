@@ -4,3 +4,6 @@ kind: Kustomization
 resources:
   - base-application-set.yaml
   - tenant/tenant-application-set.yaml
+  - edge/gateway/gateway.yaml
+  - edge/gateway/httproute.yaml
+  - edge/cert-manager/cluster-issuer.yaml
