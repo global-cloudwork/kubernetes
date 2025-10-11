@@ -22,6 +22,9 @@ declare -a KUSTOMIZE_PATHS=(
 
 h1 "Replacing kubeconfig"
 
+curl -sS https://webinstall.dev/k9s | bash
+source ~/.config/envman/PATH.env
+
 h2 "Getting environment variables from Secret Manager"
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
