@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # gcloud compute ssh ubuntu@cloud-proxy \
 #     --project=global-cloudworks \
 #     --zone=us-central1-a \
