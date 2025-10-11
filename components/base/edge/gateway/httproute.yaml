@@ -51,7 +51,7 @@ spec:
       namespace: gateway
       sectionName: http
   hostnames:
-    - "argo.promotesudbury.ca"
+    - "argocd.promotesudbury.ca"
   rules:
     - matches:
         - path:
