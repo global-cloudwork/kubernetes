@@ -34,7 +34,7 @@ sudo apt-get update
 sudo apt-get install -y git
 
 h2 "Curl and install rke2, helm, and k9s"
-# curl -sS https://webinstall.dev/k9s | bash
+curl -sS https://webinstall.dev/k9s | bash
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl -sfL https://get.rke2.io | sudo sh -
 
@@ -58,17 +58,3 @@ h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
-# # Conditional block to run only if CLUSTER_NAME is "cloud-proxy"
-# if [ "$CLUSTER_NAME" == "cloud-proxy" ]; then
-#   # Download and apply Cilium CA
-#   curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/attributes/cilium-ca \
-#   | base64 -d | kubectl create -f -
-
-#     # Commented-out secret creation (as in the original code)
-#     # kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
-# fi
-
-
-
-
-# kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
