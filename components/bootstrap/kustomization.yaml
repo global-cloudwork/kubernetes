@@ -15,6 +15,9 @@ resources:
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
+  # Cert-Manager CRDs
+  - https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+
   # Secrets & Namespaces
   - secret.k8s.yaml
   - namespace.k8s.yaml
