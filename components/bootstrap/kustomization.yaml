@@ -20,5 +20,5 @@ resources:
   - namespace.k8s.yaml
 
   # System Upgrade Controller
-  - kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
+  #- https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
   # https://docs.rke2.io/upgrades/automated_upgrade
