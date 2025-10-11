@@ -35,7 +35,7 @@ sudo chown ubuntu:ubuntu /home/ubuntu/.kube/cloud-proxy/config
 
 h2 "find and flatten csv of clusters stored in $KUBECONFIG"
 KUBECONFIG=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-sudo kubectl --kubeconfig="$KUBECONFIG" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+kubectl --kubeconfig="$KUBECONFIG" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
 h2 "waiting for the node, then all of its pods"
 kubectl wait --for=condition=Ready node --all --timeout=100s --insecure-skip-tls-verify

@@ -31,5 +31,4 @@ cd network-manager-wireguard
 make   
 sudo make install
 
-
 sudo apt install wireguard -y
