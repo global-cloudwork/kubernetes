@@ -2,6 +2,7 @@ apiVersion: "cilium.io/v2"
 kind: CiliumLoadBalancerIPPool
 metadata:
   name: "ip-pool"
+  namespace: gateway
 spec:
   blocks:
   - cidr: "10.0.10.0/24"
