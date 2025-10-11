@@ -47,16 +47,20 @@ metadata:
   namespace: gateway
 spec:
   parentRefs:
-  - name: gateway
-    namespace: gateway
-    sectionName: http
+    - name: gateway
+      namespace: gateway
+      sectionName: http
   hostnames:
-  - "argocd.promotesudbury.ca"
+    - "argo.promotesudbury.ca"
   rules:
-  - backendRefs:
-    - name: argocd-server
-      namespace: argocd
-      port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/"       # match all paths
+      backendRefs:
+        - name: argocd-server
+          namespace: argocd
+          port: 80           # use 80 for HTTP; change to 443 if you handle TLS
 # ---
 # # n8n HTTPRoute
 # apiVersion: gateway.networking.k8s.io/v1beta1
