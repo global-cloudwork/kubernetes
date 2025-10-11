@@ -60,5 +60,5 @@ h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
-sudo curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/deploy-repo.sh -o /init.sh
-chmod +x /init.sh
+sudo curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/deploy-repo.sh -o /tmp/init.sh
+chmod +x /tmp/init.sh
