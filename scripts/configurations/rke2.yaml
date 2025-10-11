@@ -2,7 +2,7 @@ cni: cilium
 write-kubeconfig-mode: "0600"
 tls-sans:
   - ${HOST_IP}
-  - "localhost"
+  - "127.0.0.1"
 debug: true
 disable:
   - rke2-ingress-nginx
