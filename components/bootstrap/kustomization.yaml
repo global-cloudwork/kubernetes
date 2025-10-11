@@ -10,12 +10,15 @@ resources:
   - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
   - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-  # Argo CD CRDs & Namespace
+  # Argo CD CRDs
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
+
+  # Secrets & Namespaces
+  - secret.k8s.yaml
   - namespace.k8s.yaml
 
-  # Secrets: Cluster, and Repo
-  - secret.k8s.yaml
-
+  # System Upgrade Controller
+  - kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
+  # https://docs.rke2.io/upgrades/automated_upgrade

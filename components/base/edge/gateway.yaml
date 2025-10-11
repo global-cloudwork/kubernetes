@@ -1,3 +1,4 @@
+# kubectl apply -f https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/components/base/edge/gateway/ip-pool.yaml
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
