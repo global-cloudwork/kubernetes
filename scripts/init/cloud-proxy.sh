@@ -33,6 +33,8 @@ h2 "apt update & install"
 sudo apt-get update
 sudo apt-get install -y git
 
+source ~/.config/envman/PATH.env
+
 h2 "Curl and install rke2, helm, and k9s"
 curl -sS https://webinstall.dev/k9s | bash
 curl -s https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
