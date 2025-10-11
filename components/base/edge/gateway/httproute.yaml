@@ -17,28 +17,28 @@
 #   - backendRefs:
 #     - name: rke2
 #       port: 8080
----
+# ---
 
 # HTTP Redirection Route
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
-metadata:
-  name: http-redirect
-  namespace: gateway
-spec:
-  parentRefs:
-  - name: gateway
-    namespace: gateway
-    sectionName: http
-  hostnames:
-  - "*.promotesudbury.ca"
-  rules:
-  - filters:
-    - type: RequestRedirect
-      requestRedirect:
-        scheme: https
-        statusCode: 301
----
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: HTTPRoute
+# metadata:
+#   name: http-redirect
+#   namespace: gateway
+# spec:
+#   parentRefs:
+#   - name: gateway
+#     namespace: gateway
+#     sectionName: http
+#   hostnames:
+#   - "*.promotesudbury.ca"
+#   rules:
+#   - filters:
+#     - type: RequestRedirect
+#       requestRedirect:
+#         scheme: https
+#         statusCode: 301
+# ---
 # ArgoCD UI
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
@@ -49,14 +49,15 @@ spec:
   parentRefs:
   - name: gateway
     namespace: gateway
-    sectionName: https
+    sectionName: http
   hostnames:
   - "argo.promotesudbury.ca"
   rules:
   - backendRefs:
     - name: argocd-server
-      port: 30080
----
+      namespace: argocd
+      port: 443
+# ---
 # # n8n HTTPRoute
 # apiVersion: gateway.networking.k8s.io/v1beta1
 # kind: HTTPRoute
