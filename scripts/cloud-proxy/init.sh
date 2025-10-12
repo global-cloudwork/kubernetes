@@ -2,7 +2,6 @@
 
 #curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/cloud-proxy/init.sh | bash
 
-
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
@@ -46,9 +45,9 @@ sudo apt-get install -y -qq git wireguard
 header "move to /tmp/ then crul and run helm and rke2 installers"
 cd /tmp/
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
-    --remote-name-all --silent --show-error | sh - 
+    --remote-name-all --silent --show-error | sh -
 curl https://get.rke2.io \
-    --remote-name-all --silent --show-error | sh -    
+    --remote-name-all --silent --show-error | sh -
 
 header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 note "CRD's must be present prior to starting RKE2 to avoid errors"
