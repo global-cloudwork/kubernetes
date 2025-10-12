@@ -19,7 +19,7 @@
     {
       "label": "Update .env File",
       "type": "shell",
-      "command": "cd ${workspaceFolder}/scripts/tools && source ./upload-env-secret.sh",
+      "command": "cd ${workspaceFolder}/scripts && source ./upload-env-secret.sh",
       "problemMatcher": [],
       "dependsOn": [],
       "options": {
