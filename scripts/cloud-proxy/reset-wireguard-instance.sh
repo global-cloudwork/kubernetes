@@ -1,10 +1,15 @@
 #!/bin/bash
 
-title()   { printf "\033[1;4;38;5;231m# %s\033[0m\n" "$1"; }   # Bright white
-section() { printf "\033[1;38;5;51m# %s\033[0m\n" "$1"; }       # Cyan
-header()  { printf "\033[1;3;38;5;33m## %s\033[0m\n" "$1"; }    # Blue
-error()   { printf "\033[1;4;38;5;196mError:\033[0m \033[1m%s\033[0m\n" "$1"; }  # Bright red
-note()    { printf "\033[1;3;38;5;82mNote:\033[0m \033[1m%s\033[0m\n" "$1"; }   # Bright green
+BOLD="\e[1m"
+ITALIC="\e[3m"
+UNDERLINE="\e[4m"
+RESET="\e[0m"
+
+title()   { printf "\n\n${BOLD}${UNDERLINE}\e[38;5;231m%s${RESET}\n\n" "$1"; }
+section() { printf "\n\n${BOLD}${UNDERLINE}\e[38;5;51m%s${RESET}\n\n" "$1"; }
+header()  { printf "\n\n${ITALIC}\e[38;5;33m%s${RESET}\n\n" "$1"; }
+error()   { printf "\n\n${BOLD}${ITALIC}${UNDERLINE}\e[38;5;106m%s${RESET}\n\n" "$1"; }
+note()    { printf "\n\n${BOLD}${ITALIC}\e[38;5;82m%s${RESET}\n\n" "$1"; }
 
 # ======================== Style Ends Here ========================
 
