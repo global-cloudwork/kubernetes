@@ -31,7 +31,6 @@ CLUSTER_ID=$(($CLUSTER_NAME + 0))
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 
 declare -a KUSTOMIZE_PATHS=(
-  "components/bootstrap"
   "components/applications/argocd"
   "components/environments/development"
 )
@@ -61,7 +60,9 @@ sudo curl --remote-name-all --silent --show-error \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
+    https://github.com/global-cloudwork/kubernetes/main/scripts/kubernetes/secrets.yaml \
+    https://github.com/global-cloudwork/kubernetes/main/scripts/kubernetes/namespaces.yaml
 
 header "move to /etc/rancher/rke2/ then download, then add runtime variable sto configuration files"
 mkdir -p /etc/rancher/rke2/
