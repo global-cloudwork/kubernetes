@@ -39,15 +39,14 @@ declare -a KUSTOMIZE_PATHS=(
 section "Organize apt-get, curl files, and inject runtime variables into configurations"
 
 header "apt-get update & install"
-sudo apt-get update -qq
-sudo apt-get install -y -qq git wireguard
+sudo apt-get update
+sudo apt-get install -y git wireguard
 
 header "move to /tmp/ then crul and run helm and rke2 installers"
 cd /tmp/
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
-    --remote-name-all --silent --show-error | sh -
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 curl https://get.rke2.io \
-    --remote-name-all --silent --show-error | sh -
+    --remote-name-all --silent --show-error | sudo bash
 
 header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 note "CRD's must be present prior to starting RKE2 to avoid errors"
