@@ -59,3 +59,7 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     h2 "sleeping 10s to allow resources to settle"
     sleep 10
 done
+
+h2 "restart cilium-operator to pickup gatewayAPI CRDs"
+kubectl -n kube-system rollout restart deployment/cilium-operator
+kubectl -n kube-system rollout status deployment/cilium-operator
