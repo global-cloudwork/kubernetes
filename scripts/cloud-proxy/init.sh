@@ -49,8 +49,8 @@ curl https://get.rke2.io \
 
 header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-sudo cd /var/lib/rancher/rke2/server/manifests/
 sudo curl --remote-name-all --silent --show-error \
+    --output-dir /var/lib/rancher/rke2/server/manifests/ \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
@@ -66,8 +66,8 @@ sudo curl --remote-name-all --silent --show-error \
 
 header "move to /etc/rancher/rke2/ then download, then add runtime variable sto configuration files"
 sudo mkdir -p /etc/rancher/rke2/
-sudo cd /etc/rancher/rke2/
 sudo curl --remote-name-all --silent --show-error \
+    --output-dir /etc/rancher/rke2/ \
     https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/config.yaml \
     https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/rke2-cilium-config.yaml
 
