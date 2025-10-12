@@ -1,31 +1,24 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
-#Run as ubuntu after ssh
-#curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/deploy-repo.sh | bash
+function h1() {
+  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
+}
+
+function h2() {
+    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
+}
 
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
 # For enviroment variable substitution
-export PATH=$PATH:/opt/rke2/bin
-export HOST_IP=$(hostname -I | awk '{print $1}')
-export CLUSTER_NAME=cloud-proxy
-export CLUSTER_ID=$(($CLUSTER_NAME + 0))
+PATH=$PATH:/opt/rke2/bin
+HOST_IP=$(hostname -I | awk '{print $1}')
+CLUSTER_NAME=cloud-proxy
+CLUSTER_ID=$(($CLUSTER_NAME + 0))
 
 # Values passed to the startup script using encrypted metadata
 EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" $EXTERNAL_IP)
-
-# Cluster details
-declare -a PEERS=(
-    "${PUBLIC_KEY},${AUTHORS_IP}"
-)
-
-function h2() {
-  command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
-}
-function h1() {
-  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
-}
 
 h1 "Configure RKE2 & Deploy Kustomizations"
 
@@ -75,5 +68,47 @@ h2 "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
-sudo curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/cloud-proxy/deploy-repo.sh -o /tmp/init.sh
-chmod +x /tmp/init.sh
+declare -a KUSTOMIZE_PATHS=(
+  "components/bootstrap"
+  "components/applications/argocd"
+  "components/environments/development"
+)
+
+h1 "Replacing kubeconfig"
+curl -sS https://webinstall.dev/k9s | bash
+source ~/.config/envman/PATH.env
+
+h2 "Getting environment variables from Secret Manager"
+export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
+
+h2 "create kubeconfig directory"
+mkdir -p $HOME/.kube/$CLUSTER_NAME
+
+h2 "copying kubeconfig"
+sudo mkdir -p /home/ubuntu/.kube/cloud-proxy
+sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo chown ubuntu:ubuntu /home/ubuntu/.kube/cloud-proxy/config
+
+h2 "find and flatten the configs in files like HOME/.kube/*/config"
+KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+
+h2 "waiting for the node, then all of its pods"
+kubectl wait --for=condition=Ready node --all --timeout=100s --insecure-skip-tls-verify
+kubectl wait --for=condition=Ready pods --all --timeout=100s --insecure-skip-tls-verify
+
+# h2 "deleting pods to enable cilium hostNetwork"
+# kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod
+
+h2 "waiting for the node, then all of its pods"
+kubectl wait --for=condition=Ready node --all --timeout=100s
+kubectl wait --for=condition=Ready pods --all --timeout=100s
+
+for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
+    h2 "Applying Kustomize PATH: $CURRENT_PATH"
+    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
+      kubectl apply --server-side --force-conflicts -f -
+    
+    h2 "sleeping 10s to allow resources to settle"
+    sleep 10
+done

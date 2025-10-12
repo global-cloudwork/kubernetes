@@ -60,8 +60,8 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --shielded-vtpm \
     --shielded-integrity-monitoring \
     --labels=goog-ec-src=vm_add-gcloud \
-    --reservation-affinity=any \
-    --metadata=startup-script-url="$STARTUP_SCRIPT_URL"
+    --reservation-affinity=any 
+    # --metadata=startup-script-url="$STARTUP_SCRIPT_URL"
     
 h2 "Waiting for instance to be running"
 while true; do
