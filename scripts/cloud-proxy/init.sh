@@ -6,11 +6,16 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
-title()   { printf "\n\033[1;4;38;5;231m# %s\033[0m\n\n\n\n" "$1"; }   # Bright white
-section() { printf "\n\033[1;38;5;51m# %s\033[0m\n\n\n\n" "$1"; }       # Cyan
-header()  { printf "\n\033[1;3;38;5;33m## %s\033[0m\n\n\n\n" "$1"; }    # Blue
-error()   { printf "\n\033[1;4;38;5;196mError:\033[0m \033[1m%s\033[0m\n\n" "$1"; }  # Bright red
-note()    { printf "\n\033[1;3;38;5;82mNote:\033[0m \033[1m%s\033[0m\n\n" "$1"; }   # Bright green
+BOLD="\e[1m"
+ITALIC="\e[3m"
+UNDERLINE="\e[4m"
+RESET="\e[0m"
+
+title()   { printf "${BOLD}${UNDERLINE}\e[38;5;231m%s${RESET}\n\n" "$1"; }
+section() { printf "${BOLD}${UNDERLINE}\e[38;5;51m%s${RESET}\n\n" "$1"; }
+header()  { printf "${ITALIC}\e[38;5;33m%s${RESET}\n\n" "$1"; }
+error()   { printf "${BOLD}${ITALIC}${UNDERLINE}\e[38;5;106m%s${RESET}\n\n" "$1"; }
+note()    { printf "${BOLD}${ITALIC}\e[38;5;82m%s${RESET}\n\n" "$1"; }
 
 title "Configure RKE2 & Deploy Kustomizations"
 
