@@ -23,6 +23,7 @@ section "Setup variables and functions"
 
 header "Importing variables from Google Secret Manager, and GCE Metadata"
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
+
 EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" $EXTERNAL_IP)
 
 PATH=$PATH:/opt/rke2/bin
