@@ -1,3 +1,3 @@
 #!/bin/bash
 ./remove.sh
-../init/on-site.sh
+../on-site/init.sh
