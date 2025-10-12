@@ -68,6 +68,8 @@ header "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
+sleep 40
+
 header "replace ~./kube/config, after copying the default rke2.yaml"
 mkdir -p $HOME/.kube/$CLUSTER_NAME
 sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
