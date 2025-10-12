@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+#curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/cloud-proxy/init.sh | bash
+
+
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
@@ -30,8 +34,8 @@ declare -a KUSTOMIZE_PATHS=(
 section "updating, installing, and dependencies"
 
 header "apt-get update & install dependencies"
-sudo apt-get update 
-sudo apt-get install -y git wireguard
+sudo apt-get update -qq
+sudo apt-get install -y -qq git wireguard
 
 header "move to /tmp/ and download and install helm and rke2"
 cd /tmp/
