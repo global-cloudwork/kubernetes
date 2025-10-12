@@ -42,10 +42,28 @@ sudo mkdir -p /etc/rancher/rke2
 curl -sL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/rke2.yaml \
   | envsubst | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
 
-h2 "Create and write cilium configuration files"
+h2 "Create and write cilium configuration file, and crds"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests
+
+# Cilium Helm Chart Config with Gateway API enabled 
 curl -sL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/cilium.yaml \
   | envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
+
+# Gateway API CRDs
+curl -sSL https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_gatewayclasses.yaml > /dev/null
+curl -sSL https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_gateways.yaml > /dev/null
+curl -sSL https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_grpcroutes.yaml > /dev/null
+curl -sSL https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_httproutes.yaml > /dev/null
+curl -sSL https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_referencegrants.yaml > /dev/null
+curl -sSL https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_tlsroutes.yaml > /dev/null
+
+# Argo CD CRDs
+curl -sSL https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/applicationset-crd.yaml > /dev/null
+curl -sSL https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/application-crd.yaml > /dev/null
+curl -sSL https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/appproject-crd.yaml > /dev/null
+
+# Cert-Manager CRDs
+curl -sSL -L https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml | sudo tee /var/lib/rancher/rke2/server/manifests/cert-manager.crds.yaml > /dev/null
 
 # h2 "setting up kubectl"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
