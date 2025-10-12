@@ -36,21 +36,22 @@ declare -a KUSTOMIZE_PATHS=(
   "components/environments/development"
 )
 
-section "updating, installing, and dependencies"
+section "Organize apt-get, curl files, and inject runtime variables into configurations"
 
-header "apt-get update & install dependencies"
+header "apt-get update & install"
 sudo apt-get update -qq
 sudo apt-get install -y -qq git wireguard
 
-header "move to /tmp/ and download and install helm and rke2"
+header "move to /tmp/ then crul and run helm and rke2 installers"
 cd /tmp/
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
-    --remote-name-all --silent --show-error | bash
+    --remote-name-all --silent --show-error | sh - 
 curl https://get.rke2.io \
-    --remote-name-all --silent --show-error | bash    
+    --remote-name-all --silent --show-error | sh -    
 
-header "move /var/lib/rancher/rke2/server/manifests/ and download CRD's"
+header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 note "CRD's must be present prior to starting RKE2 to avoid errors"
+# mkdir -p /var/lib/rancher/rke2/server/manifests/
 cd /var/lib/rancher/rke2/server/manifests/
 sudo curl --remote-name-all --silent --show-error \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
@@ -65,6 +66,7 @@ sudo curl --remote-name-all --silent --show-error \
     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
 
 header "move to /etc/rancher/rke2/ then download, then add runtime variable sto configuration files"
+# mkdir -p /etc/rancher/rke2/
 cd /etc/rancher/rke2/
 sudo curl --remote-name-all --silent --show-error \
     https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/config.yaml \
