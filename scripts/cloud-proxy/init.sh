@@ -2,6 +2,12 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
+title()   { printf "\033[1;4;38;5;231m# %s\033[0m\n" "$1"; }   # Bright white
+section() { printf "\033[1;38;5;51m# %s\033[0m\n" "$1"; }       # Cyan
+header()  { printf "\033[1;3;38;5;33m## %s\033[0m\n" "$1"; }    # Blue
+error()   { printf "\033[1;4;38;5;196mError:\033[0m \033[1m%s\033[0m\n" "$1"; }  # Bright red
+note()    { printf "\033[1;3;38;5;82mNote:\033[0m \033[1m%s\033[0m\n" "$1"; }   # Bright green
+
 title "Configure RKE2 & Deploy Kustomizations"
 
 section "Setup variables and functions"
