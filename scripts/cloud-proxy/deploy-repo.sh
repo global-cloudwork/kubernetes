@@ -1,10 +1,3 @@
-#!/usr/bin/env bash
-# gcloud compute ssh ubuntu@cloud-proxy \
-#     --project=global-cloudworks \
-#     --zone=us-central1-a \
-#     --command='curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tools/setup-kubeconfig.sh | bash'
-
-
 #curl -fsSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/cloud-proxy/deploy-repo.sh | bash
 function h1() {
   command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
@@ -21,7 +14,6 @@ declare -a KUSTOMIZE_PATHS=(
 )
 
 h1 "Replacing kubeconfig"
-
 curl -sS https://webinstall.dev/k9s | bash
 source ~/.config/envman/PATH.env
 
