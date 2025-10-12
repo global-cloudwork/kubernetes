@@ -42,15 +42,21 @@ sudo apt-get update
 sudo apt-get install -y git wireguard
 
 header "move to /tmp/ then crul and run helm and rke2 installers"
-cd /tmp/
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
+    --remote-name-all \
+    --silent \
+    --show-error | bash
 curl https://get.rke2.io \
-    --remote-name-all --silent --show-error | sudo bash
+    --remote-name-all \
+    --silent \
+    --show-error | sudo bash
 
 header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-sudo curl --remote-name-all --silent --show-error \
-    --output-dir /var/lib/rancher/rke2/server/manifests/ \
+sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
+    --remote-name-all \
+    --silent \
+    --show-error \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
