@@ -46,17 +46,17 @@ header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 # Ensure the manifest directory exists
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
-# Use a single, consolidated manifest for Gateway API CRDs (The Fix!)
-# This prevents RKE2's manifest processor from getting into a create/delete loop.
-sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
-    --remote-name-all \
-    --silent \
-    --show-error \
-    https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+# # Use a single, consolidated manifest for Gateway API CRDs (The Fix!)
+# # This prevents RKE2's manifest processor from getting into a create/delete loop.
+# sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
+#     --remote-name-all \
+#     --silent \
+#     --show-error \
+#     https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
+#     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
 
 header "move to /etc/rancher/rke2/ then download, then add runtime variable sto configuration files"
 sudo mkdir -p /etc/rancher/rke2/
@@ -92,7 +92,24 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+
 section "Deploy kustomizations"
+
+# Apply cert-manager CRDs
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+
+# Apply Gateway API CRDs
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml
+
+# Apply Argo CD ApplicationSet CRD
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
+
+# Apply Argo CD Application CRD
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
+
+# Apply Argo CD AppProject CRD
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
+
 
 header "loop through and apply each kustomization path"
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
