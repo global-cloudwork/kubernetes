@@ -90,7 +90,7 @@ header "replace ~./kube/config, after copying the default rke2.yaml"
 mkdir -p $HOME/.kube/$CLUSTER_NAME
 sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 sudo chown "$USER":"$USER" "$HOME/.kube/config"
 
 section "Deploy kustomizations"
