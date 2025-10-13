@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/cloud-proxy/init.sh | bash
+#curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/clusters/cloud-proxy/init.sh | bash
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
@@ -62,8 +62,8 @@ header "move to /etc/rancher/rke2/ then download, then add runtime variable sto 
 sudo mkdir -p /etc/rancher/rke2/
 sudo curl --remote-name-all --silent --show-error \
     --output-dir /etc/rancher/rke2/ \
-    https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/config.yaml \
-    https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/rke2-cilium-config.yaml
+    https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml \
+    https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml
 
 header "move to /tmp/ then crul and run helm and rke2 installers"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
