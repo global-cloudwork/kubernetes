@@ -103,5 +103,3 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     header "sleeping 10s to allow resources to settle"
     sleep 10
 done
-
-kubectl create secret tls argocd-server-tls -n argocd --key=argocd-key.pem --cert=argocd.example.com.pem
