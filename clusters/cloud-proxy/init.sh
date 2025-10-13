@@ -42,21 +42,22 @@ sudo apt-get update
 sudo apt-get install -y git wireguard
 
 header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
+
+# Ensure the manifest directory exists
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
+
+# Use a single, consolidated manifest for Gateway API CRDs (The Fix!)
+# This prevents RKE2's manifest processor from getting into a create/delete loop.
 sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
     --remote-name-all \
     --silent \
     --show-error \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml \
+    https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
     https://raw.githubusercontent.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+
 
 header "move to /etc/rancher/rke2/ then download, then add runtime variable sto configuration files"
 sudo mkdir -p /etc/rancher/rke2/
