@@ -83,6 +83,6 @@ done
 header "Wait finished, instance is running..."
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME \
-    --project=$GCP_PROJECT 
-    --zone=$GCP_ZONE 
+    --project=$GCP_PROJECT \
+    --zone=$GCP_ZONE \
     --ssh-flag="-o UserKnownHostsFile=/dev/null"
