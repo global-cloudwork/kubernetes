@@ -108,19 +108,11 @@ section "Deploy kustomizations"
 
 kubectl scale deploy cilium-operator --replicas=1 -n kube-system
 
-# Apply cert-manager CRDs
+# Apply CRDs
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-
-# Apply Gateway API CRDs
 kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml
-
-# Apply Argo CD ApplicationSet CRD
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
-
-# Apply Argo CD Application CRD
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
-
-# Apply Argo CD AppProject CRD
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
 header "loop through and apply each kustomization path"
@@ -134,6 +126,8 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
 done
 
 kubectl -n argocd rollout restart deployment argocd-server
-kubectl -n argocd rollout restart deployment argocd-application-controller
+kubectl -n argocd rollout restart deployment argocd-repo-server
 kubectl -n argocd rollout restart deployment argocd-applicationset-controller
 kubectl -n argocd rollout restart deployment argocd-notifications-controller
+kubectl -n argocd rollout restart deployment argocd-dex-server
+kubectl -n argocd rollout restart deployment argocd-redis
