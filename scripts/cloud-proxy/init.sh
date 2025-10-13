@@ -41,16 +41,6 @@ header "apt-get update & install"
 sudo apt-get update
 sudo apt-get install -y git wireguard
 
-header "move to /tmp/ then crul and run helm and rke2 installers"
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
-    --remote-name-all \
-    --silent \
-    --show-error | bash
-curl https://get.rke2.io \
-    --remote-name-all \
-    --silent \
-    --show-error | sudo bash
-
 header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
@@ -74,6 +64,16 @@ sudo curl --remote-name-all --silent --show-error \
     --output-dir /etc/rancher/rke2/ \
     https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/config.yaml \
     https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/configurations/rke2-cilium-config.yaml
+
+header "move to /tmp/ then crul and run helm and rke2 installers"
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
+    --remote-name-all \
+    --silent \
+    --show-error | bash
+curl https://get.rke2.io \
+    --remote-name-all \
+    --silent \
+    --show-error | sudo bash
 
 header "Link kubectl command avoiding race conditions"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
