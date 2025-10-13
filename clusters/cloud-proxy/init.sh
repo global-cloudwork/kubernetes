@@ -33,7 +33,6 @@ declare -a KUSTOMIZE_PATHS=(
   "base/core"
   "applications/argocd"
   "base"
-  "clusters/environments/development"
 )
 
 section "Organize apt-get, curl files, and inject runtime variables into configurations"
