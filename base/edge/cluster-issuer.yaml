@@ -4,5 +4,4 @@ metadata:
   name: cluster-issuer
   namespace: gateway
 spec:
-  gatewayClassName:
   selfSigned: {}
