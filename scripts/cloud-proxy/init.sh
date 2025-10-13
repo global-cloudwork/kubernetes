@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 #curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/cloud-proxy/init.sh | bash
-
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 
@@ -31,6 +30,7 @@ CLUSTER_ID=$(($CLUSTER_NAME + 0))
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 
 declare -a KUSTOMIZE_PATHS=(
+  "components/kubernetes"
   "components/applications/argocd"
   "components/environments/development"
 )
@@ -66,9 +66,7 @@ sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-    https://github.com/global-cloudwork/kubernetes/main/scripts/kubernetes/secrets.yaml \
-    https://github.com/global-cloudwork/kubernetes/main/scripts/kubernetes/namespaces.yaml
+    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
 
 header "move to /etc/rancher/rke2/ then download, then add runtime variable sto configuration files"
 sudo mkdir -p /etc/rancher/rke2/
