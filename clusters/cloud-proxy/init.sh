@@ -30,9 +30,10 @@ CLUSTER_ID=$(($CLUSTER_NAME + 0))
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 
 declare -a KUSTOMIZE_PATHS=(
-  "components/configurations"
-  "components/applications/argocd"
-  "components/environments/development"
+  "base/core"
+  "applications/argocd"
+  "base"
+  "clusters/environments/development"
 )
 
 section "Organize apt-get, curl files, and inject runtime variables into configurations"

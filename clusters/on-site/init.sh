@@ -13,9 +13,9 @@ declare -a PEERS=(
     "${AUTHORS_PUBLIC_KEY},${AUTHORS_IP}"
 )
 declare -a KUSTOMIZE_PATHS=(
-  "components/bootstrap"
-  "components/applications/argocd"
-  "components/environments/development"
+  "bootstrap"
+  "applications/argocd"
+  "environments/development"
 )
 
 function h2() {
