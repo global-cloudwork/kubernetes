@@ -1,0 +1,26 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-cilium
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    encryption:
+      enabled: true
+      type: wireguard
+    kubeProxyReplacement: true
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 6443
+    operator:
+      replicas: 1
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true
+    cluster:
+      name: ${CLUSTER_NAME}
+      id: ${CLUSTER_ID}
+    gatewayAPI:
+      enabled: true
