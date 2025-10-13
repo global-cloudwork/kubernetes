@@ -3,5 +3,5 @@ kind: Kustomization
 
 resources:
   - application.crd.yaml
-  - git::https://github.com/global-cloudwork/kubernetes.git//components/base?ref=main
+  # - git::https://github.com/global-cloudwork/kubernetes.git//components/base?ref=main
 #  - https://raw.githubusercontent.com/longhorn/longhorn/v1.9.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
