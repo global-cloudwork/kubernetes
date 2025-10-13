@@ -53,11 +53,10 @@ sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
     --silent \
     --show-error \
     https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml \
-    https://github.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-    https://github.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-    https://github.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
+    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
+    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
+    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-
 
 header "move to /etc/rancher/rke2/ then download, then add runtime variable sto configuration files"
 sudo mkdir -p /etc/rancher/rke2/
