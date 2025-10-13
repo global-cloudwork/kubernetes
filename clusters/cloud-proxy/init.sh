@@ -95,6 +95,8 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 
 section "Deploy kustomizations"
 
+kubectl scale deploy cilium-operator --replicas=1 -n kube-system
+
 # Apply cert-manager CRDs
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
 
@@ -109,7 +111,6 @@ kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manif
 
 # Apply Argo CD AppProject CRD
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
-
 
 header "loop through and apply each kustomization path"
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
