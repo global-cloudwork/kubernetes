@@ -3,6 +3,4 @@ kind: Kustomization
 
 resources:
   - application.crd.yaml
-  - common/namespace.yaml
-  - common/secret.yaml
 #  - https://raw.githubusercontent.com/longhorn/longhorn/v1.9.1/deploy/prerequisite/longhorn-iscsi-installation.yaml
