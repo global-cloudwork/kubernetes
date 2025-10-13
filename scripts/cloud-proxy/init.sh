@@ -30,7 +30,7 @@ CLUSTER_ID=$(($CLUSTER_NAME + 0))
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 
 declare -a KUSTOMIZE_PATHS=(
-  "components/kubernetes"
+  "components/configurations"
   "components/applications/argocd"
   "components/environments/development"
 )
