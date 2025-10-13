@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+
+# for pod in $(kubectl get pods -A -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name --no-headers | sed 's/  */,/g'); do
+#   NAMESPACE=$(echo $pod | cut -d',' -f1)
+#   NAME=$(echo $pod | cut -d',' -f2)
+#   echo "--- Checking logs for $NAMESPACE/$NAME ---"
+#   kubectl logs -n $NAMESPACE $NAME --tail=500 2>/dev/null | grep -i error
+#   echo
+# done
+
+
+# kubectl get pods -A -o custom-columns=:.metadata.name --no-headers | xargs -I {} kubectl logs -n argocd {} --tail=500 | grep -i error
 # curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/clusters/cloud-proxy/init.sh | bash
 #
 #sudo journalctl -u google-startup-scripts.service --no-pager
@@ -121,3 +132,8 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     header "sleeping 10s to allow resources to settle"
     sleep 10
 done
+
+kubectl -n argocd rollout restart deployment argocd-server
+kubectl -n argocd rollout restart deployment argocd-application-controller
+kubectl -n argocd rollout restart deployment argocd-applicationset-controller
+kubectl -n argocd rollout restart deployment argocd-notifications-controller
