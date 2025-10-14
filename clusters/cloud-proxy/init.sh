@@ -121,20 +121,7 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 
 section "Deploy kustomizations"
 
-kubectl scale deploy cilium-operator --replicas=1 -n kube-system
-
-# Apply CRDs
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-
+kubectl -n kube-system rollout restart ds cilium
 
 header "loop through and apply each kustomization path"
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
@@ -146,7 +133,7 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     sleep 10
 done
 
-kubectl -n kube-system rollout restart ds cilium
+
 kubectl -n argocd rollout restart deployment argocd-server
 kubectl -n argocd rollout restart deployment argocd-repo-server
 kubectl -n argocd rollout restart deployment argocd-applicationset-controller
