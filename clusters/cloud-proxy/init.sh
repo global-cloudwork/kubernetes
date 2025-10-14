@@ -21,10 +21,6 @@ ITALIC="\e[3m"
 UNDERLINE="\e[4m"
 RESET="\e[0m"
 
-    cluster:
-      name: ${CLUSTER_NAME}
-      id: ${CLUSTER_ID}
-
 title()   { printf "\n${BOLD}${UNDERLINE}\e[38;5;231m%s${RESET}\n" "$1"; }
 section() { printf "\n${BOLD}${UNDERLINE}\e[38;5;51m%s${RESET}\n" "$1"; }
 header()  { printf "\n${ITALIC}\e[38;5;33m%s${RESET}\n\n" "$1"; }
