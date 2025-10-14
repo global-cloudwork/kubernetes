@@ -97,7 +97,22 @@ header "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
-sleep 80
+# Wait while pods or nodes are not ready
+header "Wait while for pods and nodes to be ready"
+ACTIVE_PODS="temp"
+ACTIVE_NODES="temp"
+
+# Continue looping while there are pods or nodes not ready
+while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
+  echo "waiting..."
+
+  ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
+  ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
+  [ -n "$active-pods" ] && echo "Pods not ready:" && echo "$active-pods"
+  [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready:" && echo "$ACTIVE_NODES"
+
+  sleep 10
+done
 
 header "replace ~./kube/config, after copying the default rke2.yaml"
 mkdir -p $HOME/.kube/$CLUSTER_NAME
