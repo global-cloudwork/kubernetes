@@ -59,10 +59,12 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
 header "download configurations then add runtime variableiables via. envsub"
 sudo mkdir -p /etc/rancher/rke2/
-sudo curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml \
-| sudo envsubst | sudo tee /etc/rancher/rke2/config.yaml
-sudo curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
-| sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+sudo curl --silent --show-error --remote-name-all \
+  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml \
+  | sudo envsubst | sudo tee /etc/rancher/rke2/config.yaml
+sudo curl --silent --show-error --remote-name-all \
+  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
+  | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
 header "download configurations then add runtime variableiables via. envsub"
 sudo curl --remote-name-all --silent --show-error \
