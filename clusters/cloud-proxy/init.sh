@@ -135,7 +135,7 @@ kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.i
 
 section "Deploy kustomizations"
 
-kubectl -n kube-system rollout restart daemonset cilium
+kubectl rollout restart deployment/cilium-operator -n kube-system
 
 header "loop through and apply each kustomization path"
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
