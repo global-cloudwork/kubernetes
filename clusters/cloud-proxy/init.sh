@@ -119,19 +119,23 @@ while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   sleep 10
 done
 
-# Apply all manifests in correct order
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/application-crd.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/applicationset-crd.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/appproject-crd.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/cert-manager.crds.yaml
+# Apply Argo CD CRDs
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
-# Gateway API CRDs (dependency order matters)
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_gatewayclasses.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_gateways.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_httproutes.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_grpcroutes.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_referencegrants.yaml
-kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_tlsroutes.yaml
+# Apply Cert-Manager CRDs
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+
+# Apply Gateway API CRDs (Standard)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+
+# Apply Gateway API CRDs (Experimental)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
 section "Deploy kustomizations"
 
