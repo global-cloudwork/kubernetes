@@ -75,7 +75,7 @@ key:
       chart: homarr
       version: "7.3.0"
       releaseName: homarr
-      repoURL: "https://homarr-labs.github.io/charts"\
+      repoURL: "https://homarr-labs.github.io/charts"
       namespace: homarr
 
     # - name: kube-prometheus-stack
