@@ -57,25 +57,15 @@ header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 # Ensure the manifest directory exists
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
-# # Use a single, consolidated manifest for Gateway API CRDs (The Fix!)
-# # This prevents RKE2's manifest processor from getting into a create/delete loop.
-# sudo curl --output-dir /var/lib/rancher/rke2/server/manifests/ \
-#     --remote-name-all \
-#     --silent \
-#     --show-error \
-#     https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-#     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-
-header "move to /etc/rancher/rke2/ then download, then add runtime variable substitution in configuration files"
+header "download configurations then add runtime variableiables via. envsub"
 sudo mkdir -p /etc/rancher/rke2/
 sudo curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml \
-| sudo envsubst > /etc/rancher/rke2/config.yaml
+| sudo envsubst | sudo tee /etc/rancher/rke2/config.yaml > /dev/null
 sudo curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
-| sudo envsubst > /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+| sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml > /dev/null
 
+
+header "download configurations then add runtime variableiables via. envsub"
 sudo curl --remote-name-all --silent --show-error \
     --output-dir /var/lib/rancher/rke2/server/manifests/ \
     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
