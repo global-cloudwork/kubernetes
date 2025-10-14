@@ -104,13 +104,10 @@ ACTIVE_NODES="temp"
 
 while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   echo "waiting..."
-
   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-
   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready:" && echo "$ACTIVE_PODS"
   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready:" && echo "$ACTIVE_NODES"
-
   sleep 10
 done
 
@@ -149,6 +146,7 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     sleep 10
 done
 
+kubectl -n kube-system rollout restart ds cilium
 kubectl -n argocd rollout restart deployment argocd-server
 kubectl -n argocd rollout restart deployment argocd-repo-server
 kubectl -n argocd rollout restart deployment argocd-applicationset-controller
