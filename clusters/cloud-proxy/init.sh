@@ -66,19 +66,19 @@ sudo curl --silent --show-error --remote-name-all \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
   | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
-header "download configurations then add runtime variableiables via. envsub"
-sudo curl --remote-name-all --silent --show-error \
-    --output-dir /var/lib/rancher/rke2/server/manifests/ \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml 
+# header "download configurations then add runtime variableiables via. envsub"
+# sudo curl --remote-name-all --silent --show-error \
+#     --output-dir /var/lib/rancher/rke2/server/manifests/ \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
+#     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml 
 
 header "move to /tmp/ then crul and run helm and rke2 installers"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
@@ -97,6 +97,14 @@ header "Enable, then start the rke2-server service"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
+header "replace ~./kube/config, after copying the default rke2.yaml"
+mkdir -p $HOME/.kube/$CLUSTER_NAME
+sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+
+KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+
 # Wait while pods or nodes are not ready
 header "Wait while for pods and nodes to be ready"
 ACTIVE_PODS="temp"
@@ -111,17 +119,23 @@ while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   sleep 10
 done
 
-header "replace ~./kube/config, after copying the default rke2.yaml"
-mkdir -p $HOME/.kube/$CLUSTER_NAME
-sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
-sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+# Apply all manifests in correct order
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/application-crd.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/applicationset-crd.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/appproject-crd.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/cert-manager.crds.yaml
 
-KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+# Gateway API CRDs (dependency order matters)
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_gatewayclasses.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_gateways.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_httproutes.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_grpcroutes.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_referencegrants.yaml
+kubectl apply -f /var/lib/rancher/rke2/server/manifests/gateway.networking.k8s.io_tlsroutes.yaml
 
 section "Deploy kustomizations"
 
-kubectl -n kube-system rollout restart ds cilium
+kubectl -n kube-system rollout restart daemonset cilium
 
 header "loop through and apply each kustomization path"
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
