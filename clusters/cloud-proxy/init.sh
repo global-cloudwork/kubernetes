@@ -108,7 +108,7 @@ while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
 
   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-  [ -n "$active-pods" ] && echo "Pods not ready:" && echo "$active-pods"
+  [ -n "$ACTIVE_PODS" ] && echo "Pods not ready:" && echo "$ACTIVE_PODS"
   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready:" && echo "$ACTIVE_NODES"
 
   sleep 10
