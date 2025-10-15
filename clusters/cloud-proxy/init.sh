@@ -76,7 +76,6 @@ sudo apt-get install -y git wireguard
 # sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 # sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
 #     --remote-name-all --silent --show-error \
-#     https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml \
 #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
 #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
 #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
