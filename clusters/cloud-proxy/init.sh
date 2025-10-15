@@ -104,9 +104,9 @@ sudo curl --silent --show-error --remote-name-all \
 
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
-sudo curl --silent --show-error --remote-name-all \
-  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
-  | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+# sudo curl --silent --show-error --remote-name-all \
+#   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
+#   | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
 # Install Helm package manager
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
