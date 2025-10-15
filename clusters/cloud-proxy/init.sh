@@ -71,22 +71,22 @@ header "apt-get update & install"
 sudo apt-get update
 sudo apt-get install -y git wireguard
 
-# RKE2 automatically applies any manifests in this directory at startup
-# CRDs must be installed before their corresponding controllers
-sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
-    --remote-name-all --silent --show-error \
-    https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+# # RKE2 automatically applies any manifests in this directory at startup
+# # CRDs must be installed before their corresponding controllers
+# sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
+# sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
+#     --remote-name-all --silent --show-error \
+#     https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
+#     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
 
 #===============================================================================
@@ -156,6 +156,27 @@ while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   sleep 10
 done
 
+# Apply Cilium CRDs
+kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml
+
+# Apply Argo CD CRDs
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
+
+# Apply Cert-Manager CRDs
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+
+# Apply Gateway API CRDs (Standard)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+
+# Apply Gateway API CRDs (Experimental)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
 # Install Cilium with specific configuration
 helm repo add cilium https://helm.cilium.io/
 helm repo update
@@ -172,26 +193,19 @@ helm install cilium cilium/cilium \
   --set hubble.ui.enabled=true \
   --set gatewayAPI.enabled=true 
 
-# # Apply Cilium CRDs
-# kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml
+# Wait while pods or nodes are not ready
+header "Wait while for pods and nodes to be ready"
+ACTIVE_PODS="temp"
+ACTIVE_NODES="temp"
 
-# # Apply Argo CD CRDs
-# kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
-# kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
-# kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
-
-# # Apply Cert-Manager CRDs
-# kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-
-# # Apply Gateway API CRDs (Standard)
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-
-# # Apply Gateway API CRDs (Experimental)
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
+  echo "waiting..."
+  ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
+  ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
+  [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
+  [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
+  sleep 10
+done
 
 section "Deploy kustomizations"
 
