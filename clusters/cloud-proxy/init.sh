@@ -126,9 +126,24 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v
 # Apply Gateway API CRDs (Experimental)
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-section "Deploy kustomizations"
+helm repo add cilium https://helm.cilium.io/
+helm repo update
 
-kubectl rollout restart deployment/cilium-operator -n kube-system
+helm install cilium cilium/cilium \
+  --namespace kube-system \
+  --version 1.16.3 \
+  --set encryption.enabled=true \
+  --set encryption.type=wireguard \
+  --set kubeProxyReplacement=strict \
+  --set k8sServiceHost=127.0.0.1 \
+  --set k8sServicePort=6443 \
+  --set operator.replicas=1 \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true \
+  --set gatewayAPI.enabled=true
+
+section "Deploy kustomizations"
 
 header "loop through and apply each kustomization path"
 for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
