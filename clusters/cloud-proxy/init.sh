@@ -123,10 +123,8 @@ curl https://get.rke2.io \
 header "Link kubectl command avoiding race conditions"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
-# Enable RKE2 to start on boot
+# Enable RKE2 to start on boot, and start the service
 sudo systemctl enable rke2-server.service
-
-# Start RKE2 server
 sudo systemctl start rke2-server.service
 
 #===============================================================================
