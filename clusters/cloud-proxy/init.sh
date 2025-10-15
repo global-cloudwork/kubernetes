@@ -74,7 +74,7 @@ sudo apt-get install -y git wireguard
 # RKE2 automatically applies any manifests in this directory at startup
 # CRDs must be installed before their corresponding controllers
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-curl --output-dir /var/lib/rancher/rke2/server/manifests \
+sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
     --remote-name-all --silent --show-error \
     https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml \
     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
