@@ -152,7 +152,7 @@ while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
-  sleep 10
+  sleep 20
 done
 
 # Apply Cilium CRDs
