@@ -132,8 +132,7 @@ helm install cilium ./cilium \
   --set hubble.enabled=true \
   --set hubble.relay.enabled=true \
   --set hubble.ui.enabled=true \
-  --set gatewayAPI.enabled=true \
-  --api-versions='gateway.networking.k8s.io/v1/GatewayClass'
+  --set gatewayAPI.enabled=true 
 
 # # Apply Cilium CRDs
 # kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml
