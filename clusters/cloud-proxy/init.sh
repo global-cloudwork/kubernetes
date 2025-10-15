@@ -56,6 +56,19 @@ header "Move to /var/lib/rancher/rke2/server/manifests/ and download CRD's"
 
 # Ensure the manifest directory exists
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
+curl --output-dir /var/lib/rancher/rke2/server/manifests \
+    --remote-name-all --silent --show-error \
+    https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml \
+    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
+    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
+    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
+    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
 header "download configurations then add runtime variableiables via. envsub"
 sudo mkdir -p /etc/rancher/rke2/
@@ -105,20 +118,23 @@ while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   sleep 10
 done
 
-curl --output-dir /var/lib/rancher/rke2/server/manifests \
-    --remote-name-all --silent --show-error \
-    https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-    https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-    https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+helm repo add cilium https://helm.cilium.io/
+helm repo update
 
+helm install cilium cilium/cilium \
+  --namespace kube-system \
+  --version 1.16.3 \
+  --set encryption.enabled=true \
+  --set encryption.type=wireguard \
+  --set kubeProxyReplacement=strict \
+  --set k8sServiceHost=127.0.0.1 \
+  --set k8sServicePort=6443 \
+  --set operator.replicas=1 \
+  --set hubble.enabled=true \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true \
+  --set gatewayAPI.enabled=true \
+  --api-versions='gateway.networking.k8s.io/v1/GatewayClass'
 
 # # Apply Cilium CRDs
 # kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml
@@ -140,24 +156,6 @@ curl --output-dir /var/lib/rancher/rke2/server/manifests \
 
 # # Apply Gateway API CRDs (Experimental)
 # kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
-helm repo add cilium https://helm.cilium.io/
-helm repo update
-
-helm install cilium cilium/cilium \
-  --namespace kube-system \
-  --version 1.16.3 \
-  --set encryption.enabled=true \
-  --set encryption.type=wireguard \
-  --set kubeProxyReplacement=strict \
-  --set k8sServiceHost=127.0.0.1 \
-  --set k8sServicePort=6443 \
-  --set operator.replicas=1 \
-  --set hubble.enabled=true \
-  --set hubble.relay.enabled=true \
-  --set hubble.ui.enabled=true \
-  --set gatewayAPI.enabled=true \
-  --api-versions='gateway.networking.k8s.io/v1/GatewayClass'
 
 section "Deploy kustomizations"
 
