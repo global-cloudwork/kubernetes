@@ -121,7 +121,7 @@ done
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 
-helm install cilium ./cilium \
+helm install cilium cilium/cilium \
   --namespace kube-system \
   --set encryption.enabled=true \
   --set encryption.type=wireguard \
