@@ -66,20 +66,6 @@ sudo curl --silent --show-error --remote-name-all \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
   | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
-# header "download configurations then add runtime variableiables via. envsub"
-# sudo curl --remote-name-all --silent --show-error \
-#     --output-dir /var/lib/rancher/rke2/server/manifests/ \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-#     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml 
-
 header "move to /tmp/ then crul and run helm and rke2 installers"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     --remote-name-all \
@@ -114,10 +100,13 @@ while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   echo "waiting..."
   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-  [ -n "$ACTIVE_PODS" ] && echo "Pods not ready:" && echo "$ACTIVE_PODS"
-  [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready:" && echo "$ACTIVE_NODES"
+  [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
+  [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
   sleep 10
 done
+
+# Apply Cilium CRDs
+kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml
 
 # Apply Argo CD CRDs
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
@@ -150,7 +139,6 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     header "sleeping 10s to allow resources to settle"
     sleep 10
 done
-
 
 kubectl -n argocd rollout restart deployment argocd-server
 kubectl -n argocd rollout restart deployment argocd-repo-server
