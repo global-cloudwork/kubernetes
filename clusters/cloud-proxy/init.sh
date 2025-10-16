@@ -104,9 +104,9 @@ sudo curl --silent --show-error --remote-name-all \
 
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
-# sudo curl --silent --show-error --remote-name-all \
-#   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
-#   | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+sudo curl --silent --show-error --remote-name-all \
+  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
+  | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
 # Install Helm package manager
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
@@ -147,9 +147,6 @@ header "Wait while for pods and nodes to be ready"
 ACTIVE_PODS="temp"
 ACTIVE_NODES="temp"
 
-# Apply Cilium CRDs
-kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml
-
 # Apply Argo CD CRDs
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
@@ -168,21 +165,21 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v
 # Apply Gateway API CRDs (Experimental)
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-# Install Cilium with specific configuration
-helm repo add cilium https://helm.cilium.io/
-helm repo update
-helm install cilium cilium/cilium \
-  --namespace kube-system \
-  --set encryption.enabled=true \
-  --set encryption.type=wireguard \
-  --set kubeProxyReplacement=true \
-  --set k8sServiceHost=127.0.0.1 \
-  --set k8sServicePort=6443 \
-  --set operator.replicas=1 \
-  --set hubble.enabled=true \
-  --set hubble.relay.enabled=true \
-  --set hubble.ui.enabled=true \
-  --set gatewayAPI.enabled=true 
+# # Install Cilium with specific configuration
+# helm repo add cilium https://helm.cilium.io/
+# helm repo update
+# helm install cilium cilium/cilium \
+#   --namespace kube-system \
+#   --set encryption.enabled=true \
+#   --set encryption.type=wireguard \
+#   --set kubeProxyReplacement=true \
+#   --set k8sServiceHost=127.0.0.1 \
+#   --set k8sServicePort=6443 \
+#   --set operator.replicas=1 \
+#   --set hubble.enabled=true \
+#   --set hubble.relay.enabled=true \
+#   --set hubble.ui.enabled=true \
+#   --set gatewayAPI.enabled=true 
 
 # Wait while pods or nodes are not ready
 header "Wait while for pods and nodes to be ready"
