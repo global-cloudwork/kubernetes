@@ -16,9 +16,6 @@
 #sudo systemctl status rke2-server.service
 #sudo journalctl -u rke2-server -f
 
-
-
-
 # Print formatted section headers
 BOLD="\e[1m"
 ITALIC="\e[3m"
@@ -145,6 +142,8 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 header "Wait while for pods and nodes to be ready"
 ACTIVE_PODS="temp"
 ACTIVE_NODES="temp"
+
+sleep 60 
 
 while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   echo "waiting..."
