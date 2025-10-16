@@ -147,17 +147,6 @@ header "Wait while for pods and nodes to be ready"
 ACTIVE_PODS="temp"
 ACTIVE_NODES="temp"
 
-sleep 60
-
-while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
-  echo "waiting..."
-  ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
-  ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-  [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
-  [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
-  sleep 20
-done
-
 # Apply Cilium CRDs
 kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/master/install/kubernetes/crds.yaml
 
