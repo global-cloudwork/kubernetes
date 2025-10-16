@@ -69,8 +69,8 @@ section "Install system dependencies and download configurations"
 
 # Install required system packages
 header "apt-get update & install"
-sudo apt-get update
-sudo apt-get install -y git wireguard
+sudo apt-get -qq update
+sudo apt-get -qq -y install  git wireguard
 
 # # RKE2 automatically applies any manifests in this directory at startup
 # # CRDs must be installed before their corresponding controllers

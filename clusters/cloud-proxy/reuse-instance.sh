@@ -18,7 +18,8 @@ export $(gcloud secrets versions access latest --secret=development-env-file | x
 title "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 
 header "apt installing wireguard"
-sudo apt-get install -y wireguard
+# sudo apt-get -qq update
+# sudo apt-get -qq -y install  git wireguard
 
 header "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
 wg genkey > $PRIVATE_KEY
