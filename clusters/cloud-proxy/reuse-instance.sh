@@ -79,7 +79,7 @@ while true; do
     fi
 
     header "Waiting..."
-    sleep 30
+    sleep 20
 done
 header "Wait finished, instance is running..."
 
