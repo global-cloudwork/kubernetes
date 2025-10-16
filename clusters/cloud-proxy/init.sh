@@ -30,6 +30,10 @@ note()    { printf "\n${BOLD}${ITALIC}\e[38;5;82m%s${RESET}\n" "$1"; }
 
 #===============================================================================
 # Main Script Entry Point
+#
+#This script has a few sections:
+#
+#
 #===============================================================================
 title "Configure RKE2 & Deploy Kustomizations"
 
@@ -143,7 +147,7 @@ header "Wait while for pods and nodes to be ready"
 ACTIVE_PODS="temp"
 ACTIVE_NODES="temp"
 
-sleep 60 
+sleep 60
 
 while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
   echo "waiting..."
