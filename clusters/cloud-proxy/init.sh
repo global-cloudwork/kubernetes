@@ -94,7 +94,11 @@ sudo apt-get install -y git wireguard
 #===============================================================================
 section "Setup RKE2 configuration files"
 
+# Contains the rke2 config.yaml file
 sudo mkdir -p /etc/rancher/rke2/
+
+# Contents of this directory are automatically applied by RKE2 at startup
+sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
 # Download and process RKE2 configuration
 # envsubst replaces environment variables in the template
