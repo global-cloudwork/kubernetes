@@ -3,4 +3,4 @@ write-kubeconfig-mode: "0600"
 tls-sans:
   - 127.0.0.1
 node-taint:
-  - "node.cilium.io/agent-not-ready=true:NoSchedule"
+  - "node.cilium.io/agent-not-ready=true:NoExecute"
