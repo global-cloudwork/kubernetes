@@ -91,6 +91,12 @@ header "First start of RKE2 to install crd's"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
+# Copy RKE2-generated kubeconfig
+# Set proper ownership
+mkdir -p $HOME/.kube/$CLUSTER_NAME
+sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+
 # Wait while pods or nodes are not ready
 header "Wait while for pods and nodes to be ready"
 ACTIVE_PODS="temp"
