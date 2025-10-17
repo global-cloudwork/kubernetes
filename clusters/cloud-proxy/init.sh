@@ -64,8 +64,8 @@ declare -a KUSTOMIZE_PATHS=(
 )
 
 # Create necessary directories
-mkdir -p /etc/rancher/rke2/
-mkdir -p /var/lib/rancher/rke2/server/manifests/
+sudo mkdir -p /etc/rancher/rke2/
+sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
 #===============================================================================
 # System Dependencies Installation
@@ -75,7 +75,7 @@ section "Install system dependencies and download configurations"
 # Install required system packages
 header "apt-get update & install"
 sudo apt-get -qq update
-sudo apt-get -qq -y install  git wireguard
+sudo apt-get -qq -y install git wireguard
 
 # Install Helm package manager
 header "Install Helm"
