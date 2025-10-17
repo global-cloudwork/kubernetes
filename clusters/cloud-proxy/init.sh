@@ -147,16 +147,17 @@ sleep 30
 
 #Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
+header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
-# # Copy RKE2-generated kubeconfig
-# # Set proper ownership
-# sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
-# sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+# Copy RKE2-generated kubeconfig
+# Set proper ownership
+sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
-# # Merge all kubeconfig files in ~/.kube subdirectories
-# KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-# sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+# Merge all kubeconfig files in ~/.kube subdirectories
+KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
 # # # Wait while pods or nodes are not ready
 # # header "Wait while for pods and nodes to be ready"
@@ -172,17 +173,17 @@ sudo systemctl restart rke2-server.service
 # #   sleep 20
 # # done
 
-# section "Deploy kustomizations"
+section "Deploy kustomizations"
 
-# header "loop through and apply each kustomization path"
-# for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
-#     header "Applying Kustomize PATH: $CURRENT_PATH"
-#     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
-#       kubectl apply --server-side --force-conflicts -f -
+header "loop through and apply each kustomization path"
+for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
+    header "Applying Kustomize PATH: $CURRENT_PATH"
+    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
+      kubectl apply --server-side --force-conflicts -f -
     
-#     header "sleeping 10s to allow resources to settle"
-#     sleep 20
-# done
+    header "sleeping 10s to allow resources to settle"
+    sleep 20
+done
 
 # # kubectl -n argocd rollout restart deployment argocd-server
 # # kubectl -n argocd rollout restart deployment argocd-repo-server

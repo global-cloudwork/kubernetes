@@ -5,3 +5,5 @@ tls-sans:
 node-taint:
   - "node.cilium.io/agent-not-ready=true:NoExecute"
 disable-kube-proxy: true
+disable:
+  - rke2-ingress-nginx
