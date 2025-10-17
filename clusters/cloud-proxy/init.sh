@@ -84,6 +84,9 @@ curl https://get.rke2.io \
     --silent \
     --show-error | sudo bash
 
+header "Link kubectl command avoiding race conditions"
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+
 # First start of RKE2 to install crd's
 systemctl enable rke2-server.service
 systemctl start rke2-server.service
@@ -124,9 +127,6 @@ sudo curl --silent --show-error --remote-name-all \
   | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
 systemctl restart rke2-server.service
-
-header "Link kubectl command avoiding race conditions"
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
 #===============================================================================
 # Configure RKE2 further, and install cilium
