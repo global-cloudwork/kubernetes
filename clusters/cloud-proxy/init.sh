@@ -59,6 +59,7 @@ HOST_IP=$(hostname -I | awk '{print $1}')
 declare -a KUSTOMIZE_PATHS=(
   "base/core"
   "applications/argocd"
+  "applications/cert-manager"
   "base"
 )
 
