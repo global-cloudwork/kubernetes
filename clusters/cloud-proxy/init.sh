@@ -63,6 +63,10 @@ declare -a KUSTOMIZE_PATHS=(
   "base"
 )
 
+# Create necessary directories
+mkdir -p /etc/rancher/rke2/
+mkdir -p /var/lib/rancher/rke2/server/manifests/
+
 #===============================================================================
 # System Dependencies Installation
 #===============================================================================
