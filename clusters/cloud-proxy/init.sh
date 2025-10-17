@@ -91,6 +91,21 @@ header "First start of RKE2 to install crd's"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
+# Wait while pods or nodes are not ready
+header "Wait while for pods and nodes to be ready"
+ACTIVE_PODS="temp"
+ACTIVE_NODES="temp"
+
+while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
+  echo "waiting..."
+  ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
+  ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
+  [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
+  [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
+  sleep 20
+done
+
+# Link kubectl command avoiding race conditions
 header "Link kubectl command avoiding race conditions"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
@@ -146,10 +161,10 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-# Wait while pods or nodes are not ready
-header "Wait while for pods and nodes to be ready"
-ACTIVE_PODS="temp"
-ACTIVE_NODES="temp"
+# # Wait while pods or nodes are not ready
+# header "Wait while for pods and nodes to be ready"
+# ACTIVE_PODS="temp"
+# ACTIVE_NODES="temp"
 
 # while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
 #   echo "waiting..."
