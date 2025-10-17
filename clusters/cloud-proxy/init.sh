@@ -138,7 +138,7 @@ sudo curl --silent --show-error --remote-name-all \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
   | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
-systemctl restart rke2-server.service
+sudo systemctl restart rke2-server.service
 
 #===============================================================================
 # Configure RKE2 further, and install cilium
