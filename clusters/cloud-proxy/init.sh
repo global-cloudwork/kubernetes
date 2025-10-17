@@ -143,11 +143,11 @@ kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-s
 kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-# sleep 30
+sleep 30
 
-# #Restart RKE2 to pick up new manifests
-# header "Restart RKE2 to pick up new manifests"
-# sudo systemctl restart rke2-server.service
+#Restart RKE2 to pick up new manifests
+header "Restart RKE2 to pick up new manifests"
+sudo systemctl restart rke2-server.service
 
 # # Copy RKE2-generated kubeconfig
 # # Set proper ownership
