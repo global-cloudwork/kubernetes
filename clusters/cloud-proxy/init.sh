@@ -84,12 +84,12 @@ curl https://get.rke2.io \
     --silent \
     --show-error | sudo bash
 
-header "Link kubectl command avoiding race conditions"
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-
 # First start of RKE2 to install crd's
 systemctl enable rke2-server.service
 systemctl start rke2-server.service
+
+header "Link kubectl command avoiding race conditions"
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
 # Apply Argo CD CRDs
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
