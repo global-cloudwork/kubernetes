@@ -72,46 +72,6 @@ header "apt-get update & install"
 sudo apt-get -qq update
 sudo apt-get -qq -y install  git wireguard
 
-# # RKE2 automatically applies any manifests in this directory at startup
-# # CRDs must be installed before their corresponding controllers
-# sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-# sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
-#     --remote-name-all --silent --show-error \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-#     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
-
-#===============================================================================
-# Configure and start RKE2
-#===============================================================================
-section "Setup RKE2 configuration files"
-
-# Contains the rke2 config.yaml file
-sudo mkdir -p /etc/rancher/rke2/
-
-# Contents of this directory are automatically applied by RKE2 at startup
-sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-
-# Download and process RKE2 configuration
-# envsubst replaces environment variables in the template
-sudo curl --silent --show-error --remote-name-all \
-  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml \
-  | sudo envsubst | sudo tee /etc/rancher/rke2/config.yaml
-
-# Download and process Cilium configuration
-# envsubst replaces environment variables in the template
-sudo curl --silent --show-error --remote-name-all \
-  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
-  | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
-
 # Install Helm package manager
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     --remote-name-all \
@@ -119,37 +79,14 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     --show-error | bash
 
 # Install RKE2
-curl https://get.rke2.io \
+curl -sfL https://get.rke2.io \ 
     --remote-name-all \
     --silent \
     --show-error | sudo bash
 
-header "Link kubectl command avoiding race conditions"
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-
-# Enable RKE2 to start on boot, and start the service
-sudo systemctl enable rke2-server.service
-sudo systemctl start rke2-server.service
-
-#===============================================================================
-# Configure RKE2 further, and install cilium
-#===============================================================================
-section "Configure RKE2 further, and install cilium"
-
-# Copy RKE2-generated kubeconfig
-# Set proper ownership
-mkdir -p $HOME/.kube/$CLUSTER_NAME
-sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
-sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
-
-# Merge all kubeconfig files in ~/.kube subdirectories
-KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
-
-# Wait while pods or nodes are not ready
-header "Wait while for pods and nodes to be ready"
-ACTIVE_PODS="temp"
-ACTIVE_NODES="temp"
+# First start of RKE2 to install crd's
+systemctl enable rke2-server.service
+systemctl start rke2-server.service
 
 # Apply Argo CD CRDs
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
@@ -169,21 +106,42 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v
 # Apply Gateway API CRDs (Experimental)
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-# # Install Cilium with specific configuration
-# helm repo add cilium https://helm.cilium.io/
-# helm repo update
-# helm install cilium cilium/cilium \
-#   --namespace kube-system \
-#   --set encryption.enabled=true \
-#   --set encryption.type=wireguard \
-#   --set kubeProxyReplacement=true \
-#   --set k8sServiceHost=127.0.0.1 \
-#   --set k8sServicePort=6443 \
-#   --set operator.replicas=1 \
-#   --set hubble.enabled=true \
-#   --set hubble.relay.enabled=true \
-#   --set hubble.ui.enabled=true \
-#   --set gatewayAPI.enabled=true 
+#===============================================================================
+# Configure and start RKE2
+#===============================================================================
+section "Setup RKE2 configuration files"
+
+# Download and process RKE2 configuration
+# envsubst replaces environment variables in the template
+sudo curl --silent --show-error --remote-name-all \
+  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml \
+  | sudo envsubst | sudo tee /etc/rancher/rke2/config.yaml
+
+# Download and process Cilium configuration
+# envsubst replaces environment variables in the template
+sudo curl --silent --show-error --remote-name-all \
+  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
+  | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+
+systemctl restart rke2-server.service
+
+header "Link kubectl command avoiding race conditions"
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+
+#===============================================================================
+# Configure RKE2 further, and install cilium
+#===============================================================================
+section "Configure RKE2 further, and install cilium"
+
+# Copy RKE2-generated kubeconfig
+# Set proper ownership
+mkdir -p $HOME/.kube/$CLUSTER_NAME
+sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+
+# Merge all kubeconfig files in ~/.kube subdirectories
+KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
 # Wait while pods or nodes are not ready
 header "Wait while for pods and nodes to be ready"
@@ -217,3 +175,40 @@ done
 # kubectl -n argocd rollout restart deployment argocd-notifications-controller
 # kubectl -n argocd rollout restart deployment argocd-dex-server
 # kubectl -n argocd rollout restart deployment argocd-redis
+
+# # RKE2 automatically applies any manifests in this directory at startup
+# # CRDs must be installed before their corresponding controllers
+# sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
+# sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
+#     --remote-name-all --silent --show-error \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
+#     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
+#     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
+#     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
+# # Wait while pods or nodes are not ready
+# header "Wait while for pods and nodes to be ready"
+# ACTIVE_PODS="temp"
+# ACTIVE_NODES="temp"
+
+# # Install Cilium with specific configuration
+# helm repo add cilium https://helm.cilium.io/
+# helm repo update
+# helm install cilium cilium/cilium \
+#   --namespace kube-system \
+#   --set encryption.enabled=true \
+#   --set encryption.type=wireguard \
+#   --set kubeProxyReplacement=true \
+#   --set k8sServiceHost=127.0.0.1 \
+#   --set k8sServicePort=6443 \
+#   --set operator.replicas=1 \
+#   --set hubble.enabled=true \
+#   --set hubble.relay.enabled=true \
+#   --set hubble.ui.enabled=true \
+#   --set gatewayAPI.enabled=true 
