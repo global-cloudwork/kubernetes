@@ -79,7 +79,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     --show-error | bash
 
 # Install RKE2
-curl https://get.rke2.io \ 
+curl https://get.rke2.io \
     --remote-name-all \
     --silent \
     --show-error | sudo bash
