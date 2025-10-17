@@ -73,18 +73,21 @@ sudo apt-get -qq update
 sudo apt-get -qq -y install  git wireguard
 
 # Install Helm package manager
+header "Install Helm"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     --remote-name-all \
     --silent \
     --show-error | bash
 
 # Install RKE2
+header "Install RKE2"
 curl https://get.rke2.io \
     --remote-name-all \
     --silent \
     --show-error | sudo bash
 
 # First start of RKE2 to install crd's
+header "First start of RKE2 to install crd's"
 systemctl enable rke2-server.service
 systemctl start rke2-server.service
 
