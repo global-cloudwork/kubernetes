@@ -88,8 +88,8 @@ curl https://get.rke2.io \
 
 # First start of RKE2 to install crd's
 header "First start of RKE2 to install crd's"
-systemctl enable rke2-server.service
-systemctl start rke2-server.service
+sudo systemctl enable rke2-server.service
+sudo systemctl start rke2-server.service
 
 header "Link kubectl command avoiding race conditions"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
