@@ -87,47 +87,6 @@ curl https://get.rke2.io \
     --silent \
     --show-error | sudo bash
 
-# First start of RKE2 to install crd's
-header "First start of RKE2 to install crd's"
-sudo systemctl enable rke2-server.service
-sudo systemctl start rke2-server.service
-
-# Copy RKE2-generated kubeconfig
-# Set proper ownership
-mkdir -p $HOME/.kube/$CLUSTER_NAME
-sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
-sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
-
-# Wait while pods or nodes are not ready
-header "Wait while for pods and nodes to be ready"
-ACTIVE_PODS="temp"
-ACTIVE_NODES="temp"
-
-while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
-  echo "waiting..."
-  ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
-  ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-  [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
-  [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
-  sleep 20
-done
-
-# Link kubectl command avoiding race conditions
-header "Link kubectl command avoiding race conditions"
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
-
-header "Apply CRDS for Argo CD, Cert-Manager, and Gateway API"
-kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
-kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
 #===============================================================================
 # Configure and start RKE2
 #===============================================================================
@@ -145,16 +104,59 @@ sudo curl --silent --show-error --remote-name-all \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml \
   | sudo envsubst | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
-sudo systemctl restart rke2-server.service
+# Enable on boot, then start of RKE2
+header "First start of RKE2 to install crd's"
+sudo systemctl enable rke2-server.service
+sudo systemctl start rke2-server.service
 
-#===============================================================================
-# Configure RKE2 further, and install cilium
-#===============================================================================
-section "Configure RKE2 further, and install cilium"
+# Link kubectl command avoiding race conditions
+header "Link kubectl command avoiding race conditions"
+sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
 # Copy RKE2-generated kubeconfig
 # Set proper ownership
 mkdir -p $HOME/.kube/$CLUSTER_NAME
+sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+
+# Merge all kubeconfig files in ~/.kube subdirectories
+KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+
+# # Wait while pods or nodes are not ready
+# header "Wait while for pods and nodes to be ready"
+# ACTIVE_PODS="temp"
+# ACTIVE_NODES="temp"
+
+# while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
+#   echo "waiting..."
+#   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
+#   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
+#   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
+#   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
+#   sleep 20
+# done
+
+header "Apply CRDS for Argo CD, Cert-Manager, and Gateway API"
+kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
+kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
+sleep 30
+
+#Restart RKE2 to pick up new manifests
+header "Restart RKE2 to pick up new manifests"
+sudo systemctl restart rke2-server.service
+
+# Copy RKE2-generated kubeconfig
+# Set proper ownership
 sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
 sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
