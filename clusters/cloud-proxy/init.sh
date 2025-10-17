@@ -63,10 +63,6 @@ declare -a KUSTOMIZE_PATHS=(
   "base"
 )
 
-# Create necessary directories
-sudo mkdir -p /etc/rancher/rke2/
-sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-
 #===============================================================================
 # System Dependencies Installation
 #===============================================================================
@@ -95,6 +91,10 @@ curl https://get.rke2.io \
 # Configure and start RKE2
 #===============================================================================
 section "Setup RKE2 configuration files"
+
+# Create necessary directories
+sudo mkdir -p /etc/rancher/rke2/
+sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
 # Download and process RKE2 configuration
 # envsubst replaces environment variables in the template
@@ -127,31 +127,21 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-# # # Wait while pods or nodes are not ready
-# # header "Wait while for pods and nodes to be ready"
-# # ACTIVE_PODS="temp"
-# # ACTIVE_NODES="temp"
+#Deploy initial CRDs for Argo CD, Cert-Manager, and Gateway API
+section "Deploy initial CRDs for Argo CD and Gateway API"
 
-# # while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
-# #   echo "waiting..."
-# #   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
-# #   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-# #   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
-# #   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
-# #   sleep 20
-# # done
+header "Apply CRDS for Argo CD"
+kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
-# header "Apply CRDS for Argo CD, Cert-Manager, and Gateway API"
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
-# kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+header "Apply CRDS for Gateway API"
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
 # sleep 30
 
