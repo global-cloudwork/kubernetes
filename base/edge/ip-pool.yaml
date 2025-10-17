@@ -1,8 +1,8 @@
-apiVersion: "cilium.io/v2"
+apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
 metadata:
-  name: "ip-pool"
-  namespace: gateway
+  name: "blue-pool"
 spec:
   blocks:
-  - cidr: "10.0.10.0/24"
+  - start: "10.0.0.100"
+    stop: "10.0.0.150"
