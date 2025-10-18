@@ -96,6 +96,8 @@ section "Setup RKE2 configuration files"
 sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
+echo $EXTERNAL_IP
+
 # Download and process RKE2 configuration
 # envsubst replaces environment variables in the template
 header "Download RKE2 configuration"
