@@ -145,61 +145,54 @@ kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/arg
 kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
+# header "Apply CRDS for Gateway API"
 kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.7.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-# header "Apply CRDS for Gateway API"
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-# kubectl apply --validate=false -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
 # sleep 30
 
-# #Restart RKE2 to pick up new manifests
-# header "Restart RKE2 to pick up new manifests"
-# header "Restart RKE2 to pick up new manifests"
-# sudo systemctl restart rke2-server.service
+#Restart RKE2 to pick up new manifests
+header "Restart RKE2 to pick up new manifests"
+header "Restart RKE2 to pick up new manifests"
+sudo systemctl restart rke2-server.service
 
-# # Copy RKE2-generated kubeconfig
-# # Set proper ownership
-# sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
-# sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+# Copy RKE2-generated kubeconfig
+# Set proper ownership
+sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
-# # Merge all kubeconfig files in ~/.kube subdirectories
-# KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-# sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+# Merge all kubeconfig files in ~/.kube subdirectories
+KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-# # # # Wait while pods or nodes are not ready
-# # # header "Wait while for pods and nodes to be ready"
-# # # ACTIVE_PODS="temp"
-# # # ACTIVE_NODES="temp"
+# # # Wait while pods or nodes are not ready
+# # header "Wait while for pods and nodes to be ready"
+# # ACTIVE_PODS="temp"
+# # ACTIVE_NODES="temp"
 
-# # # while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
-# # #   echo "waiting..."
-# # #   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
-# # #   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-# # #   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
-# # #   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
-# # #   sleep 20
-# # # done
+# # while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
+# #   echo "waiting..."
+# #   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
+# #   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
+# #   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
+# #   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
+# #   sleep 20
+# # done
 
-# section "Deploy kustomizations"
+section "Deploy kustomizations"
 
-# header "loop through and apply each kustomization path"
-# for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
-#     header "Applying Kustomize PATH: $CURRENT_PATH"
-#     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
-#       kubectl apply --server-side --force-conflicts -f -
+header "loop through and apply each kustomization path"
+for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
+    header "Applying Kustomize PATH: $CURRENT_PATH"
+    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
+      kubectl apply --server-side --force-conflicts -f -
     
-#     header "sleeping 10s to allow resources to settle"
-#     sleep 20
-# done
+    header "sleeping 10s to allow resources to settle"
+    sleep 20
+done
 
 # # kubectl -n argocd rollout restart deployment argocd-server
 # # kubectl -n argocd rollout restart deployment argocd-repo-server
