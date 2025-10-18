@@ -3,5 +3,3 @@ write-kubeconfig-mode: "0600"
 tls-sans:
   - 127.0.0.1
 disable-kube-proxy: true
-disable:
-  - rke2-ingress-nginx
