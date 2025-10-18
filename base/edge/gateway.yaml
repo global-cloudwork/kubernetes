@@ -8,14 +8,14 @@ metadata:
 spec:
   gatewayClassName: cilium
   listeners:
-    - hostname: "promotesudbury.ca"
+    - hostname: "*.promotesudbury.ca"
       name: http
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
           from: All
-    - hostname: "promotesudbury.ca"
+    - hostname: "*.promotesudbury.ca"
       name: https
       port: 443
       protocol: HTTPS

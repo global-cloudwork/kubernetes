@@ -51,12 +51,12 @@ spec:
       namespace: gateway
       sectionName: http
   hostnames:
-    - "argocd.promotesudbury.ca"
+    - argocd.promotesudbury.ca
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: "/"       # match all paths
+            value: /       # match all paths
       backendRefs:
         - name: argocd-server
           namespace: argocd
