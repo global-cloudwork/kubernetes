@@ -98,22 +98,25 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
 # Download and process RKE2 configuration
 # envsubst replaces environment variables in the template
+header "Download RKE2 configuration"
 sudo curl --silent --show-error --remote-name-all \
   --output-dir /tmp/ \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml
 
+header "Process RKE2 configuration with envsubst"
 sudo envsubst < /tmp/config.yaml \
   | sudo tee /tmp/config.yaml
 
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
+header "Download RKE2 Cilium configuration"
 sudo curl --silent --show-error --remote-name-all \
   --output-dir /tmp/ \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml
 
+header "Process RKE2 Cilium configuration with envsubst"
 sudo envsubst < /tmp/rke2-cilium-config.yaml \
   | sudo tee /tmp/rke2-cilium-config.yaml
-
 
 # Enable on boot, then start of RKE2
 header "First start of RKE2 to install crd's"
