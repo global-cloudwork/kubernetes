@@ -1,5 +1,5 @@
 cni: cilium
 write-kubeconfig-mode: "0600"
 tls-sans:
-  - 127.0.0.1
+  - ${EXTERNAL_IP}
 disable-kube-proxy: true
