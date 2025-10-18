@@ -46,7 +46,7 @@ section "Setup variables and import from google secrets manager"
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
 # Retrieve external IP from GCE metadata server
-EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
+export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
 
 # Set PATH to include RKE2 binaries
 PATH=$PATH:/opt/rke2/bin
