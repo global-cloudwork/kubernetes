@@ -105,7 +105,7 @@ sudo curl --silent --show-error --remote-name-all \
 
 header "Process RKE2 configuration with envsubst"
 sudo envsubst < /tmp/config.yaml \
-  | sudo tee /tmp/config.yaml
+  | sudo tee /etc/rancher/rke2/config.yaml
 
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
@@ -116,7 +116,7 @@ sudo curl --silent --show-error --remote-name-all \
 
 header "Process RKE2 Cilium configuration with envsubst"
 sudo envsubst < /tmp/rke2-cilium-config.yaml \
-  | sudo tee /tmp/rke2-cilium-config.yaml
+  | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
 # Enable on boot, then start of RKE2
 header "First start of RKE2 to install crd's"
