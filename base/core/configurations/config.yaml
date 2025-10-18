@@ -2,11 +2,6 @@ cni: cilium
 write-kubeconfig-mode: "0600"
 tls-sans:
   - 127.0.0.1
-node-taint:
-  - "node.cilium.io/agent-not-ready=true:NoExecute"
 disable-kube-proxy: true
 disable:
   - rke2-ingress-nginx
-  - rke2-ingress-nginx-controller
-  - rke2-canal
-  - kube-proxy
