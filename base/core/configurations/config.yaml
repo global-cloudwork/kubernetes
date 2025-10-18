@@ -9,3 +9,4 @@ disable:
   - rke2-ingress-nginx
   - rke2-ingress-nginx-controller
   - rke2-canal
+  - kube-proxy
