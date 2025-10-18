@@ -99,20 +99,20 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 # Download and process RKE2 configuration
 # envsubst replaces environment variables in the template
 sudo curl --silent --show-error --remote-name-all \
-  --output-dir /etc/rancher/rke2/ \
+  --output-dir /tmp/ \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml
 
-sudo envsubst < /etc/rancher/rke2/config.yaml \
-  | sudo tee /etc/rancher/rke2/config.yaml
+sudo envsubst < /tmp/config.yaml \
+  | sudo tee /tmp/config.yaml
 
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
 sudo curl --silent --show-error --remote-name-all \
-  --output-dir /var/lib/rancher/rke2/server/manifests/ \
+  --output-dir /tmp/ \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml
 
-sudo envsubst < /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml \
-  | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+sudo envsubst < /tmp/rke2-cilium-config.yaml \
+  | sudo tee /tmp/rke2-cilium-config.yaml
 
 
 # Enable on boot, then start of RKE2
