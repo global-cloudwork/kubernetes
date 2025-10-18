@@ -96,8 +96,6 @@ section "Setup RKE2 configuration files"
 sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
-echo $EXTERNAL_IP
-
 # Download and process RKE2 configuration
 # envsubst replaces environment variables in the template
 header "Download RKE2 configuration"
@@ -106,7 +104,7 @@ sudo curl --silent --show-error --remote-name-all \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml
 
 header "Process RKE2 configuration with envsubst"
-sudo -E envsubst < /tmp/config.yaml \
+sudo --preserve-env envsubst < /tmp/config.yaml \
   | sudo tee /etc/rancher/rke2/config.yaml
 
 # Download and process Cilium configuration
@@ -117,7 +115,7 @@ sudo curl --silent --show-error --remote-name-all \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml
 
 header "Process RKE2 Cilium configuration with envsubst"
-sudo -E envsubst < /tmp/rke2-cilium-config.yaml \
+sudo --preserve-env envsubst < /tmp/rke2-cilium-config.yaml \
   | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
 
 # Enable on boot, then start of RKE2
