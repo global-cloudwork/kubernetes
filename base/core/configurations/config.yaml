@@ -3,3 +3,6 @@ write-kubeconfig-mode: "0600"
 tls-sans:
   - ${EXTERNAL_IP}
 disable-kube-proxy: true
+disable: 
+  - rke2-ingress-nginx
+  - rke2-metrics-server
