@@ -11,3 +11,10 @@ metadata:
   name: gateway
   labels:
     name: gateway
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    name: cert-manager
