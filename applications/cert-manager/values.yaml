@@ -233,7 +233,6 @@ serviceAccount:
 
 # When this flag is enabled, secrets will be automatically removed when the certificate resource is deleted.
 enableCertificateOwnerRef: false
-
 # This property is used to configure options for the controller pod.
 # This allows setting options that would usually be provided using flags.
 #
@@ -242,9 +241,9 @@ enableCertificateOwnerRef: false
 # the version by specifying the `apiVersion` yourself.
 #
 # For example:
- config:
-   apiVersion: controller.config.cert-manager.io/v1alpha1
-   kind: ControllerConfiguration
+config:
+  apiVersion: controller.config.cert-manager.io/v1alpha1
+  kind: ControllerConfiguration
 #    logging:
 #      verbosity: 2
 #      format: text
@@ -253,7 +252,7 @@ enableCertificateOwnerRef: false
 #    kubernetesAPIQPS: 9000
 #    kubernetesAPIBurst: 9000
 #    numberOfConcurrentWorkers: 200
-   enableGatewayAPI: true
+  enableGatewayAPI: true
 #    # Feature gates as of v1.18.1. Listed with their default values.
 #    # See https://cert-manager.io/docs/cli/controller/
 #    featureGates:
