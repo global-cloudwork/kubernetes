@@ -137,7 +137,7 @@ ARGOCD_VERSION=v3.1.9
 GATEWAY_VERSION=v1.4.0
 
 header "Apply CRDS for Argo CD"
-kubectl apply -k github.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/crds/kustomization.yaml
+kubectl apply -k github.com/argoproj/argo-cd/manifests/crds?ref=${ARGOCD_VERSION}
 kubectl apply -k github.com/kubernetes-sigs/gateway-api/config/crd?ref=${GATEWAY_VERSION}
 
 #Restart RKE2 to pick up new manifests
