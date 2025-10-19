@@ -24,7 +24,9 @@
 #
 #===============================================================================
 # Allows for the calling of functions
-source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions.sh)
+source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/general.sh)
+source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/kubernetes.sh)
+
 
 title "Configure RKE2 & Deploy Kustomizations"
 
