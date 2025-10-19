@@ -1,21 +1,4 @@
 #!/bin/bash
-# wait-for-k8s.sh
-# Waits for Kubernetes components to be ready before proceeding
-# Can be used prior to `kustomize apply` or other cluster operations
-
-set -e
-
-# Print formatted section headers
-BOLD="\e[1m"
-ITALIC="\e[3m"
-UNDERLINE="\e[4m"
-RESET="\e[0m"
-
-title()   { printf "\n${BOLD}${UNDERLINE}\e[38;5;231m%s${RESET}\n" "$1"; }
-section() { printf "\n${BOLD}${UNDERLINE}\e[38;5;51m%s${RESET}\n" "$1"; }
-header()  { printf "\n${ITALIC}\e[38;5;33m%s${RESET}\n\n" "$1"; }
-error()   { printf "\n${BOLD}${ITALIC}${UNDERLINE}\e[38;5;106m%s${RESET}\n" "$1"; }
-note()    { printf "\n${BOLD}${ITALIC}\e[38;5;82m%s${RESET}\n" "$1"; }
 
 #Functions return a string run as a command in other functions
 unfinished_pods() {
