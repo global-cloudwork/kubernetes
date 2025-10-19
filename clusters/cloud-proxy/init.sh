@@ -140,9 +140,6 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 #Deploy initial CRDs for Argo CD, Cert-Manager, and Gateway API
 section "Deploy initial CRDs for Argo CD and Gateway API"
 
-header "Apply cert-manager CRDs"
-kubectl apply -f "https://github.com/cert-manager/cert-manager/releases/download/1.19.1/cert-manager.crds.yaml"
-
 header "Apply CRDS for Argo CD"
 kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
