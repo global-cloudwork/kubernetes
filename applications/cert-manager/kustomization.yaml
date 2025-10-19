@@ -5,6 +5,6 @@ helmCharts:
   - name: cert-manager
     repo: https://charts.jetstack.io
     namespace: cert-manager
-    version: 1.18.2
+    version: 1.19.1
     valuesFile: values.yaml
     releaseName: cert-manager
