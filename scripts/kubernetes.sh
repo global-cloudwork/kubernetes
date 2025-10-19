@@ -17,8 +17,8 @@ unfinished_crds() {
 # Uses dynamic function names based on type to wait for resources to be ready
 wait_for() {
     local TYPE="$1"
-    local SECONDS_TO_WAIT="${SECONDS_TO_WAIT:-5}"
-    local MAX_ITERATIONS="${MAX_ITERATIONS:-20}"
+    local SECONDS_TO_WAIT="${SECONDS_TO_WAIT:-10}"
+    local MAX_ITERATIONS="${MAX_ITERATIONS:-10}"
 
     local FUNC_NAME="unfinished_$TYPE"
 
