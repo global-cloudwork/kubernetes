@@ -52,7 +52,7 @@ declare -a KUSTOMIZE_PATHS=(
 )
 
 # Allows for the calling of functions
-source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/wait-for-k8s.sh)
+source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions.sh)
 
 #===============================================================================
 # System Dependencies Installation
