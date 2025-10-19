@@ -5,7 +5,6 @@
 
 set -e
 
-
 # Print formatted section headers
 BOLD="\e[1m"
 ITALIC="\e[3m"
@@ -20,8 +19,8 @@ note()    { printf "\n${BOLD}${ITALIC}\e[38;5;82m%s${RESET}\n" "$1"; }
 
 #Functions return a string run as a command in other functions
 unfinished_pods() {
-    kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace} { .metadata.name} { .status.conditions[?(@.type=="Ready")].status}{"\n"}{end}' 2>/dev/null \
-        | awk '$3 != "True" {print $1"/"$2}'
+    kubectl get pods --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace} {.metadata.name} {.status.phase} {.status.conditions[?(@.type=="Ready")].status}{"\n"}{end}' 2>/dev/null \
+        | awk '$3 == "Running" && $4 != "True" || $3 == "Pending" || $3 == "Failed" {print $1"/"$2}'
 }
 unfinished_endpoints() {
     kubectl get endpoints --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace} { .metadata.name} { .subsets[*].addresses[*].ip}{"\n"}{end}' 2>/dev/null \
@@ -36,52 +35,52 @@ unfinished_crds() {
 wait_for() {
     local TYPE="$1"
     local SECONDS_TO_WAIT="${SECONDS_TO_WAIT:-5}"
-    local MAX_ITERATIONS="${MAX_ITERATIONS:-60}"
+    local MAX_ITERATIONS="${MAX_ITERATIONS:-20}"
 
-    # Construct the dynamic function name
     local FUNC_NAME="unfinished_$TYPE"
 
     # Check if the function exists
     if ! declare -f "$FUNC_NAME" >/dev/null; then
-        echo "ERROR: type of $FUNC_NAME not supported"
+        section "ERROR: Type '$TYPE' not supported"
         return 1
     fi
 
-    local ITERATIONS=0
+    section "Function - Wait for all $TYPE"
+
+    local ITERATIONS=1
     local STRING
 
     while true; do
-        # Call the dynamic function and store output
         STRING=$($FUNC_NAME)
 
         # Check for "ERROR" in output
         if echo "$STRING" | grep -iq "error"; then
-            echo "ERROR DETECTED:"
-            echo "$STRING"
+            error "Error detected while checking $TYPE"
+            while IFS= read -r line; do
+                header "$line"
+            done <<< "$STRING"
             return 1
         fi
 
-        # Check if output is empty
+        # Check if all resources are ready
         if [[ -z "$STRING" ]]; then
-            echo "ALL $TYPE READY"
+            header "Iteration $ITERATIONS: All $TYPE are ready"
             break
         fi
 
         # Print current status
-        echo "NOT READY YET ($TYPE):"
-        echo "$STRING"
+        header "Itteration $ITTERATIONS: The following $TYPE are not yet ready:"
+        while IFS= read -r line; do
+            echo "$line"
+        done <<< "$STRING"
 
-        # Increment retry count and check max
+        # Increment retry count
         ((ITERATIONS++))
-        if ((ITERATIONS >= MAX_ITERATIONS)); then
-            echo "REACHED MAXIMUM RETRIES ($MAX_ITERATIONS) FOR $TYPE. EXITING..."
+        if ((ITERATIONS > MAX_ITERATIONS)); then
+            error "Reached maximum retries. Exiting..."
             return 2
         fi
 
         sleep "$SECONDS_TO_WAIT"
     done
 }
-
-wait_for endpoints
-wait_for pods
-wait_for crds
