@@ -83,3 +83,5 @@ wait_for() {
 }
 
 wait_for endpoints
+wait_for pods
+wait_for crds
