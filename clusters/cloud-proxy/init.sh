@@ -178,8 +178,9 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
       kubectl apply --server-side --force-conflicts -f -
     
-    header "sleeping 10s to allow resources to settle"
-    sleep 20
+    wait_for crds
+    wait_for endpoints
+    wait_for pods
 done
 
 # # kubectl -n argocd rollout restart deployment argocd-server
