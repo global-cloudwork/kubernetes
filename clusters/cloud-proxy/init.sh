@@ -133,20 +133,12 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 #Deploy initial CRDs for Argo CD, Cert-Manager, and Gateway API
 section "Deploy initial CRDs for Argo CD and Gateway API"
 
-
 ARGOCD_VERSION=v3.1.9
 GATEWAY_VERSION=v1.4.0
 
-
 header "Apply CRDS for Argo CD"
-kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
-kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
-
-# Kustomize install of Gateway API CRDs
-kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=${GATEWAY_VERSION}"
-
-# sleep 30
+kubectl apply -k github.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/crds/kustomization.yaml
+kubectl apply -k github.com/kubernetes-sigs/gateway-api/config/crd?ref=${GATEWAY_VERSION}
 
 #Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
@@ -183,9 +175,7 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
       kubectl apply --server-side --force-conflicts -f -
     
-    wait_for crds
     wait_for endpoints
-    wait_for pods
 done
 
 # # kubectl -n argocd rollout restart deployment argocd-server
