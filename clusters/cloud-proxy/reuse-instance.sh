@@ -53,7 +53,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
     --zone="$GCP_ZONE" \
     --machine-type="$MACHINE_TYPE" \
-    --network-interface=network-tier=STANDARD,stack-type=IPV4_ONLY,subnet=default \
+    --network-interface=network-tier=STANDARD,stack-type=IPV4_ONLY,subnet=default,address=cloud-proxy \
     --maintenance-policy=TERMINATE \
     --provisioning-model=SPOT \
     --scopes=cloud-platform \
