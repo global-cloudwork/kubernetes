@@ -133,19 +133,22 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 #Deploy initial CRDs for Argo CD, Cert-Manager, and Gateway API
 section "Deploy initial CRDs for Argo CD and Gateway API"
 
+
+ARGOCD_VERSION=v3.1.9
+GATEWAY_VERSION=v1.4.0
+
+
 header "Apply CRDS for Argo CD"
 kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml
 kubectl apply --validate=false -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml
 
 # Kustomize install of Gateway API CRDs
-GATEWAY_VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/gateway-api/releases/latest | jq -r .tag_name)
 kubectl apply -k "github.com/kubernetes-sigs/gateway-api/config/crd?ref=${GATEWAY_VERSION}"
 
 # sleep 30
 
 #Restart RKE2 to pick up new manifests
-header "Restart RKE2 to pick up new manifests"
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 

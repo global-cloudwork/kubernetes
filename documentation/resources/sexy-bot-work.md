@@ -15,3 +15,7 @@ kubectl patch configmap argocd-cm \
   -n argocd \
   --type merge \
   -p '{"data":{"kustomize.buildOptions":"--enable-helm"}}'
+
+
+# ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .tag_name)
+# GATEWAY_VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/gateway-api/releases/latest | jq -r .tag_name)
