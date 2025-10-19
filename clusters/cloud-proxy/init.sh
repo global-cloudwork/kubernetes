@@ -23,6 +23,9 @@
 #
 #
 #===============================================================================
+# Allows for the calling of functions
+source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions.sh)
+
 title "Configure RKE2 & Deploy Kustomizations"
 
 #===============================================================================
@@ -50,9 +53,6 @@ declare -a KUSTOMIZE_PATHS=(
   "applications/cert-manager"
   "base"
 )
-
-# Allows for the calling of functions
-source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions.sh)
 
 #===============================================================================
 # System Dependencies Installation
