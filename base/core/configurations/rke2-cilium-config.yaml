@@ -17,3 +17,10 @@ spec:
       type: wireguard
     hostNetwork:
       enabled: true
+    envoy:
+      enabled: true
+      securityContext:
+        capabilities:
+          keepCapNetBindService: true
+          envoy:
+            - NET_BIND_SERVICE
