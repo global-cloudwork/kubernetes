@@ -24,4 +24,5 @@ spec:
     securityContext:
       capabilities:
         ciliumAgent:
-        - NET_BIND_SERVICE
+          - NET_BIND_SERVICE
+          - SYS_RESOURCE
