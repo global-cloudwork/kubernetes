@@ -15,17 +15,17 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
-    - hostname: "*.promotesudbury.ca"
-      name: https
-      port: 443
-      protocol: HTTPS
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-        - name: gateway-certificate #Automaticaly Created
+    # - hostname: "*.promotesudbury.ca"
+    #   name: https
+    #   port: 443
+    #   protocol: HTTPS
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: All
+    #   tls:
+    #     mode: Terminate
+    #     certificateRefs:
+    #     - name: gateway-certificate #Automaticaly Created
     # - name: udp-link
     #   port: 3478
     #   protocol: UDP
