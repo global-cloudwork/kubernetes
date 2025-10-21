@@ -18,7 +18,7 @@ unfinished_crds() {
 wait_for() {
     local TYPE="$1"
     local SECONDS_TO_WAIT="${SECONDS_TO_WAIT:-10}"
-    local MAX_ITERATIONS="${MAX_ITERATIONS:-20}"
+    local MAX_ITERATIONS="${MAX_ITERATIONS:-12}"
 
     local FUNC_NAME="unfinished_$TYPE"
 
