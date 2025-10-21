@@ -8,3 +8,4 @@ resources:
   - edge/gateway.yaml
   - edge/httproute.yaml
   - edge/gateway-class-config.yaml
+  - edge/gateway-class.yaml
