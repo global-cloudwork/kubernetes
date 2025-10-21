@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   # - application-set.yaml
   - edge/cluster-issuer.yaml
-  - edge/ip-pool.yaml
+  # - edge/ip-pool.yaml
   - edge/gateway.yaml
   - edge/httproute.yaml
+  # - edge/gateway-class-config.yaml

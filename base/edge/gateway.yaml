@@ -9,7 +9,7 @@ spec:
   gatewayClassName: cilium
   infrastructure:
     annotations:
-      lbipam.cilium.io/ips: 35.209.166.2
+      service.cilium.io/type: NodePort
   listeners:
     - hostname: "*.promotesudbury.ca"
       name: http
