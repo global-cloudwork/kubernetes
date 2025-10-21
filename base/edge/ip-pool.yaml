@@ -4,5 +4,5 @@ metadata:
   name: external-ip-pool
 spec:
   blocks:
-    - start: "203.0.113.45"
-      stop: "203.0.113.45"
+    - start: "10.128.0.2"
+      stop: "10.128.0.2"

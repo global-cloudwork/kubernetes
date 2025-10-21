@@ -7,5 +7,5 @@ resources:
   # - edge/ip-pool.yaml
   - edge/gateway.yaml
   - edge/httproute.yaml
-  - edge/gateway-class-config.yaml
-  - edge/gateway-class.yaml
+  # - edge/gateway-class-config.yaml
+  # - edge/gateway-class.yaml
