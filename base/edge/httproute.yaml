@@ -56,11 +56,11 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /       # match all paths
+            value: /
       backendRefs:
         - name: argocd-server
           namespace: argocd
-          port: 80           # use 80 for HTTP; change to 443 if you handle TLS
+          port: 80
 # ---
 # # n8n HTTPRoute
 # apiVersion: gateway.networking.k8s.io/v1beta1
