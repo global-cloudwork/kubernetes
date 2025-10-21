@@ -177,6 +177,8 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     wait_for endpoints
 done
 
+sudo systemctl restart rke2-server.service
+
 # # kubectl -n argocd rollout restart deployment argocd-server
 # # kubectl -n argocd rollout restart deployment argocd-repo-server
 # # kubectl -n argocd rollout restart deployment argocd-applicationset-controller
