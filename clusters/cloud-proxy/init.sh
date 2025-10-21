@@ -184,7 +184,8 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
       kubectl apply --server-side --force-conflicts -f -
     
-    wait_for endpoints
+    sleep 10
+    #wait_for endpoints
 done
 
 #Restart RKE2 to ensure all manifests are applied
