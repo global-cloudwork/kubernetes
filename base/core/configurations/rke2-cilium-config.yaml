@@ -15,5 +15,18 @@ spec:
     encryption:
       enabled: true
       type: wireguard
-    hostNetwork:
+    l7Proxy:
       enabled: true
+    bpf:
+      lbExternalClusterIP:
+        enabled: true
+    ipam:
+      mode: ClusterPool
+      clusterPool:
+        ipv4:
+          enabled: true
+          cidr:35.209.166.0/24
+    loadBalancer:
+      l2announcement:
+        enabled: true
+        interface: eth0
