@@ -7,9 +7,9 @@ metadata:
     cert-manager.io/cluster-issuer: cluster-issuer
 spec:
   gatewayClassName: cilium
-  infrastructure:
-    annotations:
-      service.cilium.io/type: NodePort
+  # infrastructure:
+  #   annotations:
+  #     service.cilium.io/type: NodePort
   listeners:
     - hostname: "*.promotesudbury.ca"
       name: http
