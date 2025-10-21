@@ -48,6 +48,7 @@ metadata:
 spec:
   parentRefs:
     - name: gateway
+      namespace: gateway
       sectionName: http
   hostnames:
     - argocd.promotesudbury.ca
