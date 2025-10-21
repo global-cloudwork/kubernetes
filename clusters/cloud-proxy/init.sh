@@ -187,6 +187,8 @@ for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
     wait_for endpoints
 done
 
+#Restart RKE2 to ensure all manifests are applied
+header "Restarting rje2-server to ensure all manifests are applied"
 sudo systemctl restart rke2-server.service
 
 # # kubectl -n argocd rollout restart deployment argocd-server
