@@ -17,14 +17,3 @@ spec:
       enabled: true
       hostNetwork:
         enabled: true
-    envoy:
-      securityContext:
-        capabilities:
-          keepCapNetBindService: true
-    securityContext:
-      capabilities:
-        ciliumAgent:
-          - NET_ADMIN
-          - SYS_MODULE
-          - SYS_RESOURCE
-          - NET_BIND_SERVICE
