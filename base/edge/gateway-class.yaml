@@ -2,12 +2,12 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: nodeport-gateway-class
+  name: gateway-class
 spec:
   controllerName: io.cilium/gateway-controller
   description: The default Cilium GatewayClass
   parametersRef:
     group: cilium.io
     kind: CiliumGatewayClassConfig
-    name: nodeport-gateway-config
+    name: gateway-class-config
     namespace: default
