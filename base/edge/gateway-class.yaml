@@ -10,4 +10,4 @@ spec:
     group: cilium.io
     kind: CiliumGatewayClassConfig
     name: gateway-class-config
-    namespace: default
+    namespace: gateway
