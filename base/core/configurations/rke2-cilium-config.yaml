@@ -26,3 +26,4 @@ spec:
       capabilities:
         ciliumAgent:
         - NET_BIND_SERVICE
+        - IPC_LOCK

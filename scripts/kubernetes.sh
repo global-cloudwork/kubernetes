@@ -52,7 +52,7 @@ wait_for() {
         fi
 
         # Print current status
-        header "Itteration $ITTERATIONS: The following $TYPE are not yet ready:"
+        header "Itteration $ITERATIONS: The following $TYPE are not yet ready:"
         while IFS= read -r line; do
             echo "$line"
         done <<< "$STRING"
