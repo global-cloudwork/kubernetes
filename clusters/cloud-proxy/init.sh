@@ -170,69 +170,69 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-# # # Wait while pods or nodes are not ready
-# # header "Wait while for pods and nodes to be ready"
-# # ACTIVE_PODS="temp"
-# # ACTIVE_NODES="temp"
+# # # # Wait while pods or nodes are not ready
+# # # header "Wait while for pods and nodes to be ready"
+# # # ACTIVE_PODS="temp"
+# # # ACTIVE_NODES="temp"
 
-# # while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
-# #   echo "waiting..."
-# #   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
-# #   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
-# #   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
-# #   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
-# #   sleep 20
-# # done
+# # # while [ -n "$ACTIVE_PODS" ] || [ -n "$ACTIVE_NODES" ]; do
+# # #   echo "waiting..."
+# # #   ACTIVE_PODS=$(kubectl get pods --all-namespaces --no-headers 2>/dev/null | grep -vE 'Running|Completed')
+# # #   ACTIVE_NODES=$(kubectl get nodes --no-headers 2>/dev/null | grep -v 'Ready')
+# # #   [ -n "$ACTIVE_PODS" ] && echo "Pods not ready: $ACTIVE_PODS"
+# # #   [ -n "$ACTIVE_NODES" ] && echo "Nodes not ready: $ACTIVE_NODES"
+# # #   sleep 20
+# # # done
 
-section "Deploy pre-start manifests"
-header "Applying Kustomize PATH: base/core"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+# section "Deploy pre-start manifests"
+# header "Applying Kustomize PATH: base/core"
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
 
-section "Deploy argocd manifests"
-header "Applying Kustomize PATH: applications/argocd"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+# section "Deploy argocd manifests"
+# header "Applying Kustomize PATH: applications/argocd"
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
 
-header "Deploy cert-manager manifests"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+# header "Deploy cert-manager manifests"
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
 
-wait_for endpoints
+# wait_for endpoints
 
-header "Deploy startup manifests"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+# header "Deploy startup manifests"
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
 
-# #Restart RKE2 to ensure all manifests are applied
-# header "Restarting rje2-server to ensure all manifests are applied"
-# sudo systemctl restart rke2-server.service
+# # #Restart RKE2 to ensure all manifests are applied
+# # header "Restarting rje2-server to ensure all manifests are applied"
+# # sudo systemctl restart rke2-server.service
 
-# # kubectl -n argocd rollout restart deployment argocd-server
-# # kubectl -n argocd rollout restart deployment argocd-repo-server
-# # kubectl -n argocd rollout restart deployment argocd-applicationset-controller
-# # kubectl -n argocd rollout restart deployment argocd-notifications-controller
-# # kubectl -n argocd rollout restart deployment argocd-dex-server
-# # kubectl -n argocd rollout restart deployment argocd-redis
+# # # kubectl -n argocd rollout restart deployment argocd-server
+# # # kubectl -n argocd rollout restart deployment argocd-repo-server
+# # # kubectl -n argocd rollout restart deployment argocd-applicationset-controller
+# # # kubectl -n argocd rollout restart deployment argocd-notifications-controller
+# # # kubectl -n argocd rollout restart deployment argocd-dex-server
+# # # kubectl -n argocd rollout restart deployment argocd-redis
 
-# # # RKE2 automatically applies any manifests in this directory at startup
-# # # CRDs must be installed before their corresponding controllers
-# # sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-# # sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
-# #     --remote-name-all --silent --show-error \
-# #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-# #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-# #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-# #     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-# #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-# #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-# #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-# #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-# #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-# #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+# # # # RKE2 automatically applies any manifests in this directory at startup
+# # # # CRDs must be installed before their corresponding controllers
+# # # sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
+# # # sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
+# # #     --remote-name-all --silent --show-error \
+# # #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
+# # #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
+# # #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
+# # #     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
+# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
+# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
+# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
+# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
+# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
+# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-# # # Wait while pods or nodes are not ready
-# # header "Wait while for pods and nodes to be ready"
-# # ACTIVE_PODS="temp"
-# # ACTIVE_NODES="temp"
+# # # # Wait while pods or nodes are not ready
+# # # header "Wait while for pods and nodes to be ready"
+# # # ACTIVE_PODS="temp"
+# # # ACTIVE_NODES="temp"
 
