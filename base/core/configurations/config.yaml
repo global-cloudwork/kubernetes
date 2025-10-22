@@ -6,3 +6,5 @@ disable:
   - rke2-metrics-server
 node-external-ip: ${EXTERNAL_IP}
 node-ip: ${INTERNAL_IP}
+tls-san:
+  - ${EXTERNAL_IP}
