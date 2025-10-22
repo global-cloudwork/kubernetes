@@ -177,21 +177,29 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 # #   sleep 20
 # # done
 
-section "Deploy kustomizations"
+section "Deploy pre-start manifests"
+header "Applying Kustomize PATH: base/core"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
-header "loop through and apply each kustomization path"
-for CURRENT_PATH in "${KUSTOMIZE_PATHS[@]}"; do
-    header "Applying Kustomize PATH: $CURRENT_PATH"
-    kubectl kustomize --enable-helm "github.com/$REPOSITORY/$CURRENT_PATH?ref=$BRANCH" | \
-      kubectl apply --server-side --force-conflicts -f -
-    
-    sleep 10
-    #wait_for endpoints
-done
+section "Deploy argocd manifests"
+header "Applying Kustomize PATH: applications/argocd"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
-#Restart RKE2 to ensure all manifests are applied
-header "Restarting rje2-server to ensure all manifests are applied"
-sudo systemctl restart rke2-server.service
+header "Deploy cert-manager manifests"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
+
+wait_for endpoints
+
+header "Deploy startup manifests"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
+
+# #Restart RKE2 to ensure all manifests are applied
+# header "Restarting rje2-server to ensure all manifests are applied"
+# sudo systemctl restart rke2-server.service
 
 # # kubectl -n argocd rollout restart deployment argocd-server
 # # kubectl -n argocd rollout restart deployment argocd-repo-server
