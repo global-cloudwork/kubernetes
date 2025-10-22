@@ -150,21 +150,13 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-# Install Cilium with specific configuration
-helm repo add cilium https://helm.cilium.io/
-helm repo update
-helm install cilium cilium/cilium \
-  --namespace kube-system \
-  --set encryption.enabled=true \
-  --set encryption.type=wireguard \
-  --set kubeProxyReplacement=true \
-  --set k8sServiceHost=127.0.0.1 \
-  --set k8sServicePort=6443 \
-  --set operator.replicas=1 \
-  --set hubble.enabled=true \
-  --set hubble.relay.enabled=true \
-  --set hubble.ui.enabled=true \
-  --set gatewayAPI.enabled=true 
+wait_for crds
+
+section "Deploy pre-start manifests"
+header "Applying Kustomize PATH: base/core"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
+
 
 #Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
