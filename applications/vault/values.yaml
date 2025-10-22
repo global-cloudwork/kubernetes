@@ -10,6 +10,7 @@ gatewayAPI:
   enabled: true
   hostNetwork:
     enabled: true
+l7Proxy: true
 
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
