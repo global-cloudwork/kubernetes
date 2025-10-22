@@ -195,9 +195,9 @@ header "Deploy startup manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-# # #Restart RKE2 to ensure all manifests are applied
-# # header "Restarting rje2-server to ensure all manifests are applied"
-# # sudo systemctl restart rke2-server.service
+#Restart RKE2 to ensure all manifests are applied
+header "Restarting rje2-server to ensure all manifests are applied"
+sudo systemctl restart rke2-server.service
 
 # # # kubectl -n argocd rollout restart deployment argocd-server
 # # # kubectl -n argocd rollout restart deployment argocd-repo-server
