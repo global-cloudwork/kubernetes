@@ -153,10 +153,9 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v
 wait_for crds
 
 section "Deploy pre-start manifests"
-header "Applying Kustomize PATH: base/core"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+header "Apply the cilium manifests"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cilium?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-
 
 #Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
