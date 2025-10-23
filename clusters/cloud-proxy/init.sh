@@ -117,6 +117,10 @@ header "First start of RKE2 to install crd's"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
+# kubectl -n kube-system rollout restart deployment/cilium-operator
+# kubectl -n kube-system rollout restart ds/cilium
+
+
 # Link kubectl command avoiding race conditions
 header "Link kubectl command avoiding race conditions"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
