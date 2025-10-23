@@ -101,6 +101,9 @@ header "Process RKE2 configuration with envsubst"
 sudo --preserve-env envsubst < /tmp/config.yaml \
   | sudo tee /etc/rancher/rke2/config.yaml
 
+kubectl get pods --all-namespaces --field-selector=status.phase=Pending
+
+
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
 # header "Download RKE2 Cilium configuration"

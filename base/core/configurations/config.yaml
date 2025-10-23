@@ -8,3 +8,4 @@ node-external-ip: ${EXTERNAL_IP}
 node-ip: 127.0.0.1
 tls-san:
   - ${EXTERNAL_IP}
+restartPolicy: Always
