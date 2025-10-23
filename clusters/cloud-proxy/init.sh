@@ -101,6 +101,18 @@ header "Process RKE2 configuration with envsubst"
 sudo --preserve-env envsubst < /tmp/config.yaml \
   | sudo tee /etc/rancher/rke2/config.yaml
 
+# RKE2 automatically applies any manifests in this directory at startup
+# CRDs must be installed before their corresponding controllers
+sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
+    --remote-name-all --silent --show-error \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
+    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
+
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
 # header "Download RKE2 Cilium configuration"
@@ -198,32 +210,4 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
 #Restart RKE2 to ensure all manifests are applied
 header "Restarting rje2-server to ensure all manifests are applied"
 sudo systemctl restart rke2-server.service
-
-# # # kubectl -n argocd rollout restart deployment argocd-server
-# # # kubectl -n argocd rollout restart deployment argocd-repo-server
-# # # kubectl -n argocd rollout restart deployment argocd-applicationset-controller
-# # # kubectl -n argocd rollout restart deployment argocd-notifications-controller
-# # # kubectl -n argocd rollout restart deployment argocd-dex-server
-# # # kubectl -n argocd rollout restart deployment argocd-redis
-
-# # # # RKE2 automatically applies any manifests in this directory at startup
-# # # # CRDs must be installed before their corresponding controllers
-# # # sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-# # # sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
-# # #     --remote-name-all --silent --show-error \
-# # #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/applicationset-crd.yaml \
-# # #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/application-crd.yaml \
-# # #     https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.0/manifests/crds/appproject-crd.yaml \
-# # #     https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml \
-# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-# # #     https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
-# # # # Wait while pods or nodes are not ready
-# # # header "Wait while for pods and nodes to be ready"
-# # # ACTIVE_PODS="temp"
-# # # ACTIVE_NODES="temp"
 
