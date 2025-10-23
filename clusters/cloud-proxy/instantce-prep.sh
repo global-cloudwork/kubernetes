@@ -7,4 +7,4 @@ apt upgrade
 
 mkdir /home/ubuntu/init.sh
 curl --silent --show-error -o /home/ubuntu/init.sh https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/clusters/cloud-proxy/init.sh
-hmod +x /home/ubuntu/init.sh
+chmod 755 /home/ubuntu/init.sh
