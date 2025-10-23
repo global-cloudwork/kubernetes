@@ -95,7 +95,7 @@ sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 header "Download RKE2 configuration"
 sudo curl --silent --show-error --remote-name-all \
   --output-dir /tmp/ \
-  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/config.yaml
+  https://raw.githubusercontent.com/global-cloudwork/kubernetes/development/base/core/configurations/config.yaml
 
 header "Process RKE2 configuration with envsubst"
 sudo --preserve-env envsubst < /tmp/config.yaml \
@@ -106,7 +106,7 @@ sudo --preserve-env envsubst < /tmp/config.yaml \
 # header "Download RKE2 Cilium configuration"
 # sudo curl --silent --show-error --remote-name-all \
 #   --output-dir /tmp/ \
-#   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml
+#   https://raw.githubusercontent.com/global-cloudwork/kubernetes/development/base/core/configurations/rke2-cilium-config.yaml
 
 # header "Process RKE2 Cilium configuration with envsubst"
 # sudo --preserve-env envsubst < /tmp/rke2-cilium-config.yaml \
