@@ -101,17 +101,6 @@ header "Process RKE2 configuration with envsubst"
 sudo --preserve-env envsubst < /tmp/config.yaml \
   | sudo tee /etc/rancher/rke2/config.yaml
 
-# RKE2 automatically applies any manifests in this directory at startup
-# CRDs must be installed before their corresponding controllers
-sudo curl --output-dir /var/lib/rancher/rke2/server/manifests \
-    --remote-name-all --silent --show-error \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml \
-    https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
 # Download and process Cilium configuration
 # envsubst replaces environment variables in the template
 # header "Download RKE2 Cilium configuration"
@@ -144,6 +133,15 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 
 #Deploy initial CRDs for Argo CD, Cert-Manager, and Gateway API
 section "Deploy initial CRDs for Argo CD and Gateway API"
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/application-crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/applicationset-crd.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/appproject-crd.yaml
 
 wait_for crds
 
@@ -155,10 +153,6 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cilium?ref=
 #Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
-
-#Apply Argocd CRD's
-header "Argo CD CRD's"
-kubectl apply -k github.com/argoproj/argo-cd/manifests/crds?ref=v3.1.9 --server-side
 
 # Copy RKE2-generated kubeconfig
 # Set proper ownership
