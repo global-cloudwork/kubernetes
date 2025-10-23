@@ -145,25 +145,6 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 #Deploy initial CRDs for Argo CD, Cert-Manager, and Gateway API
 section "Deploy initial CRDs for Argo CD and Gateway API"
 
-ARGOCD_VERSION=v3.1.9
-GATEWAY_VERSION=v1.4.0
-
-#Apply Argocd CRD's
-header "Argo CD CRD's"
-kubectl apply -k github.com/argoproj/argo-cd/manifests/crds?ref=${ARGOCD_VERSION} --server-side
-# kubectl apply -k github.com/kubernetes-sigs/gateway-api/config/crd?ref=${GATEWAY_VERSION} --server-side
-# kubectl apply -k github.com/kubernetes-sigs/gateway-api/config/crd/experimental?ref=${GATEWAY_VERSION} --server-side
-# kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/main/pkg/k8s/apis/cilium.io/client/crds/v2alpha1/ciliumgatewayclassconfigs.yaml
-
-# #Apply Cilium CRD's
-# header "Apply Cilium CRD's"
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
 wait_for crds
 
 #Kustomize apply cilium
@@ -174,6 +155,10 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cilium?ref=
 #Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
+
+#Apply Argocd CRD's
+header "Argo CD CRD's"
+kubectl apply -k github.com/argoproj/argo-cd/manifests/crds?ref=v3.1.9 --server-side
 
 # Copy RKE2-generated kubeconfig
 # Set proper ownership
