@@ -49,14 +49,6 @@ export PATH=/var/lib/rancher/rke2/bin:$PATH
 # Set cluster-specific variables
 HOST_IP=$(hostname -I | awk '{print $1}')
 
-# Set directories where kustomize.yaml files are found
-declare -a KUSTOMIZE_PATHS=(
-  "base/core"
-  "applications/argocd"
-  "applications/cert-manager"
-  "base"
-)
-
 #===============================================================================
 # System Dependencies Installation
 #===============================================================================
