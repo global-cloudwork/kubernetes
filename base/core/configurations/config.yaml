@@ -9,6 +9,3 @@ disable:
   - rke2-ingress-nginx
   - rke2-metrics-server
 write-kubeconfig-mode: "0600"
-
-etcd-expose-metrics: false
-debug: true
