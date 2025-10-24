@@ -22,7 +22,4 @@ disable:
 write-kubeconfig-mode: "0600"
 
 etcd-expose-metrics: false
-etcd-snapshot-schedule-cron: "0 */12 * * *"
-etcd-snapshot-retention: 2
-
 debug: true
