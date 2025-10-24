@@ -1,11 +1,28 @@
+
+
+
+
+
+token: ${TOKEN}
+
+node-ip: ${INTERNAL_IP}
+node-external-ip: ${EXTERNAL_IP}
+tls-san:
+  - ${EXTERNAL_IP}
+
+bind-address: 0.0.0.0
+advertise-address: ${EXTERNAL_IP}
+
 cni: none
-write-kubeconfig-mode: "0600"
+disable-cloud-controller: true
 disable-kube-proxy: true
 disable: 
   - rke2-ingress-nginx
   - rke2-metrics-server
-node-external-ip: ${EXTERNAL_IP}
-node-ip: ${INTERNAL_IP}
-advertise-address: ${INTERNAL_IP}
-tls-san:
-  - ${EXTERNAL_IP}
+write-kubeconfig-mode: "0600"
+
+etcd-expose-metrics: false
+etcd-snapshot-schedule-cron: "0 */12 * * *"
+etcd-snapshot-retention: 2
+
+debug: true
