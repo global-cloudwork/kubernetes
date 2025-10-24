@@ -15,6 +15,7 @@
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
 #sudo journalctl -u rke2-server -f
+#sudo ss -tulnp
 
 #===============================================================================
 # Main Script Entry Point

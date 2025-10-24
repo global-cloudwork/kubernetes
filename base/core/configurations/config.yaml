@@ -7,4 +7,3 @@ disable:
 node-external-ip: ${EXTERNAL_IP}
 tls-san:
   - ${EXTERNAL_IP}
-restartPolicy: Always
