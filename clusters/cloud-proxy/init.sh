@@ -82,6 +82,8 @@ section "Setup RKE2 configuration files"
 # Create necessary directories
 sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
+sudo mkdir -p /etc/cni/net.d/
+sudo mkdir -p /opt/cni/bin/
 
 # Download and process RKE2 configuration
 # envsubst replaces environment variables in the template
