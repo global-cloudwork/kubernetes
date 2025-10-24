@@ -11,12 +11,12 @@ tls-san:
   - ${EXTERNAL_IP}
 
 bind-address: 0.0.0.0
-advertise-address: ${EXTERNAL_IP}
+advertise-address: ${INTERNAL_IP}
 
 cni: none
 disable-cloud-controller: true
 disable-kube-proxy: true
-disable:
+disable: 
   - rke2-ingress-nginx
   - rke2-metrics-server
 write-kubeconfig-mode: "0600"
