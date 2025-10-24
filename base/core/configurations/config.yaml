@@ -1,8 +1,3 @@
-
-
-
-
-
 node-ip: ${INTERNAL_IP}
 node-external-ip: ${EXTERNAL_IP}
 tls-san:
