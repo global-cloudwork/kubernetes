@@ -5,5 +5,7 @@ disable:
   - rke2-ingress-nginx
   - rke2-metrics-server
 node-external-ip: ${EXTERNAL_IP}
+node-ip: ${INTERNAL_IP}
+advertise-address: ${INTERNAL_IP}
 tls-san:
   - ${EXTERNAL_IP}
