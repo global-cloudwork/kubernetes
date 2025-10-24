@@ -8,9 +8,6 @@ node-external-ip: ${EXTERNAL_IP}
 tls-san:
   - ${EXTERNAL_IP}
 
-bind-address: 0.0.0.0
-advertise-address: ${INTERNAL_IP}
-
 cni: none
 disable-kube-proxy: true
 disable:
