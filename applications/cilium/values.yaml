@@ -2589,7 +2589,7 @@ envoy:
         #- PERFMON
         #- BPF
       # -- Keep capability `NET_BIND_SERVICE` for Envoy process.
-      keepCapNetBindService: false
+      keepCapNetBindService: true
   # -- Affinity for cilium-envoy.
   affinity:
     podAntiAffinity:
