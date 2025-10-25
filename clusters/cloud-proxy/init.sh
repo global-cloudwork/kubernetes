@@ -62,7 +62,7 @@ sudo apt-get -qq -y install git wireguard
 
 # Install K9s
 wget https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
-apt install ./k9s_linux_amd64.deb
+sudo apt install ./k9s_linux_amd64.deb
 rm k9s_linux_amd64.deb
 
 # Install Helm package manager
@@ -119,7 +119,6 @@ sudo systemctl start rke2-server.service
 
 # kubectl -n kube-system rollout restart deployment/cilium-operator
 # kubectl -n kube-system rollout restart ds/cilium
-
 
 # Link kubectl command avoiding race conditions
 header "Link kubectl command avoiding race conditions"
