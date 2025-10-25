@@ -251,8 +251,9 @@ nodeSelector:
 # -- Node tolerations for agent scheduling to nodes with taints
 # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
 tolerations:
-  - key: "CriticalAddonsOnly"
-    operator: Exists
+  - operator: Exists
+    # - key: "key"
+    #   operator: "Equal|Exists"
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 # -- The priority class to use for cilium-agent.
@@ -1188,9 +1189,7 @@ certgen:
   priorityClassName: ""
   # -- Node tolerations for pod assignment on nodes with taints
   # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
-  tolerations:
-    - key: "CriticalAddonsOnly"
-      operator: Exists
+  tolerations: []
   # -- Resource limits for certgen
   # ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
   resources: {}
@@ -2618,8 +2617,7 @@ envoy:
   # -- Node tolerations for envoy scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
   tolerations:
-    - key: "CriticalAddonsOnly"
-      operator: Exists
+    - operator: Exists
       # - key: "key"
       #   operator: "Equal|Exists"
       #   value: "value"
@@ -2909,8 +2907,6 @@ operator:
       operator: Exists
     - key: "node.cloudprovider.kubernetes.io/uninitialized"
       operator: Exists
-    - key: "CriticalAddonsOnly"
-      operator: Exists
   # -- Additional cilium-operator container arguments.
   extraArgs: []
   # -- Additional cilium-operator environment variables.
@@ -3094,8 +3090,7 @@ nodeinit:
   # -- Node tolerations for nodeinit scheduling to nodes with taints
   # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
   tolerations:
-    - key: "CriticalAddonsOnly"
-      operator: Exists
+    - operator: Exists
       # - key: "key"
       #   operator: "Equal|Exists"
       #   value: "value"
