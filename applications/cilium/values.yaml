@@ -251,9 +251,8 @@ nodeSelector:
 # -- Node tolerations for agent scheduling to nodes with taints
 # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
 tolerations:
-  - operator: Exists
-    # - key: "key"
-    #   operator: "Equal|Exists"
+    - key: "CriticalAddonsOnly"
+      operator: Exists
     #   value: "value"
     #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 # -- The priority class to use for cilium-agent.
