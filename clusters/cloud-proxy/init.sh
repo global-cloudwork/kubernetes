@@ -60,10 +60,6 @@ header "apt-get update & install"
 sudo apt-get -qq update
 sudo apt-get -qq -y install git wireguard
 
-# Install K9s
-wget https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb && apt install ./k9s_linux_amd64.deb
-rm k9s_linux_amd64.deb
-
 # Install Helm package manager
 header "Install Helm"
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
