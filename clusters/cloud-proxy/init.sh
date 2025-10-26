@@ -115,8 +115,9 @@ header "First start of RKE2 to install crd's"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
-# kubectl -n kube-system rollout restart deployment/cilium-operator
-# kubectl -n kube-system rollout restart ds/cilium
+# Wait for the node to be ready and the API server to be operational
+header "Waiting for the RKE2 control plane to become ready..."
+kubectl wait --for=condition=Ready node/$(hostname) --timeout=120s
 
 # Link kubectl command avoiding race conditions
 header "Link kubectl command avoiding race conditions"
@@ -144,7 +145,9 @@ kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manif
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/applicationset-crd.yaml
 kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/appproject-crd.yaml
 
-wait_for crds
+# Wait for all CRDs to be established before applying other manifests
+section "Waiting for all CRDs to be established..."
+kubectl wait --for=condition=Established crd --all --timeout=60s
 
 #Kustomize apply cilium
 header "Kustomize apply cilium"
@@ -164,8 +167,6 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-# wait_for pods
-
 section "Deploy pre-start manifests"
 header "Applying Kustomize PATH: base/core"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
@@ -179,8 +180,6 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=
 # header "Deploy cert-manager manifests"
 # kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
 #   kubectl apply --server-side --force-conflicts -f -
-
-# wait_for endpoints
 
 header "Deploy startup manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
