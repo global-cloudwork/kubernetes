@@ -180,7 +180,7 @@ header "Deploy cert-manager manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-wait_for endpoints
+# wait_for endpoints
 
 header "Deploy startup manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
