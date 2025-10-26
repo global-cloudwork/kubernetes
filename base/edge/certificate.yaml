@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: promotesudbury-cert
+  namespace: default # Or the namespace where you'll define your HTTPRoute
+spec:
+  secretName: promotesudbury-tls # The name of the Secret that will hold the TLS cert
+  issuerRef:
+    name: cluster-issuer
+    kind: ClusterIssuer
+  # Change these to the specific domains you want to secure
+  dnsNames:
+  - app.promotesudbury.com
