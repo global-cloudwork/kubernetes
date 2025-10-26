@@ -99,24 +99,10 @@ header "Process RKE2 configuration with envsubst"
 sudo --preserve-env envsubst < /tmp/config.yaml \
   | sudo tee /etc/rancher/rke2/config.yaml
 
-# Download and process Cilium configuration
-# envsubst replaces environment variables in the template
-# header "Download RKE2 Cilium configuration"
-# sudo curl --silent --show-error --remote-name-all \
-#   --output-dir /tmp/ \
-#   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/configurations/rke2-cilium-config.yaml
-
-# header "Process RKE2 Cilium configuration with envsubst"
-# sudo --preserve-env envsubst < /tmp/rke2-cilium-config.yaml \
-#   | sudo tee /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
-
 # Enable on boot, then start of RKE2
 header "First start of RKE2 to install crd's"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
-
-# kubectl -n kube-system rollout restart deployment/cilium-operator
-# kubectl -n kube-system rollout restart ds/cilium
 
 # Link kubectl command avoiding race conditions
 header "Link kubectl command avoiding race conditions"
@@ -176,9 +162,9 @@ header "Applying Kustomize PATH: applications/argocd"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-# header "Deploy cert-manager manifests"
-# kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
-#   kubectl apply --server-side --force-conflicts -f -
+header "Deploy cert-manager manifests"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
 wait_for endpoints
 
