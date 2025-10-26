@@ -176,9 +176,9 @@ header "Applying Kustomize PATH: applications/argocd"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-header "Deploy cert-manager manifests"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+# header "Deploy cert-manager manifests"
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
 
 # wait_for endpoints
 
