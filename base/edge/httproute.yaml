@@ -60,7 +60,7 @@ spec:
       backendRefs:
         - name: argocd-server
           namespace: argocd
-          port: 8080
+          port: 80
 # ---
 # # n8n HTTPRoute
 # apiVersion: gateway.networking.k8s.io/v1beta1
