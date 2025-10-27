@@ -7,7 +7,7 @@ spec:
   parentRefs:
     - name: gateway
       namespace: gateway
-      sectionName: http-listener
+      sectionName: https-listener
   hostnames:
     - argocd.promotesudbury.ca
   rules:
