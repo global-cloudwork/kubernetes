@@ -14,5 +14,5 @@ spec:
         cloudDNS:
           project: global-cloudworks
           serviceAccountSecretRef:
-            name: clouddns-dns01-solver-svc-acct
+            name: clouddns-dns01-solver
             key: key.json
