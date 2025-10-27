@@ -8,32 +8,24 @@ spec:
   goTemplateOptions: 
   - "missingkey=error"
   generators:
-    - matrix:
-        generators:
-        - git:
-            repoURL: https://github.com/global-cloudwork/kubernetes.git
-            revision: main
-            files:
-            - path: clusters/on-site/application-list.yaml
-        - list:
-            elements: []
-            elementsYaml: '{{ .key.components | toJson }}'
+  - git:
+      repoURL: https://github.com/global-cloudwork/kubernetes.git
+      revision: main
+      directories:
+      - path: applications/**/
   template:
     metadata:
       name: '{{ .name }}'
     spec:
       project: default
       sources:
-        - repoURL: '{{ .repoURL }}'
-          chart: '{{ .chart }}'
-          targetRevision: '{{ .version }}'
-          helm:
-            releaseName: '{{ .releaseName }}'
-            valueFiles:
-              - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/applications/{{ .name }}/values.yaml
+        - repoURL: https://github.com/global-cloudwork/kubernetes.git
+          targetRevision: main
+          path: '{{ .path }}'
+          kustomize: {}
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{ .namespace }}'
+        namespace: '{{ .name }}'
       syncPolicy:
         automated:
           prune: true
