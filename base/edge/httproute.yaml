@@ -7,7 +7,7 @@ spec:
   parentRefs:
     - name: gateway
       namespace: gateway
-      sectionName: https-listener
+      sectionName: http-listener
   hostnames:
     - argocd.promotesudbury.ca
   rules:
@@ -28,7 +28,7 @@ spec:
   parentRefs:
     - name: gateway
       namespace: gateway
-      sectionName: https-listener
+      sectionName: http-listener
   hostnames:
     - hubble.promotesudbury.ca
   rules:
