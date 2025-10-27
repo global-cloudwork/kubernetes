@@ -38,6 +38,11 @@ section "Setup variables and import from google secrets manager"
 
 # Import environment variables from Google Cloud Secret Manager
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
+export $(gcloud secrets versions access latest --secret=clouddns-solver-key | xargs)
+
+KEY_JSON=$(gcloud secrets versions access latest --secret=clouddns-solver-key)
+printf '%s' "$KEY_JSON" | kubectl create secret generic clouddns-dns01-solver \
+   --from-file=key.json=/dev/stdin
 
 # Retrieve external IP from GCE metadata server
 export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
@@ -172,3 +177,5 @@ kubectl wait --for=condition=available deployment/cert-manager-webhook -n cert-m
 header "Deploy startup manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
+
+

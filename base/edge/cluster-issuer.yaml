@@ -10,9 +10,9 @@ spec:
     privateKeySecretRef:
       name: cluster-issuer-key
     solvers:
-      - http01:
-          gatewayHTTPRoute:
-            parentRefs:
-              - name: gateway
-                namespace: gateway
-                kind: Gateway
+    - dns01:
+        cloudDNS:
+          project: $PROJECT_ID
+          serviceAccountSecretRef:
+            name: clouddns-dns01-solver-svc-acct
+            key: key.json
