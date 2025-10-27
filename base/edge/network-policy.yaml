@@ -1,0 +1,36 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: "allow-cert-manager-egress"
+  namespace: cert-manager
+spec:
+  # 1. Select the cert-manager pods
+  endpointSelector:
+    matchLabels:
+      app: cert-manager  # Use the label selector from your cert-manager pods
+  # 2. Define the Egress rules
+  egress:
+    # Rule 1: Allow DNS (UDP 53) to resolve external hostnames
+    # This is often needed even with host networking due to the reported error
+    - toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          # This should allow traffic to the cluster DNS and external DNS servers
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Rule 2: Allow HTTP/HTTPS to the public internet (for ACME server)
+    - toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+      # Egress to the outside world (IPs not in the reserved ranges)
+      toCIDRSet:
+        - cidr: 0.0.0.0/0
+          # Exclude Kubernetes internal CIDRs (adjust 10.0.0.0/8 if necessary)
+          except:
+            - 10.0.0.0/8
+            - 10.43.0.0/16 # Default Kubernetes service CIDR (often where 10.43.0.10 lives)
