@@ -38,11 +38,7 @@ section "Setup variables and import from google secrets manager"
 
 # Import environment variables from Google Cloud Secret Manager
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
-export $(gcloud secrets versions access latest --secret=clouddns-solver-key | xargs)
-
 KEY_JSON=$(gcloud secrets versions access latest --secret=clouddns-solver-key)
-printf '%s' "$KEY_JSON" | kubectl create secret generic clouddns-dns01-solver \
-   --from-file=key.json=/dev/stdin
 
 # Retrieve external IP from GCE metadata server
 export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
@@ -156,6 +152,9 @@ KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | 
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
 # wait_for pods
+
+printf '%s' "$KEY_JSON" | kubectl create secret generic clouddns-dns01-solver \
+   --from-file=key.json=/dev/stdin
 
 section "Deploy pre-start manifests"
 header "Applying Kustomize PATH: base/core"
