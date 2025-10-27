@@ -152,7 +152,7 @@ KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | 
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
 # wait_for pods
-
+section "deploy tls chalenge secret"
 printf '%s' "$KEY_JSON" | kubectl create secret generic clouddns-dns01-solver \
    --from-file=key.json=/dev/stdin
 
