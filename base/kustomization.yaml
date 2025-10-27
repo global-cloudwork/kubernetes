@@ -6,4 +6,4 @@ resources:
   - edge/cluster-issuer.yaml
   - edge/gateway.yaml
   - edge/httproute.yaml
-  - edge/network-policy
+  - edge/network-policy.yaml
