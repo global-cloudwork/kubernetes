@@ -38,7 +38,6 @@ section "Setup variables and import from google secrets manager"
 
 # Import environment variables from Google Cloud Secret Manager
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
-KEY_JSON=$(gcloud secrets versions access latest --secret=clouddns-solver-key)
 
 # Retrieve external IP from GCE metadata server
 export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
@@ -153,6 +152,7 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 
 # wait_for pods
 section "deploy tls chalenge secret"
+KEY_JSON=$(gcloud secrets versions access latest --secret=clouddns-solver-key)
 printf '%s' "$KEY_JSON" | kubectl create secret generic clouddns-dns01-solver \
    --from-file=key.json=/dev/stdin
 
