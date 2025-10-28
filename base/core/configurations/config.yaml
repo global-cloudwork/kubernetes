@@ -1,4 +1,3 @@
-node-iface: cilium_host
 node-name: cloud-proxy
 tls-san:
   - ${EXTERNAL_IP}
