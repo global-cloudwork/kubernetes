@@ -1,6 +1,4 @@
 node-name: cloud-proxy
-tls-san:
-  - ${EXTERNAL_IP}
 cni: none
 disable-kube-proxy: true
 disable:
