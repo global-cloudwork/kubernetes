@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   # - application-set.yaml
+  - edge/namespace.yaml
   - edge/cluster-issuer.yaml
   - edge/gateway.yaml
-  - edge/httproute.yaml
-  - edge/network-policy.yaml
