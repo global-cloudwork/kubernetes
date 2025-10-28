@@ -1,7 +1,5 @@
-node-ip: ${INTERNAL_IP}
-node-name: ${INTERNAL_IP}
-advertise-address: ${INTERNAL_IP}
-node-external-ip: ${INTERNAL_IP}
+node-iface: cilium_host
+node-name: ${EXTERNAL_IP}
 tls-san:
   - ${EXTERNAL_IP}
 cni: none
