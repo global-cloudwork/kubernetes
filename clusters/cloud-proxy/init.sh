@@ -122,9 +122,8 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 section "Deploy initial CRDs for Argo CD and Gateway API"
 kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/application-crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/applicationset-crd.yaml
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds/appproject-crd.yaml
+kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds?ref=v3.1.9
+
 
 wait_for crds
 
