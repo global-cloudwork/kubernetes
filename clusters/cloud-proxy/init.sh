@@ -124,7 +124,6 @@ kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/re
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds?ref=v3.1.9
 
-
 wait_for crds
 
 #Kustomize apply cilium
@@ -159,7 +158,7 @@ header "Deploy cert-manager manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-kubectl wait --for=condition=available deployment/cert-manager-webhook -n cert-manager --timeout=300s
+# kubectl wait --for=condition=available deployment/cert-manager-webhook -n cert-manager --timeout=300s
 # wait_for endpoints
 
 header "Deploy startup manifests"
