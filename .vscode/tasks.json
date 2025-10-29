@@ -26,6 +26,15 @@
       }
     },
     {
+      "label": "Update key.json File",
+      "type": "shell",
+      "command": "cd ${workspaceFolder}/scripts && source ./upload-key.sh",
+      "problemMatcher": [],
+      "dependsOn": [],
+      "options": {
+      }
+    },
+    {
       "label": "Replace Cloud Proxy Cluster",
       "type": "shell",
       "command": "cd ${workspaceFolder}/clusters/cloud-proxy/ && ./reuse-instance.sh",

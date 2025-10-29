@@ -165,9 +165,8 @@ header "Deploy startup manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-section "deploy tls chalenge secret"
-KEY_JSON=$(gcloud secrets versions access latest --secret=clouddns-solver-key)
-printf '%s' "$KEY_JSON" | \
-  kubectl create secret generic clouddns-dns01-solver \
-    --from-file=key.json=/dev/stdin \
-    --namespace=kube-system
+header "create dns challenge key"
+gcloud secrets versions access latest --secret="dns01-solver-key" --project="global_cloudworks" > key.json
+kubectl create secret generic dns01-solver-key \
+   --from-file=key.json
+rm key.json
