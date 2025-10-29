@@ -14,8 +14,9 @@ helmCharts:
     valuesInline:
       gatewayAPI:
         enabled: true
-        hostNetwork:
-          enabled: true
       kubeProxyReplacement: "true"
       operator:
         replicas: 1
+      encryption:
+        enabled: true
+        type: wireguard
