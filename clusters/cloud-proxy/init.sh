@@ -170,4 +170,4 @@ KEY_JSON=$(gcloud secrets versions access latest --secret=clouddns-solver-key)
 printf '%s' "$KEY_JSON" | \
   kubectl create secret generic clouddns-dns01-solver \
     --from-file=key.json=/dev/stdin \
-    --namespace=gateway
+    --namespace=kube-system
