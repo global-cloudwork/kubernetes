@@ -9,5 +9,9 @@ helmCharts:
     repo: https://charts.jetstack.io
     namespace: cert-manager
     version: 1.19.1
-    valuesFile: values.yaml
     releaseName: cert-manager
+    valuesInline:
+      crds:
+        enabled: true
+      installCRDs: true
+      enableGatewayAPI: true
