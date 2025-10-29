@@ -61,9 +61,8 @@ sudo apt-get -qq update
 sudo apt-get -qq -y install git wireguard
 
 # Install K9s
-wget https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
-sudo apt install ./k9s_linux_amd64.deb
-rm k9s_linux_amd64.deb
+curl -Lo k9s.deb https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
+sudo apt install ./k9s.deb && rm k9s.deb
 
 # Install Helm package manager
 header "Install Helm"
