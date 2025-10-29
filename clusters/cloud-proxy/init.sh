@@ -166,7 +166,7 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 header "create dns challenge key"
-gcloud secrets versions access latest --secret="dns01-solver-key" --project="global-cloudworks" > key.json
-kubectl create secret generic dns01-solver-key \
+gcloud secrets versions access latest --secret="dns-solver-key" --project="global-cloudworks" > key.json
+kubectl create secret generic dns-solver-key \
    --from-file=key.json
 rm key.json
