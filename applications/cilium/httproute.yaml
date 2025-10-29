@@ -6,7 +6,7 @@ metadata:
 spec:
   parentRefs:
     - name: gateway
-      namespace: gateway
+      namespace: kube-system
       sectionName: http-listener
   hostnames:
     - hubble.promotesudbury.ca
