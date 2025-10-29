@@ -1,2 +1,2 @@
-gcloud secrets versions add development-env-file \
-    --data-file=- < "../.cloud-proxy.dev.env"
+gcloud secrets versions add dns-solver-key \
+    --data-file=- < "../key.json"
