@@ -67,10 +67,10 @@ rm k9s_linux_amd64.deb
 
 # Install Helm package manager
 header "Install Helm"
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
-    --remote-name-all \
-    --silent \
-    --show-error | bash
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+rm get_helm.sh
 
 # Install RKE2
 header "Install RKE2"
