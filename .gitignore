@@ -5,3 +5,4 @@
 *.key
 #All env files
 *.env
+key.*
