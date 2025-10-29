@@ -11,4 +11,11 @@ helmCharts:
     namespace: kube-system
     version: 1.18.2
     releaseName: cilium
-    valuesFile: values.yaml
+    valuesInline:
+      gatewayAPI:
+        enabled: true
+        hostNetwork:
+          enabled: true
+      kubeProxyReplacement: "true"
+      operator:
+        replicas: 1
