@@ -13,5 +13,3 @@ helmCharts:
     namespace: argocd
     version: 8.2.7
     releaseName: argocd
-    valuesInline:
-
