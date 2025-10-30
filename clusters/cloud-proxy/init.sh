@@ -158,7 +158,7 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manage
   kubectl apply --server-side --force-conflicts -f -
 
 # kubectl wait --for=condition=available deployment/cert-manager-webhook -n cert-manager --timeout=300s
-wait_for endpoints
+# wait_for endpoints
 
 header "Deploy startup manifests"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
