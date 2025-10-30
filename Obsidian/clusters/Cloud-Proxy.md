@@ -58,4 +58,4 @@ The traffic enters the cluster using the endpoint for the gateway, then passes t
     
     - Ports like `10250` for `kubelet` and `9345` for `rke2` are now showing up. This indicates the kubelet and RKE2 services are active.
 
-![[Debug Cluster]]
+![[Debug Method]]
