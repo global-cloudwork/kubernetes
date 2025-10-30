@@ -19,6 +19,10 @@ helmCharts:
       k8sServicePort: "6443"
       operator:
         replicas: 1
+        tollerations:
+          - key: "CriticalAddonsOnly"
+            operator: Exists
+            effect: "NoExecute"
       encryption:
         enabled: true
         type: wireguard
@@ -28,10 +32,15 @@ helmCharts:
           enabled: true
         ui:
           enabled: true
-      tollerations:
-        - key: "CriticalAddonsOnly"
-          operator: Exists
-          effect: "NoExecute"
+      envoy:
+        enabled: true
+        tollerations:
+          - key: "CriticalAddonsOnly"
+            operator: Exists
+            effect: "NoExecute"
+        securityContext:
+          capabilities:
+            keepCapNetBindService: true
 
 
           
