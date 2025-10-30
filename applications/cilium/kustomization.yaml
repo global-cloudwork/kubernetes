@@ -9,7 +9,7 @@ helmCharts:
   - name: cilium
     repo: https://helm.cilium.io/
     namespace: kube-system
-    version: 1.18.2
+    version: 1.18.1
     releaseName: cilium
     valuesInline:
       gatewayAPI:
