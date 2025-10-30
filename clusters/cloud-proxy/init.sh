@@ -58,7 +58,7 @@ section "Install system dependencies and download configurations"
 # Install required system packages
 header "apt-get update & install"
 sudo apt-get -qq update
-sudo apt-get -qq -y install git wireguard
+sudo apt-get -qq -y install wireguard
 
 # Install K9s
 curl -Lo k9s.deb https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
@@ -110,7 +110,7 @@ sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 # Copy RKE2-generated kubeconfig
 # Set proper ownership
 mkdir -p $HOME/.kube/$CLUSTER_NAME
-sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
+sudo cp -f /etc/rancher/rke2/rke2.yaml $HOME/.kube/$CLUSTER_NAME/config
 sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 
 # Merge all kubeconfig files in ~/.kube subdirectories
