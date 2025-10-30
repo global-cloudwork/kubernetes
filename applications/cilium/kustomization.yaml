@@ -28,3 +28,10 @@ helmCharts:
           enabled: true
         ui:
           enabled: true
+      tollerations:
+        - key: "CriticalAddonsOnly"
+          operator: Exists
+          effect: "NoExecute"
+
+
+          
