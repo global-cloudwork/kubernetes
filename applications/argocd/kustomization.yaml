@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - httproute.yaml
   - secret.yaml
+  - app-project.yaml
 
 helmCharts:
   - name: argo-cd
