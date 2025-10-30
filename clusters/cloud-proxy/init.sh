@@ -58,7 +58,7 @@ section "Install system dependencies and download configurations"
 # Install required system packages
 header "apt-get update & install"
 sudo apt-get -qq update
-sudo apt-get -qq -y install wireguard
+sudo apt-get -qq -y install git wireguard
 
 # Install K9s
 curl -Lo k9s.deb https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
