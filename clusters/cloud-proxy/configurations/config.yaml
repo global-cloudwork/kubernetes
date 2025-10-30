@@ -1,6 +1,8 @@
 node-name: cloud-proxy
 cni: none
 disable-kube-proxy: true
+tls-san:
+  - ${EXTERNAL_IP}
 disable:
   - rke2-cilium
   - rke2-ingress-nginx
