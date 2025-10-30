@@ -143,29 +143,26 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-# section "Deploy pre-start manifests"
-# header "Applying Kustomize PATH: base/core"
-# kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
-#   kubectl apply --server-side --force-conflicts -f -
+section "Deploy pre-start manifests"
+header "Applying Kustomize PATH: base/core"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
-# section "Deploy argocd manifests"
-# header "Applying Kustomize PATH: applications/argocd"
-# kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
-#   kubectl apply --server-side --force-conflicts -f -
+section "Deploy argocd manifests"
+header "Applying Kustomize PATH: applications/argocd"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
-# header "Deploy cert-manager manifests"
-# kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
-#   kubectl apply --server-side --force-conflicts -f -
+header "Deploy cert-manager manifests"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
-# # kubectl wait --for=condition=available deployment/cert-manager-webhook -n cert-manager --timeout=300s
-# # wait_for endpoints
+header "Deploy startup manifests"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
-# header "Deploy startup manifests"
-# kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
-#   kubectl apply --server-side --force-conflicts -f -
-
-# header "create dns challenge key"
-# gcloud secrets versions access latest --secret="dns-solver-json-key" --project="global-cloudworks" > key.json
-# kubectl create secret generic dns-solver-json-key \
-#    --from-file=key.json
-# rm key.json
+header "create dns challenge key"
+gcloud secrets versions access latest --secret="dns-solver-json-key" --project="global-cloudworks" > key.json
+kubectl create secret generic dns-solver-json-key \
+   --from-file=key.json
+rm key.json
