@@ -3,6 +3,7 @@
 
 #All key files
 *.key
+*key.json
 #All env files
 *.env
 key.*
