@@ -3,6 +3,9 @@ sudo apt install curl tree git -y
 apt update && apt upgrade -y
 apt install -y curl tree wireguard git
 
+
+curl -fsSL https://ollama.com/install.sh | sh
+
 #gcloud cli
 cd ~
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-linux-x86_64.tar.gz

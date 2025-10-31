@@ -4,18 +4,6 @@
 source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/general.sh)
 
 
-echo() {
-    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
-}
-
-function title() {
-  command echo -e "\n\033[4m\033[38;5;11m# $1\033[0m"
-}
-
-function header() {
-    command echo -e "\n\033[4m\033[38;5;9m## $1\033[0m"
-}
-
 title "Removing Existing RKE2 Resources"
 
 header "remove symbolic links before re-installing"
