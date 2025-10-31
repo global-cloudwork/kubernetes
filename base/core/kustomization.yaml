@@ -3,11 +3,6 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
-  # Gateway API - Standard CRDs (v1.4.0)
-  - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
-
-  # Gateway API - TLSRoutes CRD (v1.2.0)
-  - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-
-  # Argo CD CRDs (v3.1.9)
-  - https://github.com/argoproj/argo-cd/manifests/crds?ref=v3.1.9
+  - application-set.yaml
+  - https://github.com/global-cloudworks/kubernetes/applications/cilium?ref=main
+  - https://github.com/global-cloudworks/kubernetes/applications/argocd?ref=main

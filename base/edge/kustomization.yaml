@@ -5,4 +5,3 @@ resources:
   - namespace.yaml
   - cluster-issuer.yaml
   - gateway.yaml
-  - https://github.com/global-cloudworks/kubernetes/applications/cilium?ref=main
