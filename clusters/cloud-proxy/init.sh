@@ -117,14 +117,14 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-section "Deploy Core"
+section "Deploy Base"
 header "Applying Kustomize PATH: base/core"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 wait_for crds
 
-section "Deploy Edge"
+section "Deploy Core"
 header "Applying Kustomize PATH: base/edge"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
@@ -145,25 +145,6 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 # Merge all kubeconfig files in ~/.kube subdirectories
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
-
-section "Deploy Edge, Data, and Tenant"
-header "Applying Kustomize PATH: base/edge"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
-
-
-section "Deploy argocd manifests"
-header "Applying Kustomize PATH: applications/argocd"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
-
-header "Deploy cert-manager manifests"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/applications/cert-manager?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
-
-header "Deploy startup manifests"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
 
 header "create dns challenge key"
 gcloud secrets versions access latest --secret="dns-solver-json-key" --project="global-cloudworks" > key.json
