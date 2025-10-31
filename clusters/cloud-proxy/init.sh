@@ -117,11 +117,10 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-#Deploy initial CRDs for Argo CD, Cert-Manager, and Gateway API
-section "Deploy initial CRDs for Argo CD and Gateway API"
-kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds?ref=v3.1.9
+section "Deploy pre-start manifests"
+header "Applying Kustomize PATH: base/core"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
 wait_for crds
 
@@ -142,11 +141,6 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 # Merge all kubeconfig files in ~/.kube subdirectories
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
-
-section "Deploy pre-start manifests"
-header "Applying Kustomize PATH: base/core"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
 
 section "Deploy argocd manifests"
 header "Applying Kustomize PATH: applications/argocd"

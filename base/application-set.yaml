@@ -5,13 +5,17 @@ metadata:
   namespace: argocd
 spec:
   generators:
-    - git:
-        repoURL: 'https://github.com/global-cloudwork/kubernetes'
-        revision: 'main'
-        directories:
-          - path: 'base/data'
-          - path: 'base/edge'
-          - path: 'base/tenant'
+    - matrix:
+        generators:
+          - git:
+              repoURL: 'https://github.com/global-cloudwork/kubernetes'
+              revision: 'main'
+              directories:
+                - path: 'base/data'
+                - path: 'base/edge'
+                - path: 'base/tenant'
+          - clusters:
+              selector: {}
   template:
     metadata:
       name: '{{path.basename}}' 
@@ -23,7 +27,7 @@ spec:
         path: '{{path}}'
       destination:
         server: 'https://kubernetes.default.svc'
-        namespace: argocd
+        namespace: '{{path.basename}}'
       syncPolicy:
         automated:
           prune: true
