@@ -118,6 +118,16 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 # Create dns challenge key
 gcloud secrets versions access latest \
   --secret="dns-solver-json-key" \
-  --project="global-cloudworks" > key.json
+  --project="global-cloudworks" \
+  > dns-key.json
+
+gcloud secrets versions access latest \
+  --secret="gce-key" \
+  --project="global-cloudworks" \
+  > gce-key.json
+
 kubectl create secret generic dns-solver-json-key --from-file=key.json
-rm key.json
+rm dns-key.json
+
+kubectl create secret generic dns-solver-json-key --from-file=key.json
+rm gce-key.json
