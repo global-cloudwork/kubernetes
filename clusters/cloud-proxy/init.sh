@@ -94,14 +94,14 @@ section "Deploy CRD's, Cilium, and ArgoCD Bootstrap"
 #===============================================================================
 
 # Deploy Base
-header "Applying Kustomize PATH: base/core"
+header "Applying Kustomize PATH: base"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 wait_for crds
 
 # Deploy Core
-header "Applying Kustomize PATH: base/edge"
+header "Applying Kustomize PATH: base/core"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
