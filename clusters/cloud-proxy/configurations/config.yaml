@@ -11,3 +11,19 @@ server-arg:
   - "--bind-address=0.0.0.0"
 kubelet-arg:
   - 'register-with-taints=node.cilium.io/agent-not-ready:NoExecute'
+
+
+rancher_kubernetes_engine_config:
+  cloud_provider:
+    name: gce
+    customCloudProvider: |-
+      [Global]
+      project-id=global-cloudworks
+      network-name=default
+      subnetwork-name=us-central1
+      node-instance-prefix=<your-instance-group-name>
+      node-tags=<your-network-tags>
+  network:
+    options:
+      calico_cloud_provider: "gce"
+    plugin: "calico"
