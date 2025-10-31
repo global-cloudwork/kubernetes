@@ -2,7 +2,7 @@
 
 This document serves as a starting point for navigating this repository and it's files.
 
-## The Directory Structure
+## The documentation directory imitates the repo's directory hierarchy
 
 The `obsidian/documentation/repository-mirror/` directory. 
 - mirrors the folder structure of this repository
