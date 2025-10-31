@@ -21,9 +21,7 @@ rancher_kubernetes_engine_config:
       project-id=global-cloudworks
       network-name=default
       subnetwork-name=us-central1
-      node-instance-prefix=<your-instance-group-name>
-      node-tags=<your-network-tags>
+      node-instance-prefix=development
+      node-tags=http-server,https-server
   network:
-    options:
-      calico_cloud_provider: "gce"
-    plugin: "calico"
+    plugin: "cilium"
