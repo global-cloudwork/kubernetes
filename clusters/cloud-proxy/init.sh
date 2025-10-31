@@ -24,79 +24,52 @@
 #
 #
 #===============================================================================
-# Allows for the calling of functions
+
+# Import environment variables from Secret Manager, instance metadata, and bash
+export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
+export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
+export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
 source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/general.sh)
 source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/kubernetes.sh)
 
-
-title "Configure RKE2 & Deploy Kustomizations"
-
-#===============================================================================
-# Environment Configuration
-#===============================================================================
-section "Setup variables and import from google secrets manager"
-
-# Import environment variables from Google Cloud Secret Manager
-export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
-
-# Retrieve external IP from GCE metadata server
-export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
-export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
-
-# Set PATH to include RKE2 binaries
-PATH=$PATH:/opt/rke2/bin
+# Set PATH to include rke2 binaries
 export PATH=/var/lib/rancher/rke2/bin:$PATH
+PATH=$PATH:/opt/rke2/bin
 
-# Set cluster-specific variables
-HOST_IP=$(hostname -I | awk '{print $1}')
+
 
 #===============================================================================
-# System Dependencies Installation
+# Prepare the host system
 #===============================================================================
-section "Install system dependencies and download configurations"
+section "Prepare the host system"
+#===============================================================================
 
-# Install required system packages
+# Install required system packages and create necessary directories
 header "apt-get update & install"
 sudo apt-get -qq update
 sudo apt-get -qq -y install git wireguard
-
-# Install K9s
-curl -Lo k9s.deb https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb
-sudo apt install ./k9s.deb && rm k9s.deb
-
-# Install Helm package manager
-header "Install Helm"
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
-    --remote-name-all \
-    --silent \
-    --show-error | bash
-
-# Install RKE2
-header "Install RKE2"
-curl https://get.rke2.io \
-    --remote-name-all \
-    --silent \
-    --show-error | sudo bash
-
-#===============================================================================
-# Configure and start RKE2
-#===============================================================================
-section "Setup RKE2 configuration files"
-
-# Create necessary directories
+mkdir -p $HOME/.kube/$CLUSTER_NAME
 sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 
-# Download and process RKE2 configuration
-# envsubst replaces environment variables in the template
-header "Download RKE2 configuration"
-sudo curl --silent --show-error --remote-name-all \
-  --output-dir /tmp/ \
+# Download RKE2 configuration files, then substitute environment variables
+sudo curl --silent --show-error --remote-name-all --output-dir /tmp/ \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/clusters/cloud-proxy/configurations/config.yaml
+sudo --preserve-env envsubst < /tmp/config.yaml | sudo tee /etc/rancher/rke2/config.yaml
 
-header "Process RKE2 configuration with envsubst"
-sudo --preserve-env envsubst < /tmp/config.yaml \
-  | sudo tee /etc/rancher/rke2/config.yaml
+# Install Helm and RKE2
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
+    --remote-name-all --silent --show-error | bash
+curl https://get.rke2.io \
+  --remote-name-all --silent --show-error | sudo bash
+
+
+
+#===============================================================================
+# Configure and start the RKE2 service
+#===============================================================================
+section "Configure and start the RKE2 service"
+#===============================================================================
 
 # Enable on boot, then start of RKE2
 header "First start of RKE2 to install crd's"
@@ -104,50 +77,47 @@ sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
 # Link kubectl command avoiding race conditions
-header "Link kubectl command avoiding race conditions"
 sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
 
-# Copy RKE2-generated kubeconfig
-# Set proper ownership
-mkdir -p $HOME/.kube/$CLUSTER_NAME
+# Copy RKE2-generated kubeconfig, set proper ownership, and merge all kubeconfig files
 sudo cp -f /etc/rancher/rke2/rke2.yaml $HOME/.kube/$CLUSTER_NAME/config
 sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
-
-# Merge all kubeconfig files in ~/.kube subdirectories
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-section "Deploy Base"
+
+
+#===============================================================================
+# Deploy Base, Core, and ArgoCD Bootstrap
+#===============================================================================
+section "Deploy CRD's, Cilium, and ArgoCD Bootstrap"
+#===============================================================================
+
+# Deploy Base
 header "Applying Kustomize PATH: base/core"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 wait_for crds
 
-section "Deploy Core"
+# Deploy Core
 header "Applying Kustomize PATH: base/edge"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-sleep 30
-
-#Restart RKE2 to pick up new manifests
+# Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
-sleep 30
-
-# Copy RKE2-generated kubeconfig
-# Set proper ownership
+# Copy RKE2-generated kubeconfig, set proper ownership, and merge all kubeconfig files
 sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
 sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
-
-# Merge all kubeconfig files in ~/.kube subdirectories
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-header "create dns challenge key"
-gcloud secrets versions access latest --secret="dns-solver-json-key" --project="global-cloudworks" > key.json
-kubectl create secret generic dns-solver-json-key \
-   --from-file=key.json
+# Create dns challenge key
+gcloud secrets versions access latest \
+  --secret="dns-solver-json-key" \
+  --project="global-cloudworks" > key.json
+kubectl create secret generic dns-solver-json-key --from-file=key.json
 rm key.json
