@@ -5,8 +5,8 @@ metadata:
   namespace: edge
 spec:
   parentRefs:
-    - name: main-gateway
-      namespace: edge
+    - name: gateway
+      sectionName: https-listener
   hostnames:
     - "k8s.promotesudbury.ca"
   rules:

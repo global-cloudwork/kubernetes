@@ -5,8 +5,8 @@ metadata:
   namespace: kube-system
 spec:
   parentRefs:
-    - name: main-gateway
-      namespace: edge
+    - name: gateway
+      sectionName: http-listener
   hostnames:
     - "hubble.promotesudbury.ca"
   rules:

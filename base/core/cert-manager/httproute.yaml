@@ -6,7 +6,7 @@ metadata:
 spec:
   parentRefs:
     - name: gateway
-      namespace: edge
+      sectionName: https-listener
   hostnames:
     - "cert-manager-webhook.cert-manager.svc.cluster.local"
   rules:
