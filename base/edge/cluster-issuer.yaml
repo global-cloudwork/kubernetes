@@ -16,3 +16,6 @@ spec:
           serviceAccountSecretRef:
             name: dns-key
             key: key.json
+      selector:
+        dnsZones:
+          - "promotesudbury.ca"
