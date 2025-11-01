@@ -1,424 +1,353 @@
 #!/usr/bin/env bash
-# Test Functions for Gateway Deployment
+# Test Functions for Gateway Deployment (Functionally Refactored)
 # Source this file in your main script: source test-functions.sh
 
 #===============================================================================
-# Test Function Definitions
+# Core Utilities
 #===============================================================================
-
-test_iptables_rules() {
-    header "Testing iptables port forwarding rules"
-    
-    local pass=0
-    local fail=0
-    
-    # Check HTTP redirect (80 -> 8080)
-    if sudo iptables -t nat -L PREROUTING -n | grep -q "tcp dpt:80.*redir ports 8080"; then
-        note "✓ iptables rule 80→8080 exists"
-        ((pass++))
-    else
-        error "✗ iptables rule 80→8080 NOT FOUND"
-        ((fail++))
-    fi
-    
-    # Check HTTPS redirect (443 -> 8443)
-    if sudo iptables -t nat -L PREROUTING -n | grep -q "tcp dpt:443.*redir ports 8443"; then
-        note "✓ iptables rule 443→8443 exists"
-        ((pass++))
-    else
-        error "✗ iptables rule 443→8443 NOT FOUND"
-        ((fail++))
-    fi
-    
-    # Check if ports are allowed in INPUT chain
-    if sudo iptables -L INPUT -n | grep -q "tcp dpt:8080"; then
-        note "✓ Port 8080 allowed in INPUT chain"
-        ((pass++))
-    else
-        error "✗ Port 8080 not allowed in INPUT chain"
-        ((fail++))
-    fi
-    
-    if sudo iptables -L INPUT -n | grep -q "tcp dpt:8443"; then
-        note "✓ Port 8443 allowed in INPUT chain"
-        ((pass++))
-    else
-        error "✗ Port 8443 not allowed in INPUT chain"
-        ((fail++))
-    fi
-    
-    printf "\niptables Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+run_cmd() {
+  local cmd=("$@")
+  "${cmd[@]}"
+  return $?
 }
 
-test_port_listening() {
-    header "Testing if Gateway ports are listening"
-    
-    local pass=0
-    local fail=0
-    
-    # Wait a bit for Gateway to be ready
-    sleep 5
-    
-    # Check if 8080 is listening
-    if sudo ss -tlnp | grep -q ":8080"; then
-        note "✓ Port 8080 is listening"
-        ((pass++))
-    else
-        error "✗ Port 8080 is NOT listening (Gateway may not be ready)"
-        ((fail++))
-    fi
-    
-    # Check if 8443 is listening
-    if sudo ss -tlnp | grep -q ":8443"; then
-        note "✓ Port 8443 is listening"
-        ((pass++))
-    else
-        error "✗ Port 8443 is NOT listening (Gateway may not be ready)"
-        ((fail++))
-    fi
-    
-    # Show what's listening on these ports
-    note "Processes listening on gateway ports:"
-    sudo ss -tlnp | grep -E ":8080|:8443" || echo "  None yet"
-    
-    printf "\nPort Listening Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+run_sudo() {
+  run_cmd sudo "$@"
 }
 
-test_kubernetes_api() {
-    header "Testing Kubernetes API access"
-    
-    local pass=0
-    local fail=0
-    local retries=30
-    
-    # Wait for API to be ready
-    for i in $(seq 1 $retries); do
-        if kubectl get nodes &> /dev/null; then
-            note "✓ Kubernetes API is accessible"
-            ((pass++))
-            break
-        fi
-        
-        if [ $i -eq $retries ]; then
-            error "✗ Kubernetes API is NOT accessible after ${retries} attempts"
-            ((fail++))
-            return $fail
-        fi
-        
-        sleep 2
-    done
-    
-    # Check node status
-    local node_status=$(kubectl get nodes --no-headers | awk '{print $2}')
-    if [[ "$node_status" == "Ready" ]]; then
-        note "✓ Node status is Ready"
-        ((pass++))
-    else
-        error "✗ Node status is: $node_status"
-        ((fail++))
-    fi
-    
-    printf "\nKubernetes API Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+log_header() {
+  echo -e "\n=== $* ==="
 }
 
-test_cilium_status() {
-    header "Testing Cilium installation and status"
-    
-    local pass=0
-    local fail=0
-    local retries=60
-    
-    # Wait for Cilium pods to exist
-    for i in $(seq 1 $retries); do
-        if kubectl get pods -n kube-system -l k8s-app=cilium --no-headers &> /dev/null; then
-            break
-        fi
-        
-        if [ $i -eq $retries ]; then
-            error "✗ Cilium pods not found after ${retries} attempts"
-            ((fail++))
-            return $fail
-        fi
-        
-        sleep 2
-    done
-    
-    # Check if Cilium pods are running
-    local cilium_ready=$(kubectl get pods -n kube-system -l k8s-app=cilium --no-headers 2>/dev/null | grep -c "Running" || echo "0")
-    if [[ "$cilium_ready" -gt 0 ]]; then
-        note "✓ Cilium pods are running ($cilium_ready pods)"
-        ((pass++))
-    else
-        error "✗ Cilium pods are NOT running"
-        ((fail++))
-        return $fail
-    fi
-    
-    # Check if Cilium agent is ready
-    kubectl wait --for=condition=ready pod -l k8s-app=cilium -n kube-system --timeout=300s &> /dev/null
-    if [ $? -eq 0 ]; then
-        note "✓ Cilium pods are ready"
-        ((pass++))
-    else
-        error "✗ Cilium pods not ready within timeout"
-        ((fail++))
-    fi
-    
-    # Check Cilium status via CLI
-    if kubectl -n kube-system exec -it ds/cilium -- cilium status --brief &> /dev/null; then
-        note "✓ Cilium status is healthy"
-        ((pass++))
-    else
-        error "✗ Cilium status check failed"
-        ((fail++))
-    fi
-    
-    # Remove taint
-    kubectl taint nodes --all node.cilium.io/agent-not-ready:NoExecute- &> /dev/null || true
-    note "✓ Removed Cilium taint from nodes"
-    
-    printf "\nCilium Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+log_title() {
+  echo -e "\n### $* ###"
 }
 
-test_gateway_api_crds() {
-    header "Testing Gateway API CRDs"
-    
-    local pass=0
-    local fail=0
-    
-    # Check for Gateway CRD
-    if kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null; then
-        note "✓ Gateway CRD exists"
-        ((pass++))
-    else
-        error "✗ Gateway CRD not found"
-        ((fail++))
-    fi
-    
-    # Check for HTTPRoute CRD
-    if kubectl get crd httproutes.gateway.networking.k8s.io &> /dev/null; then
-        note "✓ HTTPRoute CRD exists"
-        ((pass++))
-    else
-        error "✗ HTTPRoute CRD not found"
-        ((fail++))
-    fi
-    
-    # Check for GatewayClass CRD
-    if kubectl get crd gatewayclasses.gateway.networking.k8s.io &> /dev/null; then
-        note "✓ GatewayClass CRD exists"
-        ((pass++))
-    else
-        error "✗ GatewayClass CRD not found"
-        ((fail++))
-    fi
-    
-    printf "\nGateway API CRD Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+log_note() {
+  echo -e "  [PASS] $*"
 }
 
-test_gateway_resource() {
-    header "Testing Gateway resource"
-    
-    local pass=0
-    local fail=0
-    local retries=30
-    
-    # Wait for Gateway to exist
-    for i in $(seq 1 $retries); do
-        if kubectl get gateway -n edge &> /dev/null; then
-            break
-        fi
-        
-        if [ $i -eq $retries ]; then
-            error "✗ Gateway not found in edge namespace after ${retries} attempts"
-            ((fail++))
-            return $fail
-        fi
-        
-        sleep 2
-    done
-    
-    note "✓ Gateway resource exists in edge namespace"
-    ((pass++))
-    
-    # Check Gateway status
-    local gw_status=$(kubectl get gateway -n edge -o jsonpath='{.items[0].status.conditions[?(@.type=="Accepted")].status}' 2>/dev/null || echo "Unknown")
-    if [[ "$gw_status" == "True" ]]; then
-        note "✓ Gateway status is Accepted"
-        ((pass++))
-    else
-        error "✗ Gateway status: $gw_status (may still be initializing)"
-        ((fail++))
-    fi
-    
-    # Check if Gateway pods exist
-    local gw_pods=$(kubectl get pods -n kube-system -l gateway.networking.k8s.io/gateway-name --no-headers 2>/dev/null | wc -l)
-    if [[ "$gw_pods" -gt 0 ]]; then
-        note "✓ Gateway pods found ($gw_pods pods)"
-        ((pass++))
-    else
-        error "✗ No Gateway pods found"
-        ((fail++))
-    fi
-    
-    # Check if using hostNetwork
-    local host_net=$(kubectl get pods -n kube-system -l gateway.networking.k8s.io/gateway-name -o jsonpath='{.items[0].spec.hostNetwork}' 2>/dev/null || echo "false")
-    if [[ "$host_net" == "true" ]]; then
-        note "✓ Gateway pods using hostNetwork mode"
-        ((pass++))
-    else
-        error "✗ Gateway pods NOT using hostNetwork (found: $host_net)"
-        ((fail++))
-    fi
-    
-    printf "\nGateway Resource Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+log_error() {
+  echo -e "  [FAIL] $*"
 }
 
-test_http_connectivity() {
-    header "Testing HTTP connectivity to Gateway"
-    
-    local pass=0
-    local fail=0
-    
-    # Get external IP
-    local external_ip=${EXTERNAL_IP:-$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)}
-    
-    note "Testing against IP: $external_ip"
-    
-    # Test local connectivity on high port (before redirect)
-    if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 --max-time 5 | grep -q "404\|200"; then
-        note "✓ Local connectivity on port 8080 working (Gateway responding)"
-        ((pass++))
-    else
-        error "✗ Local connectivity on port 8080 failed"
-        ((fail++))
+#===============================================================================
+# Control Helpers
+#===============================================================================
+retry() {
+  local attempts=$1; shift
+  local delay=$1; shift
+  local fn=("$@")
+  local i=1
+  until "${fn[@]}"; do
+    if (( i >= attempts )); then
+      return 1
     fi
-    
-    # Test external connectivity (after redirect)
-    local http_code=$(curl -s -o /dev/null -w "%{http_code}" http://${external_ip} --max-time 10 2>/dev/null || echo "000")
-    if [[ "$http_code" == "404" ]] || [[ "$http_code" == "200" ]]; then
-        note "✓ External HTTP (port 80→8080 redirect) working (HTTP $http_code)"
-        ((pass++))
-    else
-        error "✗ External HTTP failed (HTTP $http_code)"
-        ((fail++))
-    fi
-    
-    printf "\nHTTP Connectivity Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+    ((i++))
+    sleep "$delay"
+  done
+  return 0
 }
 
-test_cert_manager() {
-    header "Testing cert-manager"
-    
-    local pass=0
-    local fail=0
-    
-    # Check if cert-manager namespace exists
-    if kubectl get namespace cert-manager &> /dev/null; then
-        note "✓ cert-manager namespace exists"
-        ((pass++))
-    else
-        error "✗ cert-manager namespace not found"
-        ((fail++))
-        return $fail
+wait_until() {
+  local timeout=$1; shift
+  local delay=$1; shift
+  local fn=("$@")
+  local elapsed=0
+  until "${fn[@]}"; do
+    if (( elapsed >= timeout )); then
+      return 1
     fi
-    
-    # Check if cert-manager pods are running
-    local cm_ready=$(kubectl get pods -n cert-manager --no-headers 2>/dev/null | grep -c "Running" || echo "0")
-    if [[ "$cm_ready" -ge 3 ]]; then
-        note "✓ cert-manager pods are running ($cm_ready/3)"
-        ((pass++))
-    else
-        error "✗ cert-manager pods not all running: $cm_ready/3"
-        ((fail++))
-    fi
-    
-    # Check if ClusterIssuer exists
-    if kubectl get clusterissuer &> /dev/null; then
-        note "✓ ClusterIssuer resources found"
-        ((pass++))
-    else
-        error "✗ No ClusterIssuer found"
-        ((fail++))
-    fi
-    
-    printf "\ncert-manager Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+    (( elapsed += delay ))
+    sleep "$delay"
+  done
+  return 0
 }
 
-test_httproutes() {
-    header "Testing HTTPRoute resources"
-    
-    local pass=0
-    local fail=0
-    
-    # Check if any HTTPRoutes exist
-    local route_count=$(kubectl get httproute -A --no-headers 2>/dev/null | wc -l)
-    if [[ "$route_count" -gt 0 ]]; then
-        note "✓ HTTPRoute resources found ($route_count routes)"
-        ((pass++))
-    else
-        error "✗ No HTTPRoute resources found"
-        ((fail++))
+#===============================================================================
+# Assertion Primitives
+#===============================================================================
+assert_redirect_rule() {
+  local from=$1 to=$2 pass_desc=$3 fail_desc=$4
+  run_sudo iptables -t nat -L PREROUTING -n \
+    | grep -q "tcp dpt:${from}.*redir ports ${to}"
+  if [[ $? -eq 0 ]]; then
+    log_note "$pass_desc"
+    return 0
+  else
+    log_error "$fail_desc"
+    return 1
+  fi
+}
+
+assert_input_rule() {
+  local port=$1 pass_desc=$2 fail_desc=$3
+  run_sudo iptables -L INPUT -n \
+    | grep -q "tcp dpt:${port}"
+  if [[ $? -eq 0 ]]; then
+    log_note "$pass_desc"
+    return 0
+  else
+    log_error "$fail_desc"
+    return 1
+  fi
+}
+
+assert_port_listening() {
+  local port=$1 pass_desc=$2 fail_desc=$3
+  run_sudo ss -tlnp \
+    | grep -q ":${port}"
+  if [[ $? -eq 0 ]]; then
+    log_note "$pass_desc"
+    return 0
+  else
+    log_error "$fail_desc"
+    return 1
+  fi
+}
+
+assert_kubectl() {
+  local description=$1 shift_cmd=( "${@:2}" )
+  "${shift_cmd[@]}" &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    log_note "$description"
+    return 0
+  else
+    log_error "$description"
+    return 1
+  fi
+}
+
+assert_crd_exists() {
+  local crd=$1
+  run_cmd kubectl get crd "$crd" &> /dev/null
+}
+
+assert_pods_ready() {
+  local label=$1 namespace=$2 minimum=$3
+  local count
+  count=$(kubectl get pods -n "$namespace" -l "$label" --no-headers 2>/dev/null \
+    | grep -c "Running") || count=0
+  if (( count >= minimum )); then
+    log_note "✓ Pods running for ${label} in ${namespace} ($count >= $minimum)"
+    return 0
+  else
+    log_error "✗ Pods not running for ${label} in ${namespace} ($count < $minimum)"
+    return 1
+  fi
+}
+
+assert_http_status() {
+  local url=$1 expected=$2 desc=$3
+  local code
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$url" --max-time 5) || code="000"
+  for want in ${expected//,/ }; do
+    if [[ "$code" == "$want" ]]; then
+      log_note "$desc (HTTP $code)"
+      return 0
     fi
-    
-    printf "\nHTTPRoute Tests: ${pass} passed, ${fail} failed\n"
-    return $fail
+  done
+  log_error "$desc (HTTP $code)"
+  return 1
+}
+
+#===============================================================================
+# Result & Test Types
+#===============================================================================
+declare -A Result
+Result.new() {
+  Result[pass]=0
+  Result[fail]=0
+}
+Result.add_pass() {
+  (( Result[pass]++ ))
+}
+Result.add_fail() {
+  (( Result[fail]++ ))
+}
+
+declare -A Test
+Test.new() {
+  Test[name]="$1"
+  Test[fn]="$2"
+}
+
+#===============================================================================
+# Test Orchestration
+#===============================================================================
+run_test() {
+  local name="$1"
+  local fn="$2"
+  log_header "Test: $name"
+  "$fn"
+  if [[ $? -eq 0 ]]; then
+    Result.add_pass
+  else
+    Result.add_fail
+  fi
 }
 
 run_all_tests() {
-    title "Running All Gateway Tests"
-    
-    local total_fail=0
-    
-    test_iptables_rules
-    total_fail=$((total_fail + $?))
-    
-    test_kubernetes_api
-    total_fail=$((total_fail + $?))
-    
-    test_cilium_status
-    total_fail=$((total_fail + $?))
-    
-    test_gateway_api_crds
-    total_fail=$((total_fail + $?))
-    
-    test_gateway_resource
-    total_fail=$((total_fail + $?))
-    
-    test_port_listening
-    total_fail=$((total_fail + $?))
-    
-    test_http_connectivity
-    total_fail=$((total_fail + $?))
-    
-    test_cert_manager
-    total_fail=$((total_fail + $?))
-    
-    test_httproutes
-    total_fail=$((total_fail + $?))
-    
-    title "Test Summary"
-    if [[ $total_fail -eq 0 ]]; then
-        note "✓✓✓ ALL TESTS PASSED ✓✓✓"
-        return 0
-    else
-        error "✗✗✗ SOME TESTS FAILED ✗✗✗"
-        return 1
-    fi
+  Result.new
+  local tests=("$@")
+  for t in "${tests[@]}"; do
+    IFS=':' read -r name fn <<< "$t"
+    run_test "$name" "$fn"
+  done
+  log_title "Summary: ${Result[pass]} passed, ${Result[fail]} failed"
+  return "${Result[fail]}"
 }
 
-# Quick test function for rapid iteration
+#===============================================================================
+# Refactored Test Functions
+#===============================================================================
+test_iptables_rules() {
+  log_header "iptables port forwarding rules"
+  assert_redirect_rule 80 8080 "✓ iptables 80→8080 exists" "✗ iptables 80→8080 missing"
+  assert_redirect_rule 443 8443 "✓ iptables 443→8443 exists" "✗ iptables 443→8443 missing"
+  assert_input_rule 8080 "✓ INPUT port 8080 allowed" "✗ INPUT port 8080 missing"
+  assert_input_rule 8443 "✓ INPUT port 8443 allowed" "✗ INPUT port 8443 missing"
+}
+
+test_port_listening() {
+  log_header "Gateway ports listening"
+  sleep 5
+  assert_port_listening 8080 "✓ Port 8080 listening" "✗ Port 8080 not listening"
+  assert_port_listening 8443 "✓ Port 8443 listening" "✗ Port 8443 not listening"
+  log_note "Processes on ports:"
+  run_sudo ss -tlnp | grep -E ":8080|:8443" || echo "  None"
+}
+
+test_kubernetes_api() {
+  log_header "Kubernetes API access"
+  retry 30 2 kubectl get nodes &> /dev/null
+  if [[ $? -ne 0 ]]; then
+    log_error "✗ Kubernetes API not accessible"
+    return 1
+  fi
+  log_note "✓ Kubernetes API accessible"
+  local status
+  status=$(kubectl get nodes --no-headers | awk '{print $2}')
+  if [[ "$status" == "Ready" ]]; then
+    log_note "✓ Node status Ready"
+    return 0
+  else
+    log_error "✗ Node status: $status"
+    return 1
+  fi
+}
+
+test_cilium_status() {
+  log_header "Cilium installation"
+  retry 60 2 kubectl get pods -n kube-system -l k8s-app=cilium --no-headers &> /dev/null \
+    || { log_error "✗ Cilium pods not found"; return 1; }
+  assert_pods_ready "k8s-app=cilium" "kube-system" 1
+  kubectl wait --for=condition=ready pod -l k8s-app=cilium -n kube-system --timeout=300s &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    log_note "✓ Cilium pods ready"
+  else
+    log_error "✗ Cilium pods not ready"
+  fi
+  kubectl -n kube-system exec ds/cilium -- cilium status --brief &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    log_note "✓ Cilium status healthy"
+  else
+    log_error "✗ Cilium status failed"
+  fi
+  kubectl taint nodes --all node.cilium.io/agent-not-ready:NoExecute- &> /dev/null || true
+  log_note "✓ Removed Cilium taint"
+}
+
+test_gateway_api_crds() {
+  log_header "Gateway API CRDs"
+  for crd in gateways.gateway.networking.k8s.io httproutes.gateway.networking.k8s.io gatewayclasses.gateway.networking.k8s.io; do
+    if assert_crd_exists "$crd"; then
+      log_note "✓ CRD $crd exists"
+    else
+      log_error "✗ CRD $crd missing"
+    fi
+  done
+}
+
+test_gateway_resource() {
+  log_header "Gateway resource"
+  retry 30 2 kubectl get gateway -n edge &> /dev/null \
+    || { log_error "✗ Gateway not found"; return 1; }
+  log_note "✓ Gateway exists"
+  local acc
+  acc=$(kubectl get gateway -n edge -o jsonpath='{.items[0].status.conditions[?(@.type=="Accepted")].status}')
+  if [[ "$acc" == "True" ]]; then
+    log_note "✓ Gateway Accepted"
+  else
+    log_error "✗ Gateway not Accepted ($acc)"
+  fi
+  local pods
+  pods=$(kubectl get pods -n kube-system -l gateway.networking.k8s.io/gateway-name --no-headers 2>/dev/null | wc -l)
+  if (( pods > 0 )); then
+    log_note "✓ Gateway pods ($pods)"
+  else
+    log_error "✗ No Gateway pods"
+  fi
+  local hostNet
+  hostNet=$(kubectl get pods -n kube-system -l gateway.networking.k8s.io/gateway-name -o jsonpath='{.items[0].spec.hostNetwork}')
+  if [[ "$hostNet" == "true" ]]; then
+    log_note "✓ Using hostNetwork"
+  else
+    log_error "✗ Not using hostNetwork ($hostNet)"
+  fi
+}
+
+test_http_connectivity() {
+  log_header "HTTP connectivity"
+  local ip
+  ip=${EXTERNAL_IP:-$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)}
+  log_note "Testing against $ip"
+  assert_http_status http://localhost:8080 200,404 "Local HTTP on 8080"
+  assert_http_status http://${ip} 200,404 "External HTTP (80→8080)"
+}
+
+test_cert_manager() {
+  log_header "cert-manager"
+  assert_kubectl "cert-manager ns exists" kubectl get namespace cert-manager
+  assert_pods_ready "" "cert-manager" 3
+  run_cmd kubectl get clusterissuer &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    log_note "✓ ClusterIssuer exists"
+  else
+    log_error "✗ No ClusterIssuer"
+  fi
+}
+
+test_httproutes() {
+  log_header "HTTPRoute resources"
+  local count
+  count=$(kubectl get httproute -A --no-headers 2>/dev/null | wc -l) || count=0
+  if (( count > 0 )); then
+    log_note "✓ HTTPRoutes found ($count)"
+  else
+    log_error "✗ No HTTPRoutes"
+  fi
+}
+
+#===============================================================================
+# Quick Test & All Tests Runner
+#===============================================================================
 quick_test() {
-    header "Quick Gateway Test"
-    test_iptables_rules
-    test_port_listening
-    test_gateway_resource
+  run_all_tests \
+    "iptables:test_iptables_rules" \
+    "port-listening:test_port_listening" \
+    "gateway:test_gateway_resource"
+}
+
+run_all_gateway_tests() {
+  run_all_tests \
+    "iptables:test_iptables_rules" \
+    "k8s-api:test_kubernetes_api" \
+    "cilium:test_cilium_status" \
+    "crds:test_gateway_api_crds" \
+    "gateway:test_gateway_resource" \
+    "listening:test_port_listening" \
+    "http:test_http_connectivity" \
+    "cert-manager:test_cert_manager" \
+    "httproutes:test_httproutes"
 }
