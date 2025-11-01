@@ -1,0 +1,15 @@
+==== START logs for container metrics-server of pod kube-system/rke2-metrics-server-75d485c65b-r29jn ====
+I1031 18:01:12.280223       1 handler.go:288] Adding GroupVersion metrics.k8s.io v1beta1 to ResourceManager
+I1031 18:01:12.392569       1 requestheader_controller.go:180] Starting RequestHeaderAuthRequestController
+I1031 18:01:12.392619       1 shared_informer.go:350] "Waiting for caches to sync" controller="RequestHeaderAuthRequestController"
+I1031 18:01:12.392697       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::client-ca-file"
+I1031 18:01:12.392793       1 dynamic_serving_content.go:135] "Starting controller" name="serving-cert::/tmp/apiserver.crt::/tmp/apiserver.key"
+I1031 18:01:12.392688       1 configmap_cafile_content.go:205] "Starting controller" name="client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file"
+I1031 18:01:12.392797       1 shared_informer.go:350] "Waiting for caches to sync" controller="client-ca::kube-system::extension-apiserver-authentication::client-ca-file"
+I1031 18:01:12.392850       1 shared_informer.go:350] "Waiting for caches to sync" controller="client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file"
+I1031 18:01:12.393404       1 secure_serving.go:211] Serving securely on [::]:10250
+I1031 18:01:12.393540       1 tlsconfig.go:243] "Starting DynamicServingCertificateController"
+I1031 18:01:12.493435       1 shared_informer.go:357] "Caches are synced" controller="RequestHeaderAuthRequestController"
+I1031 18:01:12.493426       1 shared_informer.go:357] "Caches are synced" controller="client-ca::kube-system::extension-apiserver-authentication::client-ca-file"
+I1031 18:01:12.493451       1 shared_informer.go:357] "Caches are synced" controller="client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file"
+==== END logs for container metrics-server of pod kube-system/rke2-metrics-server-75d485c65b-r29jn ====

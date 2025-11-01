@@ -14,5 +14,5 @@ spec:
         cloudDNS:
           project: global-cloudworks
           serviceAccountSecretRef:
-            name: dns-solver-json-key
+            name: dns-key
             key: key.json

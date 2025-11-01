@@ -1,0 +1,29 @@
+==== START logs for container rke2-ingress-nginx-controller of pod kube-system/rke2-ingress-nginx-controller-ggfsx ====
+-------------------------------------------------------------------------------
+NGINX Ingress controller
+  Release:       v1.12.6-hardened1
+  Build:         git-e1d51183b
+  Repository:    https://github.com/rancher/ingress-nginx
+  nginx version: nginx/1.25.5
+
+-------------------------------------------------------------------------------
+
+W1031 18:01:01.484354       7 client_config.go:667] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+I1031 18:01:01.487441       7 main.go:205] "Creating API client" host="https://10.43.0.1:443"
+I1031 18:01:01.508300       7 main.go:248] "Running in Kubernetes cluster" major="1" minor="33" git="v1.33.5+rke2r1" state="clean" commit="03e764d0394bdff662e960c70d25b3c30d731666" platform="linux/amd64"
+I1031 18:01:01.659286       7 main.go:101] "SSL fake certificate created" file="/etc/ingress-controller/ssl/default-fake-certificate.pem"
+I1031 18:01:01.679546       7 ssl.go:535] "loading tls certificate" path="/usr/local/certificates/cert" key="/usr/local/certificates/key"
+I1031 18:01:01.693240       7 nginx.go:273] "Starting NGINX Ingress controller"
+I1031 18:01:01.710155       7 event.go:377] Event(v1.ObjectReference{Kind:"ConfigMap", Namespace:"kube-system", Name:"rke2-ingress-nginx-controller", UID:"6a6b8125-b849-4bac-b3a5-b6f6d1c8f144", APIVersion:"v1", ResourceVersion:"1301", FieldPath:""}): type: 'Normal' reason: 'CREATE' ConfigMap kube-system/rke2-ingress-nginx-controller
+I1031 18:01:02.894859       7 nginx.go:319] "Starting NGINX process"
+I1031 18:01:02.895235       7 leaderelection.go:257] attempting to acquire leader lease kube-system/rke2-ingress-nginx-leader...
+I1031 18:01:02.895661       7 nginx.go:339] "Starting validation webhook" address=":8443" certPath="/usr/local/certificates/cert" keyPath="/usr/local/certificates/key"
+I1031 18:01:02.898357       7 controller.go:207] "Configuration changes detected, backend reload required"
+I1031 18:01:02.905560       7 leaderelection.go:271] successfully acquired lease kube-system/rke2-ingress-nginx-leader
+I1031 18:01:02.905606       7 status.go:85] "New leader elected" identity="rke2-ingress-nginx-controller-ggfsx"
+I1031 18:01:02.909899       7 status.go:224] "POD is not ready" pod="kube-system/rke2-ingress-nginx-controller-ggfsx" node="omen-omen-25l-desktop-gt12-0xxx"
+I1031 18:01:02.911426       7 status.go:224] "POD is not ready" pod="kube-system/rke2-ingress-nginx-controller-ggfsx" node="omen-omen-25l-desktop-gt12-0xxx"
+I1031 18:01:03.250982       7 controller.go:221] "Backend successfully reloaded"
+I1031 18:01:03.251090       7 controller.go:233] "Initial sync, sleeping for 1 second"
+I1031 18:01:03.251122       7 event.go:377] Event(v1.ObjectReference{Kind:"Pod", Namespace:"kube-system", Name:"rke2-ingress-nginx-controller-ggfsx", UID:"64eb1ceb-33d3-4621-a098-87ec60ee2d01", APIVersion:"v1", ResourceVersion:"10045133", FieldPath:""}): type: 'Normal' reason: 'RELOAD' NGINX reload triggered due to a change in configuration
+==== END logs for container rke2-ingress-nginx-controller of pod kube-system/rke2-ingress-nginx-controller-ggfsx ====

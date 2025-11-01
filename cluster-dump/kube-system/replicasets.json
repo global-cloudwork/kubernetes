@@ -1,0 +1,1503 @@
+{
+    "kind": "ReplicaSetList",
+    "apiVersion": "apps/v1",
+    "metadata": {
+        "resourceVersion": "10175314"
+    },
+    "items": [
+        {
+            "metadata": {
+                "name": "cilium-operator-6885bd5d8b",
+                "namespace": "kube-system",
+                "uid": "915574b6-390e-448b-9890-b64f52c5052f",
+                "resourceVersion": "9765015",
+                "generation": 1,
+                "creationTimestamp": "2025-10-06T02:50:39Z",
+                "labels": {
+                    "app.kubernetes.io/name": "cilium-operator",
+                    "app.kubernetes.io/part-of": "cilium",
+                    "io.cilium/app": "operator",
+                    "name": "cilium-operator",
+                    "pod-template-hash": "6885bd5d8b"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "2",
+                    "meta.helm.sh/release-name": "rke2-cilium",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "cilium-operator",
+                        "uid": "e946f262-baac-471e-b98c-64fe1f9d667f",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "io.cilium/app": "operator",
+                        "name": "cilium-operator",
+                        "pod-template-hash": "6885bd5d8b"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app.kubernetes.io/name": "cilium-operator",
+                            "app.kubernetes.io/part-of": "cilium",
+                            "io.cilium/app": "operator",
+                            "name": "cilium-operator",
+                            "pod-template-hash": "6885bd5d8b"
+                        },
+                        "annotations": {
+                            "prometheus.io/port": "9963",
+                            "prometheus.io/scrape": "true"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "cilium-config-path",
+                                "configMap": {
+                                    "name": "cilium-config",
+                                    "defaultMode": 420
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "cilium-operator",
+                                "image": "rancher/mirrored-cilium-operator-generic:v1.18.1",
+                                "command": [
+                                    "cilium-operator-generic"
+                                ],
+                                "args": [
+                                    "--config-dir=/tmp/cilium/config-map",
+                                    "--debug=$(CILIUM_DEBUG)"
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "prometheus",
+                                        "hostPort": 9963,
+                                        "containerPort": 9963,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "K8S_NODE_NAME",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "apiVersion": "v1",
+                                                "fieldPath": "spec.nodeName"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "CILIUM_K8S_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "apiVersion": "v1",
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "CILIUM_DEBUG",
+                                        "valueFrom": {
+                                            "configMapKeyRef": {
+                                                "name": "cilium-config",
+                                                "key": "debug",
+                                                "optional": true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "KUBERNETES_SERVICE_HOST",
+                                        "value": "192.168.0.42"
+                                    },
+                                    {
+                                        "name": "KUBERNETES_SERVICE_PORT",
+                                        "value": "6443"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "cilium-config-path",
+                                        "readOnly": true,
+                                        "mountPath": "/tmp/cilium/config-map"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 9234,
+                                        "host": "127.0.0.1",
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 60,
+                                    "timeoutSeconds": 3,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 9234,
+                                        "host": "127.0.0.1",
+                                        "scheme": "HTTP"
+                                    },
+                                    "timeoutSeconds": 3,
+                                    "periodSeconds": 5,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 5
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "FallbackToLogsOnError",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "allowPrivilegeEscalation": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "cilium-operator",
+                        "serviceAccount": "cilium-operator",
+                        "automountServiceAccountToken": true,
+                        "hostNetwork": true,
+                        "securityContext": {
+                            "seccompProfile": {
+                                "type": "RuntimeDefault"
+                            }
+                        },
+                        "affinity": {
+                            "podAntiAffinity": {
+                                "requiredDuringSchedulingIgnoredDuringExecution": [
+                                    {
+                                        "labelSelector": {
+                                            "matchLabels": {
+                                                "io.cilium/app": "operator"
+                                            }
+                                        },
+                                        "topologyKey": "kubernetes.io/hostname"
+                                    }
+                                ]
+                            }
+                        },
+                        "schedulerName": "default-scheduler",
+                        "tolerations": [
+                            {
+                                "key": "node-role.kubernetes.io/control-plane",
+                                "operator": "Exists"
+                            },
+                            {
+                                "key": "node-role.kubernetes.io/master",
+                                "operator": "Exists"
+                            },
+                            {
+                                "key": "node.kubernetes.io/not-ready",
+                                "operator": "Exists"
+                            },
+                            {
+                                "key": "node.cilium.io/agent-not-ready",
+                                "operator": "Exists"
+                            }
+                        ],
+                        "priorityClassName": "system-cluster-critical"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "availableReplicas": 1,
+                "observedGeneration": 1
+            }
+        },
+        {
+            "metadata": {
+                "name": "cilium-operator-dc7697f8",
+                "namespace": "kube-system",
+                "uid": "f3037013-b0ec-4294-ad8d-adb9b6eb78d6",
+                "resourceVersion": "1628323",
+                "generation": 2,
+                "creationTimestamp": "2025-09-30T22:29:20Z",
+                "labels": {
+                    "app.kubernetes.io/name": "cilium-operator",
+                    "app.kubernetes.io/part-of": "cilium",
+                    "io.cilium/app": "operator",
+                    "name": "cilium-operator",
+                    "pod-template-hash": "dc7697f8"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "rke2-cilium",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "cilium-operator",
+                        "uid": "e946f262-baac-471e-b98c-64fe1f9d667f",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 0,
+                "selector": {
+                    "matchLabels": {
+                        "io.cilium/app": "operator",
+                        "name": "cilium-operator",
+                        "pod-template-hash": "dc7697f8"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app.kubernetes.io/name": "cilium-operator",
+                            "app.kubernetes.io/part-of": "cilium",
+                            "io.cilium/app": "operator",
+                            "name": "cilium-operator",
+                            "pod-template-hash": "dc7697f8"
+                        },
+                        "annotations": {
+                            "prometheus.io/port": "9963",
+                            "prometheus.io/scrape": "true"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "cilium-config-path",
+                                "configMap": {
+                                    "name": "cilium-config",
+                                    "defaultMode": 420
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "cilium-operator",
+                                "image": "rancher/mirrored-cilium-operator-generic:v1.18.1",
+                                "command": [
+                                    "cilium-operator-generic"
+                                ],
+                                "args": [
+                                    "--config-dir=/tmp/cilium/config-map",
+                                    "--debug=$(CILIUM_DEBUG)"
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "prometheus",
+                                        "hostPort": 9963,
+                                        "containerPort": 9963,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "K8S_NODE_NAME",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "apiVersion": "v1",
+                                                "fieldPath": "spec.nodeName"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "CILIUM_K8S_NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "apiVersion": "v1",
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "CILIUM_DEBUG",
+                                        "valueFrom": {
+                                            "configMapKeyRef": {
+                                                "name": "cilium-config",
+                                                "key": "debug",
+                                                "optional": true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "KUBERNETES_SERVICE_HOST",
+                                        "value": "127.0.0.1"
+                                    },
+                                    {
+                                        "name": "KUBERNETES_SERVICE_PORT",
+                                        "value": "6443"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "cilium-config-path",
+                                        "readOnly": true,
+                                        "mountPath": "/tmp/cilium/config-map"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 9234,
+                                        "host": "127.0.0.1",
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 60,
+                                    "timeoutSeconds": 3,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 9234,
+                                        "host": "127.0.0.1",
+                                        "scheme": "HTTP"
+                                    },
+                                    "timeoutSeconds": 3,
+                                    "periodSeconds": 5,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 5
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "FallbackToLogsOnError",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "allowPrivilegeEscalation": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "cilium-operator",
+                        "serviceAccount": "cilium-operator",
+                        "automountServiceAccountToken": true,
+                        "hostNetwork": true,
+                        "securityContext": {
+                            "seccompProfile": {
+                                "type": "RuntimeDefault"
+                            }
+                        },
+                        "affinity": {
+                            "podAntiAffinity": {
+                                "requiredDuringSchedulingIgnoredDuringExecution": [
+                                    {
+                                        "labelSelector": {
+                                            "matchLabels": {
+                                                "io.cilium/app": "operator"
+                                            }
+                                        },
+                                        "topologyKey": "kubernetes.io/hostname"
+                                    }
+                                ]
+                            }
+                        },
+                        "schedulerName": "default-scheduler",
+                        "tolerations": [
+                            {
+                                "key": "node-role.kubernetes.io/control-plane",
+                                "operator": "Exists"
+                            },
+                            {
+                                "key": "node-role.kubernetes.io/master",
+                                "operator": "Exists"
+                            },
+                            {
+                                "key": "node.kubernetes.io/not-ready",
+                                "operator": "Exists"
+                            },
+                            {
+                                "key": "node.cilium.io/agent-not-ready",
+                                "operator": "Exists"
+                            }
+                        ],
+                        "priorityClassName": "system-cluster-critical"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 0,
+                "observedGeneration": 2
+            }
+        },
+        {
+            "metadata": {
+                "name": "hubble-relay-ff8d445c",
+                "namespace": "kube-system",
+                "uid": "75ed37a4-2e49-47b7-a26f-88ee71d0c9d9",
+                "resourceVersion": "10045762",
+                "generation": 1,
+                "creationTimestamp": "2025-09-30T22:29:20Z",
+                "labels": {
+                    "app.kubernetes.io/name": "hubble-relay",
+                    "app.kubernetes.io/part-of": "cilium",
+                    "k8s-app": "hubble-relay",
+                    "pod-template-hash": "ff8d445c"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "rke2-cilium",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "hubble-relay",
+                        "uid": "f1e67ab2-a64d-43d2-b08e-e83478b226b5",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "k8s-app": "hubble-relay",
+                        "pod-template-hash": "ff8d445c"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app.kubernetes.io/name": "hubble-relay",
+                            "app.kubernetes.io/part-of": "cilium",
+                            "k8s-app": "hubble-relay",
+                            "pod-template-hash": "ff8d445c"
+                        },
+                        "annotations": {
+                            "prometheus.io/port": "9966",
+                            "prometheus.io/scrape": "true"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "config",
+                                "configMap": {
+                                    "name": "hubble-relay-config",
+                                    "items": [
+                                        {
+                                            "key": "config.yaml",
+                                            "path": "config.yaml"
+                                        }
+                                    ],
+                                    "defaultMode": 420
+                                }
+                            },
+                            {
+                                "name": "tls",
+                                "projected": {
+                                    "sources": [
+                                        {
+                                            "secret": {
+                                                "name": "hubble-relay-client-certs",
+                                                "items": [
+                                                    {
+                                                        "key": "tls.crt",
+                                                        "path": "client.crt"
+                                                    },
+                                                    {
+                                                        "key": "tls.key",
+                                                        "path": "client.key"
+                                                    },
+                                                    {
+                                                        "key": "ca.crt",
+                                                        "path": "hubble-server-ca.crt"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ],
+                                    "defaultMode": 256
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "hubble-relay",
+                                "image": "rancher/mirrored-cilium-hubble-relay:v1.18.1",
+                                "command": [
+                                    "hubble-relay"
+                                ],
+                                "args": [
+                                    "serve"
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "grpc",
+                                        "containerPort": 4245,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "prometheus",
+                                        "containerPort": 9966,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "config",
+                                        "readOnly": true,
+                                        "mountPath": "/etc/hubble-relay"
+                                    },
+                                    {
+                                        "name": "tls",
+                                        "readOnly": true,
+                                        "mountPath": "/var/lib/hubble-relay/tls"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "grpc": {
+                                        "port": 4222,
+                                        "service": ""
+                                    },
+                                    "initialDelaySeconds": 10,
+                                    "timeoutSeconds": 10,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 12
+                                },
+                                "readinessProbe": {
+                                    "grpc": {
+                                        "port": 4222,
+                                        "service": ""
+                                    },
+                                    "timeoutSeconds": 3,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "startupProbe": {
+                                    "grpc": {
+                                        "port": 4222,
+                                        "service": ""
+                                    },
+                                    "initialDelaySeconds": 10,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 3,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 20
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "FallbackToLogsOnError",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "runAsUser": 65532,
+                                    "runAsGroup": 65532,
+                                    "runAsNonRoot": true,
+                                    "allowPrivilegeEscalation": false,
+                                    "seccompProfile": {
+                                        "type": "RuntimeDefault"
+                                    }
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 1,
+                        "dnsPolicy": "ClusterFirst",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "hubble-relay",
+                        "serviceAccount": "hubble-relay",
+                        "automountServiceAccountToken": false,
+                        "securityContext": {
+                            "fsGroup": 65532,
+                            "seccompProfile": {
+                                "type": "RuntimeDefault"
+                            }
+                        },
+                        "affinity": {
+                            "podAffinity": {
+                                "requiredDuringSchedulingIgnoredDuringExecution": [
+                                    {
+                                        "labelSelector": {
+                                            "matchLabels": {
+                                                "k8s-app": "cilium"
+                                            }
+                                        },
+                                        "topologyKey": "kubernetes.io/hostname"
+                                    }
+                                ]
+                            }
+                        },
+                        "schedulerName": "default-scheduler"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "availableReplicas": 1,
+                "observedGeneration": 1
+            }
+        },
+        {
+            "metadata": {
+                "name": "hubble-ui-7677cbb7c",
+                "namespace": "kube-system",
+                "uid": "993de4ea-3bf0-479d-b630-658a33b18dcc",
+                "resourceVersion": "10045113",
+                "generation": 1,
+                "creationTimestamp": "2025-09-30T22:29:20Z",
+                "labels": {
+                    "app.kubernetes.io/name": "hubble-ui",
+                    "app.kubernetes.io/part-of": "cilium",
+                    "k8s-app": "hubble-ui",
+                    "pod-template-hash": "7677cbb7c"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "rke2-cilium",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "hubble-ui",
+                        "uid": "dde0de6a-240a-4f0d-b743-4218478bc26c",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "k8s-app": "hubble-ui",
+                        "pod-template-hash": "7677cbb7c"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app.kubernetes.io/name": "hubble-ui",
+                            "app.kubernetes.io/part-of": "cilium",
+                            "k8s-app": "hubble-ui",
+                            "pod-template-hash": "7677cbb7c"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "hubble-ui-nginx-conf",
+                                "configMap": {
+                                    "name": "hubble-ui-nginx",
+                                    "defaultMode": 420
+                                }
+                            },
+                            {
+                                "name": "tmp-dir",
+                                "emptyDir": {}
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "frontend",
+                                "image": "rancher/mirrored-cilium-hubble-ui:v0.13.2",
+                                "ports": [
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8081,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "hubble-ui-nginx-conf",
+                                        "mountPath": "/etc/nginx/conf.d/default.conf",
+                                        "subPath": "nginx.conf"
+                                    },
+                                    {
+                                        "name": "tmp-dir",
+                                        "mountPath": "/tmp"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 8081,
+                                        "scheme": "HTTP"
+                                    },
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/",
+                                        "port": 8081,
+                                        "scheme": "HTTP"
+                                    },
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "FallbackToLogsOnError",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "allowPrivilegeEscalation": false
+                                }
+                            },
+                            {
+                                "name": "backend",
+                                "image": "rancher/mirrored-cilium-hubble-ui-backend:v0.13.2",
+                                "ports": [
+                                    {
+                                        "name": "grpc",
+                                        "containerPort": 8090,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "EVENTS_SERVER_PORT",
+                                        "value": "8090"
+                                    },
+                                    {
+                                        "name": "FLOWS_API_ADDR",
+                                        "value": "hubble-relay:80"
+                                    }
+                                ],
+                                "resources": {},
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "FallbackToLogsOnError",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "allowPrivilegeEscalation": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "hubble-ui",
+                        "serviceAccount": "hubble-ui",
+                        "automountServiceAccountToken": true,
+                        "securityContext": {
+                            "runAsUser": 1001,
+                            "runAsGroup": 1001,
+                            "fsGroup": 1001
+                        },
+                        "schedulerName": "default-scheduler"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "availableReplicas": 1,
+                "observedGeneration": 1
+            }
+        },
+        {
+            "metadata": {
+                "name": "rke2-coredns-rke2-coredns-6464f98784",
+                "namespace": "kube-system",
+                "uid": "d343d36f-4fa4-4649-bfe8-bd068f64598a",
+                "resourceVersion": "10045627",
+                "generation": 1,
+                "creationTimestamp": "2025-09-30T22:29:20Z",
+                "labels": {
+                    "app.kubernetes.io/instance": "rke2-coredns",
+                    "app.kubernetes.io/name": "rke2-coredns",
+                    "k8s-app": "kube-dns",
+                    "pod-template-hash": "6464f98784"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "rke2-coredns",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "rke2-coredns-rke2-coredns",
+                        "uid": "1cd1bf5c-762e-4103-bd7d-2f8989ef9a22",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "app.kubernetes.io/instance": "rke2-coredns",
+                        "app.kubernetes.io/name": "rke2-coredns",
+                        "k8s-app": "kube-dns",
+                        "pod-template-hash": "6464f98784"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app.kubernetes.io/instance": "rke2-coredns",
+                            "app.kubernetes.io/name": "rke2-coredns",
+                            "k8s-app": "kube-dns",
+                            "pod-template-hash": "6464f98784"
+                        },
+                        "annotations": {
+                            "checksum/config": "9071256d311fdc40a4b187bfdd3582d471ead8afe256ec02ae3027ed5acac308"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "config-volume",
+                                "configMap": {
+                                    "name": "rke2-coredns-rke2-coredns",
+                                    "items": [
+                                        {
+                                            "key": "Corefile",
+                                            "path": "Corefile"
+                                        }
+                                    ],
+                                    "defaultMode": 420
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "coredns",
+                                "image": "rancher/hardened-coredns:v1.12.3-build20250909",
+                                "args": [
+                                    "-conf",
+                                    "/etc/coredns/Corefile"
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "udp-53",
+                                        "containerPort": 53,
+                                        "protocol": "UDP"
+                                    },
+                                    {
+                                        "name": "tcp-53",
+                                        "containerPort": 53,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "tcp-9153",
+                                        "containerPort": 9153,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {
+                                    "limits": {
+                                        "cpu": "100m",
+                                        "memory": "128Mi"
+                                    },
+                                    "requests": {
+                                        "cpu": "100m",
+                                        "memory": "128Mi"
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "name": "config-volume",
+                                        "mountPath": "/etc/coredns"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/health",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 60,
+                                    "timeoutSeconds": 5,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 5
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/ready",
+                                        "port": 8181,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 30,
+                                    "timeoutSeconds": 5,
+                                    "periodSeconds": 5,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 1
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {
+                                        "add": [
+                                            "NET_BIND_SERVICE"
+                                        ],
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "readOnlyRootFilesystem": true,
+                                    "allowPrivilegeEscalation": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "Default",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "coredns",
+                        "serviceAccount": "coredns",
+                        "securityContext": {},
+                        "affinity": {
+                            "podAntiAffinity": {
+                                "requiredDuringSchedulingIgnoredDuringExecution": [
+                                    {
+                                        "labelSelector": {
+                                            "matchExpressions": [
+                                                {
+                                                    "key": "k8s-app",
+                                                    "operator": "In",
+                                                    "values": [
+                                                        "kube-dns"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "topologyKey": "kubernetes.io/hostname"
+                                    }
+                                ]
+                            }
+                        },
+                        "schedulerName": "default-scheduler",
+                        "tolerations": [
+                            {
+                                "key": "CriticalAddonsOnly",
+                                "operator": "Exists"
+                            },
+                            {
+                                "key": "node-role.kubernetes.io/control-plane",
+                                "operator": "Exists",
+                                "effect": "NoSchedule"
+                            },
+                            {
+                                "key": "node-role.kubernetes.io/etcd",
+                                "operator": "Exists",
+                                "effect": "NoExecute"
+                            }
+                        ],
+                        "priorityClassName": "system-cluster-critical"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "availableReplicas": 1,
+                "observedGeneration": 1
+            }
+        },
+        {
+            "metadata": {
+                "name": "rke2-coredns-rke2-coredns-autoscaler-67bb49dff",
+                "namespace": "kube-system",
+                "uid": "798c6c42-adb3-4bcf-a348-9e1bb8b6c598",
+                "resourceVersion": "10045091",
+                "generation": 1,
+                "creationTimestamp": "2025-09-30T22:29:20Z",
+                "labels": {
+                    "app.kubernetes.io/instance": "rke2-coredns",
+                    "app.kubernetes.io/name": "rke2-coredns-autoscaler",
+                    "k8s-app": "kube-dns-autoscaler",
+                    "pod-template-hash": "67bb49dff"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "rke2-coredns",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "rke2-coredns-rke2-coredns-autoscaler",
+                        "uid": "99025f30-4ef1-4650-a71d-358e14bb57e6",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "app.kubernetes.io/instance": "rke2-coredns",
+                        "app.kubernetes.io/name": "rke2-coredns-autoscaler",
+                        "k8s-app": "kube-dns-autoscaler",
+                        "pod-template-hash": "67bb49dff"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app.kubernetes.io/instance": "rke2-coredns",
+                            "app.kubernetes.io/name": "rke2-coredns-autoscaler",
+                            "k8s-app": "kube-dns-autoscaler",
+                            "pod-template-hash": "67bb49dff"
+                        },
+                        "annotations": {
+                            "checksum/configmap": "f46516f128487ef3881cb3f4d5abb9eed85c090de135b2aa2ed42c4a9ea68750",
+                            "scheduler.alpha.kubernetes.io/tolerations": "[{\"key\":\"CriticalAddonsOnly\", \"operator\":\"Exists\"}]"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "autoscaler",
+                                "image": "rancher/hardened-cluster-autoscaler:v1.10.2-build20250909",
+                                "command": [
+                                    "/cluster-proportional-autoscaler",
+                                    "--namespace=kube-system",
+                                    "--configmap=rke2-coredns-rke2-coredns-autoscaler",
+                                    "--target=Deployment/rke2-coredns-rke2-coredns",
+                                    "--logtostderr=true",
+                                    "--v=2"
+                                ],
+                                "resources": {
+                                    "limits": {
+                                        "cpu": "100m",
+                                        "memory": "64Mi"
+                                    },
+                                    "requests": {
+                                        "cpu": "25m",
+                                        "memory": "16Mi"
+                                    }
+                                },
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 10,
+                                    "timeoutSeconds": 10,
+                                    "periodSeconds": 30,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File",
+                                "imagePullPolicy": "IfNotPresent"
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "rke2-coredns-rke2-coredns-autoscaler",
+                        "serviceAccount": "rke2-coredns-rke2-coredns-autoscaler",
+                        "securityContext": {},
+                        "schedulerName": "default-scheduler",
+                        "tolerations": [
+                            {
+                                "key": "node-role.kubernetes.io/control-plane",
+                                "operator": "Exists",
+                                "effect": "NoSchedule"
+                            },
+                            {
+                                "key": "node-role.kubernetes.io/etcd",
+                                "operator": "Exists",
+                                "effect": "NoExecute"
+                            }
+                        ],
+                        "priorityClassName": "system-cluster-critical"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "availableReplicas": 1,
+                "observedGeneration": 1
+            }
+        },
+        {
+            "metadata": {
+                "name": "rke2-metrics-server-75d485c65b",
+                "namespace": "kube-system",
+                "uid": "15ec8eb7-bb00-4161-b5d7-15daf28957fd",
+                "resourceVersion": "10045419",
+                "generation": 1,
+                "creationTimestamp": "2025-09-30T22:29:50Z",
+                "labels": {
+                    "app": "rke2-metrics-server",
+                    "app.kubernetes.io/instance": "rke2-metrics-server",
+                    "app.kubernetes.io/name": "rke2-metrics-server",
+                    "pod-template-hash": "75d485c65b"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "rke2-metrics-server",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "rke2-metrics-server",
+                        "uid": "db9f67fc-05df-4997-bac4-3ee98aec281d",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "app": "rke2-metrics-server",
+                        "app.kubernetes.io/instance": "rke2-metrics-server",
+                        "app.kubernetes.io/name": "rke2-metrics-server",
+                        "pod-template-hash": "75d485c65b"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "rke2-metrics-server",
+                            "app.kubernetes.io/instance": "rke2-metrics-server",
+                            "app.kubernetes.io/name": "rke2-metrics-server",
+                            "pod-template-hash": "75d485c65b"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "tmp",
+                                "emptyDir": {}
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "metrics-server",
+                                "image": "rancher/hardened-k8s-metrics-server:v0.8.0-build20250909",
+                                "args": [
+                                    "--secure-port=10250",
+                                    "--cert-dir=/tmp",
+                                    "--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname",
+                                    "--kubelet-use-node-status-port",
+                                    "--metric-resolution=15s"
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "https",
+                                        "containerPort": 10250,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {
+                                    "requests": {
+                                        "cpu": "100m",
+                                        "memory": "200Mi"
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "name": "tmp",
+                                        "mountPath": "/tmp"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/livez",
+                                        "port": "https",
+                                        "scheme": "HTTPS"
+                                    },
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/readyz",
+                                        "port": "https",
+                                        "scheme": "HTTPS"
+                                    },
+                                    "initialDelaySeconds": 20,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "runAsUser": 1000,
+                                    "runAsNonRoot": true,
+                                    "readOnlyRootFilesystem": true,
+                                    "allowPrivilegeEscalation": false,
+                                    "seccompProfile": {
+                                        "type": "RuntimeDefault"
+                                    }
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "rke2-metrics-server",
+                        "serviceAccount": "rke2-metrics-server",
+                        "securityContext": {},
+                        "schedulerName": "default-scheduler",
+                        "priorityClassName": "system-cluster-critical"
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "availableReplicas": 1,
+                "observedGeneration": 1
+            }
+        },
+        {
+            "metadata": {
+                "name": "rke2-snapshot-controller-696989ffdd",
+                "namespace": "kube-system",
+                "uid": "1563b69f-636b-423d-8595-119957be0e60",
+                "resourceVersion": "10045108",
+                "generation": 1,
+                "creationTimestamp": "2025-09-30T22:29:50Z",
+                "labels": {
+                    "app.kubernetes.io/instance": "rke2-snapshot-controller",
+                    "app.kubernetes.io/name": "rke2-snapshot-controller",
+                    "pod-template-hash": "696989ffdd"
+                },
+                "annotations": {
+                    "deployment.kubernetes.io/desired-replicas": "1",
+                    "deployment.kubernetes.io/max-replicas": "2",
+                    "deployment.kubernetes.io/revision": "1",
+                    "meta.helm.sh/release-name": "rke2-snapshot-controller",
+                    "meta.helm.sh/release-namespace": "kube-system"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "name": "rke2-snapshot-controller",
+                        "uid": "07aa9eb9-d2dd-425d-8254-0156e14f8a93",
+                        "controller": true,
+                        "blockOwnerDeletion": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "app.kubernetes.io/instance": "rke2-snapshot-controller",
+                        "app.kubernetes.io/name": "rke2-snapshot-controller",
+                        "pod-template-hash": "696989ffdd"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app.kubernetes.io/instance": "rke2-snapshot-controller",
+                            "app.kubernetes.io/name": "rke2-snapshot-controller",
+                            "pod-template-hash": "696989ffdd"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "rke2-snapshot-controller",
+                                "image": "rancher/mirrored-sig-storage-snapshot-controller:v8.2.0",
+                                "args": [
+                                    "--http-endpoint=:8080",
+                                    "--leader-election=true",
+                                    "--leader-election-namespace=$(NAMESPACE)"
+                                ],
+                                "ports": [
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "NAMESPACE",
+                                        "valueFrom": {
+                                            "fieldRef": {
+                                                "apiVersion": "v1",
+                                                "fieldPath": "metadata.namespace"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "resources": {},
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz/leader-election",
+                                        "port": "http",
+                                        "scheme": "HTTP"
+                                    },
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/healthz/leader-election",
+                                        "port": "http",
+                                        "scheme": "HTTP"
+                                    },
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "terminationMessagePolicy": "File",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {
+                                        "drop": [
+                                            "ALL"
+                                        ]
+                                    },
+                                    "runAsUser": 1000,
+                                    "runAsNonRoot": true,
+                                    "readOnlyRootFilesystem": true
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "nodeSelector": {
+                            "kubernetes.io/os": "linux"
+                        },
+                        "serviceAccountName": "rke2-snapshot-controller",
+                        "serviceAccount": "rke2-snapshot-controller",
+                        "securityContext": {},
+                        "schedulerName": "default-scheduler",
+                        "tolerations": [
+                            {
+                                "key": "node-role.kubernetes.io/control-plane",
+                                "operator": "Exists",
+                                "effect": "NoSchedule"
+                            },
+                            {
+                                "key": "node-role.kubernetes.io/etcd",
+                                "operator": "Exists",
+                                "effect": "NoExecute"
+                            }
+                        ]
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "availableReplicas": 1,
+                "observedGeneration": 1
+            }
+        }
+    ]
+}

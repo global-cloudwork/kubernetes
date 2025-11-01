@@ -1,0 +1,287 @@
+==== START logs for container kube-apiserver of pod kube-system/kube-apiserver-omen-omen-25l-desktop-gt12-0xxx ====
+I1031 18:00:21.546067       1 options.go:249] external host was not specified, using 192.168.0.42
+I1031 18:00:21.552046       1 server.go:147] Version: v1.33.5+rke2r1
+I1031 18:00:21.552154       1 server.go:149] "Golang settings" GOGC="" GOMAXPROCS="" GOTRACEBACK=""
+I1031 18:00:21.893059       1 shared_informer.go:350] "Waiting for caches to sync" controller="node_authorizer"
+I1031 18:00:21.912858       1 shared_informer.go:350] "Waiting for caches to sync" controller="*generic.policySource[*k8s.io/api/admissionregistration/v1.ValidatingAdmissionPolicy,*k8s.io/api/admissionregistration/v1.ValidatingAdmissionPolicyBinding,k8s.io/apiserver/pkg/admission/plugin/policy/validating.Validator]"
+I1031 18:00:21.919741       1 plugins.go:157] Loaded 14 mutating admission controller(s) successfully in the following order: NamespaceLifecycle,LimitRanger,ServiceAccount,NodeRestriction,TaintNodesByCondition,Priority,DefaultTolerationSeconds,DefaultStorageClass,StorageObjectInUseProtection,RuntimeClass,DefaultIngressClass,PodTopologyLabels,MutatingAdmissionPolicy,MutatingAdmissionWebhook.
+I1031 18:00:21.919760       1 plugins.go:160] Loaded 13 validating admission controller(s) successfully in the following order: LimitRanger,ServiceAccount,PodSecurity,Priority,PersistentVolumeClaimResize,RuntimeClass,CertificateApproval,CertificateSigning,ClusterTrustBundleAttest,CertificateSubjectRestriction,ValidatingAdmissionPolicy,ValidatingAdmissionWebhook,ResourceQuota.
+I1031 18:00:21.921763       1 instance.go:233] Using reconciler: lease
+I1031 18:00:21.949438       1 handler.go:288] Adding GroupVersion apiextensions.k8s.io v1 to ResourceManager
+W1031 18:00:21.949471       1 genericapiserver.go:778] Skipping API apiextensions.k8s.io/v1beta1 because it has no resources.
+I1031 18:00:21.967368       1 cidrallocator.go:197] starting ServiceCIDR Allocator Controller
+I1031 18:00:22.052907       1 handler.go:288] Adding GroupVersion  v1 to ResourceManager
+I1031 18:00:22.053557       1 apis.go:112] API group "internal.apiserver.k8s.io" is not enabled, skipping.
+I1031 18:00:22.143034       1 apis.go:112] API group "storagemigration.k8s.io" is not enabled, skipping.
+I1031 18:00:22.189512       1 apis.go:112] API group "resource.k8s.io" is not enabled, skipping.
+I1031 18:00:22.204676       1 handler.go:288] Adding GroupVersion authentication.k8s.io v1 to ResourceManager
+W1031 18:00:22.204695       1 genericapiserver.go:778] Skipping API authentication.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.204700       1 genericapiserver.go:778] Skipping API authentication.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.205030       1 handler.go:288] Adding GroupVersion authorization.k8s.io v1 to ResourceManager
+W1031 18:00:22.205037       1 genericapiserver.go:778] Skipping API authorization.k8s.io/v1beta1 because it has no resources.
+I1031 18:00:22.205957       1 handler.go:288] Adding GroupVersion autoscaling v2 to ResourceManager
+I1031 18:00:22.206412       1 handler.go:288] Adding GroupVersion autoscaling v1 to ResourceManager
+W1031 18:00:22.206419       1 genericapiserver.go:778] Skipping API autoscaling/v2beta1 because it has no resources.
+W1031 18:00:22.206423       1 genericapiserver.go:778] Skipping API autoscaling/v2beta2 because it has no resources.
+I1031 18:00:22.207262       1 handler.go:288] Adding GroupVersion batch v1 to ResourceManager
+W1031 18:00:22.207269       1 genericapiserver.go:778] Skipping API batch/v1beta1 because it has no resources.
+I1031 18:00:22.207803       1 handler.go:288] Adding GroupVersion certificates.k8s.io v1 to ResourceManager
+W1031 18:00:22.207810       1 genericapiserver.go:778] Skipping API certificates.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.207813       1 genericapiserver.go:778] Skipping API certificates.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.208144       1 handler.go:288] Adding GroupVersion coordination.k8s.io v1 to ResourceManager
+W1031 18:00:22.208150       1 genericapiserver.go:778] Skipping API coordination.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.208153       1 genericapiserver.go:778] Skipping API coordination.k8s.io/v1alpha2 because it has no resources.
+I1031 18:00:22.208503       1 handler.go:288] Adding GroupVersion discovery.k8s.io v1 to ResourceManager
+W1031 18:00:22.208510       1 genericapiserver.go:778] Skipping API discovery.k8s.io/v1beta1 because it has no resources.
+I1031 18:00:22.210169       1 handler.go:288] Adding GroupVersion networking.k8s.io v1 to ResourceManager
+W1031 18:00:22.210176       1 genericapiserver.go:778] Skipping API networking.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.210179       1 genericapiserver.go:778] Skipping API networking.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.210451       1 handler.go:288] Adding GroupVersion node.k8s.io v1 to ResourceManager
+W1031 18:00:22.210457       1 genericapiserver.go:778] Skipping API node.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.210460       1 genericapiserver.go:778] Skipping API node.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.210871       1 handler.go:288] Adding GroupVersion policy v1 to ResourceManager
+W1031 18:00:22.210877       1 genericapiserver.go:778] Skipping API policy/v1beta1 because it has no resources.
+I1031 18:00:22.211844       1 handler.go:288] Adding GroupVersion rbac.authorization.k8s.io v1 to ResourceManager
+W1031 18:00:22.211850       1 genericapiserver.go:778] Skipping API rbac.authorization.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.211854       1 genericapiserver.go:778] Skipping API rbac.authorization.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.212135       1 handler.go:288] Adding GroupVersion scheduling.k8s.io v1 to ResourceManager
+W1031 18:00:22.212142       1 genericapiserver.go:778] Skipping API scheduling.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.212145       1 genericapiserver.go:778] Skipping API scheduling.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.213338       1 handler.go:288] Adding GroupVersion storage.k8s.io v1 to ResourceManager
+W1031 18:00:22.213346       1 genericapiserver.go:778] Skipping API storage.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.213350       1 genericapiserver.go:778] Skipping API storage.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.214041       1 handler.go:288] Adding GroupVersion flowcontrol.apiserver.k8s.io v1 to ResourceManager
+W1031 18:00:22.214047       1 genericapiserver.go:778] Skipping API flowcontrol.apiserver.k8s.io/v1beta3 because it has no resources.
+W1031 18:00:22.214051       1 genericapiserver.go:778] Skipping API flowcontrol.apiserver.k8s.io/v1beta2 because it has no resources.
+W1031 18:00:22.214053       1 genericapiserver.go:778] Skipping API flowcontrol.apiserver.k8s.io/v1beta1 because it has no resources.
+I1031 18:00:22.216140       1 handler.go:288] Adding GroupVersion apps v1 to ResourceManager
+W1031 18:00:22.216147       1 genericapiserver.go:778] Skipping API apps/v1beta2 because it has no resources.
+W1031 18:00:22.216150       1 genericapiserver.go:778] Skipping API apps/v1beta1 because it has no resources.
+I1031 18:00:22.217239       1 handler.go:288] Adding GroupVersion admissionregistration.k8s.io v1 to ResourceManager
+W1031 18:00:22.217247       1 genericapiserver.go:778] Skipping API admissionregistration.k8s.io/v1beta1 because it has no resources.
+W1031 18:00:22.217251       1 genericapiserver.go:778] Skipping API admissionregistration.k8s.io/v1alpha1 because it has no resources.
+I1031 18:00:22.217605       1 handler.go:288] Adding GroupVersion events.k8s.io v1 to ResourceManager
+W1031 18:00:22.217612       1 genericapiserver.go:778] Skipping API events.k8s.io/v1beta1 because it has no resources.
+I1031 18:00:22.224063       1 handler.go:288] Adding GroupVersion apiregistration.k8s.io v1 to ResourceManager
+W1031 18:00:22.224076       1 genericapiserver.go:778] Skipping API apiregistration.k8s.io/v1beta1 because it has no resources.
+I1031 18:00:22.527344       1 dynamic_serving_content.go:135] "Starting controller" name="serving-cert::/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.crt::/var/lib/rancher/rke2/server/tls/serving-kube-apiserver.key"
+I1031 18:00:22.527351       1 dynamic_cafile_content.go:161] "Starting controller" name="client-ca-bundle::/var/lib/rancher/rke2/server/tls/client-ca.crt"
+I1031 18:00:22.527349       1 dynamic_cafile_content.go:161] "Starting controller" name="request-header::/var/lib/rancher/rke2/server/tls/request-header-ca.crt"
+I1031 18:00:22.527517       1 tlsconfig.go:243] "Starting DynamicServingCertificateController"
+I1031 18:00:22.528340       1 secure_serving.go:211] Serving securely on [::]:6443
+I1031 18:00:22.528458       1 controller.go:78] Starting OpenAPI AggregationController
+I1031 18:00:22.528532       1 controller.go:80] Starting OpenAPI V3 AggregationController
+I1031 18:00:22.529058       1 apf_controller.go:377] Starting API Priority and Fairness config controller
+I1031 18:00:22.529084       1 dynamic_serving_content.go:135] "Starting controller" name="aggregator-proxy-cert::/var/lib/rancher/rke2/server/tls/client-auth-proxy.crt::/var/lib/rancher/rke2/server/tls/client-auth-proxy.key"
+I1031 18:00:22.529138       1 aggregator.go:169] waiting for initial CRD sync...
+I1031 18:00:22.529220       1 remote_available_controller.go:411] Starting RemoteAvailability controller
+I1031 18:00:22.529226       1 cache.go:32] Waiting for caches to sync for RemoteAvailability controller
+I1031 18:00:22.529681       1 crdregistration_controller.go:114] Starting crd-autoregister controller
+I1031 18:00:22.529691       1 shared_informer.go:350] "Waiting for caches to sync" controller="crd-autoregister"
+I1031 18:00:22.529690       1 apiservice_controller.go:100] Starting APIServiceRegistrationController
+I1031 18:00:22.529704       1 cache.go:32] Waiting for caches to sync for APIServiceRegistrationController controller
+I1031 18:00:22.529767       1 local_available_controller.go:156] Starting LocalAvailability controller
+I1031 18:00:22.529780       1 cache.go:32] Waiting for caches to sync for LocalAvailability controller
+I1031 18:00:22.530329       1 system_namespaces_controller.go:66] Starting system namespaces controller
+I1031 18:00:22.530334       1 controller.go:97] "Starting controller" name="encryption-provider-config-automatic-reload-controller"
+I1031 18:00:22.530343       1 controller.go:119] Starting legacy_token_tracking_controller
+I1031 18:00:22.530357       1 shared_informer.go:350] "Waiting for caches to sync" controller="configmaps"
+I1031 18:00:22.530510       1 gc_controller.go:78] Starting apiserver lease garbage collector
+I1031 18:00:22.530971       1 customresource_discovery_controller.go:294] Starting DiscoveryController
+I1031 18:00:22.531296       1 cluster_authentication_trust_controller.go:459] Starting cluster_authentication_trust_controller controller
+I1031 18:00:22.531314       1 shared_informer.go:350] "Waiting for caches to sync" controller="cluster_authentication_trust_controller"
+I1031 18:00:22.531348       1 dynamic_cafile_content.go:161] "Starting controller" name="client-ca-bundle::/var/lib/rancher/rke2/server/tls/client-ca.crt"
+I1031 18:00:22.531360       1 repairip.go:200] Starting ipallocator-repair-controller
+I1031 18:00:22.531368       1 shared_informer.go:350] "Waiting for caches to sync" controller="ipallocator-repair-controller"
+I1031 18:00:22.531426       1 dynamic_cafile_content.go:161] "Starting controller" name="request-header::/var/lib/rancher/rke2/server/tls/request-header-ca.crt"
+I1031 18:00:22.531624       1 controller.go:142] Starting OpenAPI controller
+I1031 18:00:22.531631       1 controller.go:90] Starting OpenAPI V3 controller
+I1031 18:00:22.531650       1 default_servicecidr_controller.go:110] Starting kubernetes-service-cidr-controller
+I1031 18:00:22.531663       1 shared_informer.go:350] "Waiting for caches to sync" controller="kubernetes-service-cidr-controller"
+I1031 18:00:22.532519       1 naming_controller.go:299] Starting NamingConditionController
+I1031 18:00:22.532570       1 establishing_controller.go:81] Starting EstablishingController
+I1031 18:00:22.533089       1 nonstructuralschema_controller.go:195] Starting NonStructuralSchemaConditionController
+I1031 18:00:22.533594       1 apiapproval_controller.go:189] Starting KubernetesAPIApprovalPolicyConformantConditionController
+I1031 18:00:22.533643       1 crd_finalizer.go:269] Starting CRDFinalizer
+I1031 18:00:22.568593       1 cidrallocator.go:301] created ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 18:00:22.594906       1 shared_informer.go:357] "Caches are synced" controller="node_authorizer"
+I1031 18:00:22.613372       1 shared_informer.go:357] "Caches are synced" controller="*generic.policySource[*k8s.io/api/admissionregistration/v1.ValidatingAdmissionPolicy,*k8s.io/api/admissionregistration/v1.ValidatingAdmissionPolicyBinding,k8s.io/apiserver/pkg/admission/plugin/policy/validating.Validator]"
+I1031 18:00:22.613541       1 policy_source.go:240] refreshing policies
+I1031 18:00:22.630185       1 cache.go:39] Caches are synced for RemoteAvailability controller
+I1031 18:00:22.631886       1 apf_controller.go:382] Running API Priority and Fairness config worker
+I1031 18:00:22.631906       1 apf_controller.go:385] Running API Priority and Fairness periodic rebalancing process
+I1031 18:00:22.632705       1 shared_informer.go:357] "Caches are synced" controller="configmaps"
+I1031 18:00:22.633032       1 cache.go:39] Caches are synced for LocalAvailability controller
+I1031 18:00:22.633432       1 cache.go:39] Caches are synced for APIServiceRegistrationController controller
+I1031 18:00:22.633835       1 shared_informer.go:357] "Caches are synced" controller="kubernetes-service-cidr-controller"
+I1031 18:00:22.633871       1 default_servicecidr_controller.go:136] Shutting down kubernetes-service-cidr-controller
+I1031 18:00:22.633882       1 shared_informer.go:357] "Caches are synced" controller="cluster_authentication_trust_controller"
+I1031 18:00:22.634514       1 shared_informer.go:357] "Caches are synced" controller="ipallocator-repair-controller"
+I1031 18:00:22.645425       1 handler_discovery.go:451] Starting ResourceDiscoveryManager
+W1031 18:00:22.645500       1 handler_proxy.go:99] no RequestInfo found in the context
+I1031 18:00:22.645904       1 handler.go:288] Adding GroupVersion metrics.k8s.io v1beta1 to ResourceManager
+E1031 18:00:22.646066       1 controller.go:146] "Unhandled Error" err=<
+	Error updating APIService "v1beta1.metrics.k8s.io" with err: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+I1031 18:00:22.684337       1 controller.go:667] quota admission added evaluator for: leases.coordination.k8s.io
+I1031 18:00:22.730640       1 shared_informer.go:357] "Caches are synced" controller="crd-autoregister"
+I1031 18:00:22.731031       1 aggregator.go:171] initial CRD sync complete...
+I1031 18:00:22.731085       1 autoregister_controller.go:144] Starting autoregister controller
+I1031 18:00:22.731095       1 cache.go:32] Waiting for caches to sync for autoregister controller
+I1031 18:00:22.731112       1 cache.go:39] Caches are synced for autoregister controller
+I1031 18:00:22.731174       1 handler.go:288] Adding GroupVersion gateway.networking.k8s.io v1beta1 to ResourceManager
+I1031 18:00:22.731201       1 handler.go:288] Adding GroupVersion groupsnapshot.storage.k8s.io v1beta1 to ResourceManager
+I1031 18:00:22.731251       1 handler.go:288] Adding GroupVersion snapshot.storage.k8s.io v1 to ResourceManager
+I1031 18:00:22.731275       1 handler.go:288] Adding GroupVersion argoproj.io v1alpha1 to ResourceManager
+I1031 18:00:22.731306       1 handler.go:288] Adding GroupVersion cilium.io v2 to ResourceManager
+I1031 18:00:22.731338       1 handler.go:288] Adding GroupVersion cilium.io v2alpha1 to ResourceManager
+I1031 18:00:22.731558       1 handler.go:288] Adding GroupVersion cert-manager.io v1 to ResourceManager
+I1031 18:00:22.731573       1 handler.go:288] Adding GroupVersion acme.cert-manager.io v1 to ResourceManager
+I1031 18:00:22.731799       1 handler.go:288] Adding GroupVersion k3s.cattle.io v1 to ResourceManager
+I1031 18:00:22.731826       1 handler.go:288] Adding GroupVersion helm.cattle.io v1 to ResourceManager
+I1031 18:00:22.731954       1 handler.go:288] Adding GroupVersion gateway.networking.k8s.io v1 to ResourceManager
+I1031 18:00:22.732031       1 handler.go:288] Adding GroupVersion gateway.networking.k8s.io v1alpha2 to ResourceManager
+I1031 18:00:23.076842       1 controller.go:667] quota admission added evaluator for: serviceaccounts
+I1031 18:00:23.535350       1 storage_scheduling.go:111] all system priority classes are created successfully or already exist.
+W1031 18:00:23.643001       1 handler_proxy.go:99] no RequestInfo found in the context
+W1031 18:00:23.643004       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:23.643050       1 controller.go:102] "Unhandled Error" err=<
+	loading OpenAPI spec for "v1beta1.metrics.k8s.io" failed with: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+E1031 18:00:23.643093       1 controller.go:113] "Unhandled Error" err="loading OpenAPI spec for \"v1beta1.metrics.k8s.io\" failed with: Error, could not get list of group versions for APIService" logger="UnhandledError"
+I1031 18:00:23.644232       1 controller.go:109] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+I1031 18:00:23.644716       1 controller.go:126] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+W1031 18:00:23.748898       1 lease.go:265] Resetting endpoints for master service "kubernetes" to [192.168.0.42]
+I1031 18:00:23.750255       1 controller.go:667] quota admission added evaluator for: endpoints
+I1031 18:00:23.756423       1 controller.go:667] quota admission added evaluator for: endpointslices.discovery.k8s.io
+W1031 18:00:27.637012       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:27.637098       1 controller.go:146] "Unhandled Error" err=<
+	Error updating APIService "v1beta1.metrics.k8s.io" with err: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+E1031 18:00:27.637627       1 remote_available_controller.go:448] "Unhandled Error" err="v1beta1.metrics.k8s.io failed with: failing or missing response from https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1: Get \"https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1\": context deadline exceeded" logger="UnhandledError"
+W1031 18:00:28.638833       1 handler_proxy.go:99] no RequestInfo found in the context
+W1031 18:00:28.638831       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:28.638878       1 controller.go:102] "Unhandled Error" err=<
+	loading OpenAPI spec for "v1beta1.metrics.k8s.io" failed with: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+E1031 18:00:28.638878       1 controller.go:113] "Unhandled Error" err="loading OpenAPI spec for \"v1beta1.metrics.k8s.io\" failed with: Error, could not get list of group versions for APIService" logger="UnhandledError"
+I1031 18:00:28.640003       1 controller.go:126] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+I1031 18:00:28.640019       1 controller.go:109] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+E1031 18:00:32.644298       1 remote_available_controller.go:448] "Unhandled Error" err="v1beta1.metrics.k8s.io failed with: failing or missing response from https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1: Get \"https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" logger="UnhandledError"
+W1031 18:00:32.644854       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:32.644896       1 controller.go:146] "Unhandled Error" err=<
+	Error updating APIService "v1beta1.metrics.k8s.io" with err: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+W1031 18:00:33.647108       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:33.647141       1 controller.go:113] "Unhandled Error" err="loading OpenAPI spec for \"v1beta1.metrics.k8s.io\" failed with: Error, could not get list of group versions for APIService" logger="UnhandledError"
+W1031 18:00:33.647106       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:33.647188       1 controller.go:102] "Unhandled Error" err=<
+	loading OpenAPI spec for "v1beta1.metrics.k8s.io" failed with: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+I1031 18:00:33.648274       1 controller.go:109] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+I1031 18:00:33.648289       1 controller.go:126] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+E1031 18:00:37.646545       1 remote_available_controller.go:448] "Unhandled Error" err="v1beta1.metrics.k8s.io failed with: failing or missing response from https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1: Get \"https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" logger="UnhandledError"
+I1031 18:00:39.897324       1 controller.go:667] quota admission added evaluator for: replicasets.apps
+I1031 18:00:39.897324       1 controller.go:667] quota admission added evaluator for: replicasets.apps
+I1031 18:00:40.203809       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 18:00:40.206767       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 18:00:40.346100       1 controller.go:667] quota admission added evaluator for: deployments.apps
+I1031 18:00:40.501615       1 controller.go:667] quota admission added evaluator for: statefulsets.apps
+I1031 18:00:40.594766       1 controller.go:667] quota admission added evaluator for: poddisruptionbudgets.policy
+I1031 18:00:40.646812       1 controller.go:667] quota admission added evaluator for: daemonsets.apps
+W1031 18:00:42.650911       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:42.650983       1 controller.go:146] "Unhandled Error" err=<
+	Error updating APIService "v1beta1.metrics.k8s.io" with err: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+E1031 18:00:42.651461       1 remote_available_controller.go:448] "Unhandled Error" err="v1beta1.metrics.k8s.io failed with: failing or missing response from https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1: Get \"https://10.42.0.104:10250/apis/metrics.k8s.io/v1beta1\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)" logger="UnhandledError"
+E1031 18:00:42.653212       1 handler_proxy.go:143] error resolving kube-system/rke2-metrics-server: no endpoints available for service "rke2-metrics-server"
+W1031 18:00:42.655904       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:42.655945       1 controller.go:146] "Unhandled Error" err=<
+	Error updating APIService "v1beta1.metrics.k8s.io" with err: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+E1031 18:00:42.657109       1 handler_proxy.go:143] error resolving kube-system/rke2-metrics-server: no endpoints available for service "rke2-metrics-server"
+W1031 18:00:43.653258       1 handler_proxy.go:99] no RequestInfo found in the context
+W1031 18:00:43.653258       1 handler_proxy.go:99] no RequestInfo found in the context
+E1031 18:00:43.653294       1 controller.go:113] "Unhandled Error" err="loading OpenAPI spec for \"v1beta1.metrics.k8s.io\" failed with: Error, could not get list of group versions for APIService" logger="UnhandledError"
+E1031 18:00:43.653352       1 controller.go:102] "Unhandled Error" err=<
+	loading OpenAPI spec for "v1beta1.metrics.k8s.io" failed with: failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+	, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+ > logger="UnhandledError"
+I1031 18:00:43.654395       1 controller.go:109] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+I1031 18:00:43.654476       1 controller.go:126] OpenAPI AggregationController: action for item v1beta1.metrics.k8s.io: Rate Limited Requeue.
+I1031 18:00:50.368591       1 controller.go:667] quota admission added evaluator for: ciliumendpoints.cilium.io
+I1031 18:00:57.226545       1 controller.go:667] quota admission added evaluator for: applicationsets.argoproj.io
+I1031 18:01:02.343084       1 controller.go:667] quota admission added evaluator for: httproutes.gateway.networking.k8s.io
+I1031 18:01:08.473690       1 controller.go:667] quota admission added evaluator for: rolebindings.rbac.authorization.k8s.io
+W1031 18:01:09.109931       1 aggregator.go:166] failed to download v1beta1.metrics.k8s.io: failed to retrieve openAPI spec, http error: ResponseCode: 503, Body: service unavailable
+, Header: map[Content-Type:[text/plain; charset=utf-8] X-Content-Type-Options:[nosniff]]
+I1031 18:01:09.235436       1 controller.go:667] quota admission added evaluator for: addons.k3s.cattle.io
+E1031 18:01:22.646012       1 handler_proxy.go:143] error resolving kube-system/rke2-metrics-server: no endpoints available for service "rke2-metrics-server"
+I1031 18:01:33.688686       1 handler.go:288] Adding GroupVersion metrics.k8s.io v1beta1 to ResourceManager
+I1031 18:04:29.606588       1 controller.go:667] quota admission added evaluator for: applications.argoproj.io
+I1031 18:10:22.568470       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 18:20:22.568636       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 18:30:22.568688       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 18:40:22.568968       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 18:50:22.569758       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 19:00:22.570822       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 19:10:22.571072       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 19:20:22.571447       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 19:30:22.571926       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 19:40:22.572424       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 19:50:22.572987       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 20:00:22.573555       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 20:10:22.574385       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 20:20:22.574583       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 20:30:22.574925       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 20:40:22.575610       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 20:50:22.576618       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 21:00:22.577627       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 21:10:22.578338       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 21:20:22.579189       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 21:30:22.580246       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 21:40:22.580286       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 21:50:22.581319       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 22:00:22.581780       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 22:10:22.582390       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 22:20:22.582741       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 22:30:22.582929       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 22:40:22.583996       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 22:50:22.584699       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 23:00:22.585005       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 23:10:22.585972       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 23:20:22.586910       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 23:30:22.587873       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 23:40:22.588741       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1031 23:50:22.589243       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 00:00:22.589752       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 00:10:22.590532       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 00:20:22.590558       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 00:30:22.590899       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 00:40:22.591030       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 00:50:22.591987       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 01:00:22.592598       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 01:10:22.592788       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 01:20:22.593692       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 01:30:22.593774       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 01:40:22.594774       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 01:50:22.594934       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 02:00:22.595733       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 02:10:22.596471       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 02:20:22.597227       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 02:30:22.597304       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 02:40:22.597793       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 02:50:22.598577       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 03:00:22.599203       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 03:10:22.599485       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 03:20:22.599779       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+I1101 03:30:22.600781       1 cidrallocator.go:277] updated ClusterIP allocator for Service CIDR 10.43.0.0/16
+==== END logs for container kube-apiserver of pod kube-system/kube-apiserver-omen-omen-25l-desktop-gt12-0xxx ====
