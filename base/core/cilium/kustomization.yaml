@@ -14,11 +14,11 @@ helmCharts:
     valuesInline:
       gatewayAPI:
         enabled: true
+        hostNetwork:
+          enabled: true
       k8sServiceHost: 127.0.0.1
       k8sServicePort: 6443
       kubeProxyReplacement: true
-      bgpControlPlane:
-        enabled: true
       operator:
         replicas: 1
       encryption:
