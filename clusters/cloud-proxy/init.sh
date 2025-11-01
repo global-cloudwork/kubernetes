@@ -121,13 +121,5 @@ gcloud secrets versions access latest \
   --project="global-cloudworks" \
   > dns-key.json
 
-gcloud secrets versions access latest \
-  --secret="gce-key" \
-  --project="global-cloudworks" \
-  > gce-key.json
-
-kubectl create secret generic dns-solver-json-key --from-file=key.json
+kubectl create secret generic dns-key --from-file=dns-key.json
 rm dns-key.json
-
-kubectl create secret generic dns-solver-json-key --from-file=key.json
-rm gce-key.json
