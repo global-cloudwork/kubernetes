@@ -31,7 +31,7 @@ export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google
 export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
 source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/general.sh)
 source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/kubernetes.sh)
-
+source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/test-functions.sh)
 # Set PATH to include rke2 binaries
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 PATH=$PATH:/opt/rke2/bin
