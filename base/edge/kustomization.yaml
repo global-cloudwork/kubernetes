@@ -5,6 +5,5 @@ resources:
   - namespace.yaml
   - cluster-issuer.yaml
   - gateway.yaml
-  - cilium-gateway-class-config.yaml
   - gateway-class.yaml
   - httproute.yaml
