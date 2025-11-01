@@ -51,6 +51,8 @@ sudo apt-get -qq -y install git wireguard
 mkdir -p $HOME/.kube/$CLUSTER_NAME
 sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
+sudo touch /etc/rancher/rke2/cloud.conf
+
 
 # Download RKE2 configuration files, then substitute environment variables
 sudo curl --silent --show-error --remote-name-all --output-dir /tmp/ \

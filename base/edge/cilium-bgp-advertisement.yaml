@@ -1,0 +1,16 @@
+# Pod CIDR advertisement with BGP communities
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  name: pod-cidr-advertisements
+  labels:
+    advertise: "datacenter-bgp"
+spec:
+  advertisements:
+  - advertisementType: "PodCIDR"
+    attributes:
+      communities:
+        standard: ["65001:100", "65001:200"]
+        large: ["65001:100:1"]
+        wellKnown: ["no-export"]
+      localPreference: 200

@@ -1,0 +1,29 @@
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: datacenter-bgp
+spec:
+  nodeSelector:
+    matchLabels:
+      bgp-enabled: "true"
+  bgpInstances:
+  - name: "main-instance"
+    localASN: 65001
+    localPort: 179
+    peers:
+    - name: "tor-autodiscovery-ipv4"
+      peerASN: 65000
+      autoDiscovery:
+        mode: "DefaultGateway"
+        defaultGateway:
+          addressFamily: ipv4
+      peerConfigRef:
+        name: "datacenter-peer-config"
+    - name: "tor-autodiscovery-ipv6"
+      peerASN: 65000
+      autoDiscovery:
+        mode: "DefaultGateway"
+        defaultGateway:
+          addressFamily: ipv6
+      peerConfigRef:
+        name: "datacenter-peer-config"

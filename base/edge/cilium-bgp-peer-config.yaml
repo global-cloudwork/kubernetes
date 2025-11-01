@@ -1,0 +1,39 @@
+# Comprehensive BGP peer configuration
+apiVersion: cilium.io/v2
+kind: CiliumBGPPeerConfig
+metadata:
+  name: datacenter-peer-config
+spec:
+  # Authentication using MD5 password
+  authSecretRef: bgp-auth-secret
+  
+  # Optimized timers for datacenter environments
+  timers:
+    connectRetryTimeSeconds: 5
+    holdTimeSeconds: 9
+    keepAliveTimeSeconds: 3
+  
+  # Enable graceful restart for zero-downtime operations
+  gracefulRestart:
+    enabled: true
+    restartTimeSeconds: 15
+  
+  # EBGP multihop for route server scenarios
+  ebgpMultihop: 2
+  
+  # Custom transport configuration
+  transport:
+    peerPort: 179
+  
+  # Address family configuration with advertisements
+  families:
+  - afi: ipv4
+    safi: unicast
+    advertisements:
+      matchLabels:
+        advertise: "datacenter-bgp"
+  - afi: ipv6
+    safi: unicast
+    advertisements:
+      matchLabels:
+        advertise: "datacenter-bgp"

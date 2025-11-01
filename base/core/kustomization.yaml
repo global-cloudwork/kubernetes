@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - application-set.yaml
-  - https://github.com/global-cloudwork/kubernetes/applications/cilium?ref=main
-  - https://github.com/global-cloudwork/kubernetes/applications/argocd?ref=main
+  - cilium
+  - argocd
+  - cert-manager
