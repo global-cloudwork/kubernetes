@@ -155,21 +155,16 @@ net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 sudo sysctl --system > /dev/null 2>&1
 
-
-
-
 # HTTP: Redirect external 80 → 8080
+# HTTPS: Redirect external 443 → 8443
 sudo iptables -t nat -C PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080 2>/dev/null || \
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
-
-# HTTPS: Redirect external 443 → 8443
 sudo iptables -t nat -C PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8443 2>/dev/null || \
 sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8443
 
 # Allow traffic on high ports
 sudo iptables -t filter -C INPUT -p tcp --dport 8080 -j ACCEPT 2>/dev/null || \
 sudo iptables -t filter -A INPUT -p tcp --dport 8080 -j ACCEPT
-
 sudo iptables -t filter -C INPUT -p tcp --dport 8443 -j ACCEPT 2>/dev/null || \
 sudo iptables -t filter -A INPUT -p tcp --dport 8443 -j ACCEPT
 
