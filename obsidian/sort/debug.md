@@ -25,3 +25,6 @@
 
 - Full diagnostics dump\
   • `kubectl cluster-info dump --output-directory=./cluster-dump`
+
+`kubectl cluster-info dump > cluster_dump.json`
+`kubectl cluster-info dump | grep -i error`

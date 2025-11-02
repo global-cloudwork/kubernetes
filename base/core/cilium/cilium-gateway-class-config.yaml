@@ -1,8 +1,8 @@
 apiVersion: cilium.io/v2alpha1
 kind: CiliumGatewayClassConfig
 metadata:
-  name: gateway-config
-  namespace: default
+  name: cilium-gateway-class-config
+  namespace: cilium
 spec:
   service:
     type: NodePort

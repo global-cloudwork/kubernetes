@@ -7,4 +7,5 @@
       parametersRef:
         group: cilium.io
         kind: CiliumGatewayClassConfig
-        name: gateway-config
+        name: cilium-gateway-class-config
+        namespace: cilium
