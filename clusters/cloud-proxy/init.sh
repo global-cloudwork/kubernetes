@@ -38,6 +38,7 @@ PATH=$PATH:/opt/rke2/bin
 
 
 
+
 #===============================================================================
 # Prepare the host system
 #===============================================================================
@@ -53,7 +54,6 @@ sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
 sudo touch /etc/rancher/rke2/cloud.conf
 
-
 # Download RKE2 configuration files, then substitute environment variables
 sudo curl --silent --show-error --remote-name-all --output-dir /tmp/ \
   https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/clusters/cloud-proxy/configurations/config.yaml
@@ -64,6 +64,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     --remote-name-all --silent --show-error | bash
 curl https://get.rke2.io \
   --remote-name-all --silent --show-error | sudo bash
+
 
 
 
@@ -89,10 +90,11 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 
 
 
+
 #===============================================================================
-# Deploy Base, Core, and ArgoCD Bootstrap
+# Deploy Base and Core, then restart RKE2
 #===============================================================================
-section "Deploy CRD's, Cilium, and ArgoCD Bootstrap"
+section "Deploy Base and Core, then restart RKE2"
 #===============================================================================
 
 # Deploy base
@@ -111,12 +113,14 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" |
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
+
+
+
 #===============================================================================
 # Deploy Edge and Tenant
 #===============================================================================
 section "Deploy Edge and Tenant"
 #===============================================================================
-
 
 wait_for endpoints
 
