@@ -111,12 +111,16 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" |
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
-# Deploy Core
+# Deploy edge
 header "Applying Kustomize PATH: base/edge"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-# Deploy Core
+# Wait for deployments and pods to be ready
+kubectl -n cert-manager wait --for=condition=available "deployment/cert-manager-webhook" --timeout="180s"
+kubectl -n cert-manager wait --for=condition=ready pod -l "app.kubernetes.io/name=webhook" --timeout="180s"
+
+# Deploy tenant
 header "Applying Kustomize PATH: base/tenant"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
@@ -150,6 +154,9 @@ net.bridge.bridge-nf-call-iptables = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 sudo sysctl --system > /dev/null 2>&1
+
+
+
 
 # HTTP: Redirect external 80 → 8080
 sudo iptables -t nat -C PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080 2>/dev/null || \
