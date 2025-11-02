@@ -1,0 +1,1 @@
+kubectl api-resources --verbs=list --namespaced=true -o name | xargs -n 1 kubectl get -n gateway
