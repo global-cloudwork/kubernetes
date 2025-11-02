@@ -16,7 +16,7 @@ spec:
     - hostname: "*.promotesudbury.ca"
       name: http-listener
       protocol: HTTP
-      port: 8080
+      port: 80
       allowedRoutes:
         namespaces:
           from: All
@@ -24,7 +24,7 @@ spec:
     - hostname: "*.promotesudbury.ca"
       name: https-listener
       protocol: HTTPS
-      port: 8443
+      port: 443
       allowedRoutes:
         namespaces:
           from: All

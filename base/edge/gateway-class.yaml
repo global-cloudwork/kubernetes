@@ -2,6 +2,7 @@
     kind: GatewayClass
     metadata:
       name: cilium
+      namespace: edge
     spec:
       controllerName: io.cilium/gateway-controller
       parametersRef:
