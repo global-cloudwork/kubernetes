@@ -95,14 +95,14 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 section "Deploy CRD's, Cilium, and ArgoCD Bootstrap"
 #===============================================================================
 
-# Deploy Base
+# Deploy base
 header "Applying Kustomize PATH: base"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 wait_for crds
 
-# Deploy Core
+# Deploy core
 header "Applying Kustomize PATH: base/core"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
@@ -110,6 +110,15 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" |
 # Restart RKE2 to pick up new manifests
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
+
+#===============================================================================
+# Deploy Edge and Tenant
+#===============================================================================
+section "Deploy Edge and Tenant"
+#===============================================================================
+
+
+wait_for endpoints
 
 # Deploy edge
 header "Applying Kustomize PATH: base/edge"
