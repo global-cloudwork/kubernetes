@@ -1,8 +1,0 @@
-==== START logs for container rke2-snapshot-controller of pod kube-system/rke2-snapshot-controller-696989ffdd-cfvb7 ====
-I1031 18:00:55.254721       1 main.go:169] Version: v8.2.0
-I1031 18:00:55.271204       1 main.go:214] Metrics path successfully registered at /metrics
-I1031 18:00:56.367330       1 main.go:277] Metrics http server successfully started on :8080, /metrics
-I1031 18:00:56.370290       1 leaderelection.go:254] attempting to acquire leader lease kube-system/snapshot-controller-leader...
-I1031 18:00:56.378499       1 leaderelection.go:268] successfully acquired lease kube-system/snapshot-controller-leader
-I1031 18:00:56.380084       1 snapshot_controller_base.go:255] Starting snapshot controller
-==== END logs for container rke2-snapshot-controller of pod kube-system/rke2-snapshot-controller-696989ffdd-cfvb7 ====
