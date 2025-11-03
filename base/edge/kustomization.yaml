@@ -6,3 +6,4 @@ resources:
   # - gateway-class.yaml
   - gateway.yaml
   - httproute.yaml
+  - cilium-load-balancer-ip-pool.yaml
