@@ -122,7 +122,7 @@ sudo systemctl restart rke2-server.service
 section "Deploy Edge and Tenant"
 #===============================================================================
 
-wait_for endpoints
+kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=webhook -n cert-manager --timeout=300s
 
 # Deploy edge
 header "Applying Kustomize PATH: base/edge"
