@@ -122,7 +122,7 @@ sudo systemctl restart rke2-server.service
 section "Deploy Edge and Tenant"
 #===============================================================================
 
-heading "Waiting for cert-manager to be ready"
+header "Waiting for cert-manager to be ready"
 kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=webhook -n cert-manager --timeout=300s
 
 # Deploy edge
