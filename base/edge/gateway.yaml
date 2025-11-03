@@ -22,7 +22,7 @@ spec:
     - hostname: "*.promotesudbury.ca"
       name: https-listener
       protocol: HTTPS
-      port: 443
+      port: 2000
       allowedRoutes:
         namespaces:
           from: All
