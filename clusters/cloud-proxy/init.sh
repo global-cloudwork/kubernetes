@@ -122,9 +122,6 @@ sudo systemctl restart rke2-server.service
 section "Deploy Edge and Tenant"
 #===============================================================================
 
-header "Waiting for cert-manager to be ready"
-kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=webhook -n cert-manager --timeout=300s
-
 # Deploy edge
 header "Applying Kustomize PATH: base/edge"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
