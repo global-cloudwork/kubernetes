@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - http-route.yaml
+  - network-policy.yaml
 
 helmCharts:
   - name: cert-manager
