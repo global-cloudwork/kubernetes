@@ -156,17 +156,17 @@ rm dns-key.json
 
 
 
-header "Installing iptables-persistent for rule persistence"
-sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install -y iptables-persistent netfilter-persistent
+# header "Installing iptables-persistent for rule persistence"
+# sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install -y iptables-persistent netfilter-persistent
 
-header "Enabling IP forwarding"
-cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes.conf > /dev/null
-net.ipv4.ip_forward = 1
-net.ipv6.conf.all.forwarding = 1
-net.bridge.bridge-nf-call-iptables = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-EOF
-sudo sysctl --system > /dev/null 2>&1
+# header "Enabling IP forwarding"
+# cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes.conf > /dev/null
+# net.ipv4.ip_forward = 1
+# net.ipv6.conf.all.forwarding = 1
+# net.bridge.bridge-nf-call-iptables = 1
+# net.bridge.bridge-nf-call-ip6tables = 1
+# EOF
+# sudo sysctl --system > /dev/null 2>&1
 
 # # HTTP: Redirect external 80 → 8080
 # # HTTPS: Redirect external 443 → 8443
