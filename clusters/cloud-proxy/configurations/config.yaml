@@ -7,5 +7,3 @@ tls-san:
 disable:
   - rke2-ingress-nginx
 write-kubeconfig-mode: "0600"
-kubelet-arg:
-  - 'register-with-taints=node.cilium.io/agent-not-ready:NoExecute'
