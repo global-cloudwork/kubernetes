@@ -3,12 +3,13 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - http-route.yaml
 
 helmCharts:
   - name: cert-manager
     repo: https://charts.jetstack.io
     namespace: cert-manager
-    version: 1.19.1
+    version: 1.14.0
     releaseName: cert-manager
     valuesInline:
       crds:
