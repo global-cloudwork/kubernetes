@@ -5,5 +5,5 @@ resources:
   - namespace.yaml
   - application-set.yaml
   - cilium
-  - argocd
+#  - argocd
   - cert-manager
