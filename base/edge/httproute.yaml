@@ -17,5 +17,5 @@ spec:
       backendRefs:
         - name: kubernetes
           namespace: default
-          port: 443
+          port: 8443
 ---
