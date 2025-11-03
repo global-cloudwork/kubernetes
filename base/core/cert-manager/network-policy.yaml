@@ -20,6 +20,14 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
+    # Rule 1a: Allow Kubernetes API server
+    - toCIDRSet:
+        - cidr: 10.43.0.1/32
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+
     # Rule 2: Allow HTTP/HTTPS to the public internet (for ACME server)
     - toPorts:
         - ports:
