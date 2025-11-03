@@ -134,10 +134,10 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" |
 # kubectl -n cert-manager wait --for=condition=available "deployment/cert-manager-webhook" --timeout="180s"
 # kubectl -n cert-manager wait --for=condition=ready pod -l "app.kubernetes.io/name=webhook" --timeout="180s"
 
-# Deploy tenant
-header "Applying Kustomize PATH: base/tenant"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+# # Deploy tenant
+# header "Applying Kustomize PATH: base/tenant"
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
 
 # # Copy RKE2-generated kubeconfig, set proper ownership, and merge all kubeconfig files
 # sudo cp -f /etc/rancher/rke2/rke2.yaml /home/ubuntu/.kube/cloud-proxy/config
