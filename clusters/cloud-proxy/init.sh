@@ -168,11 +168,24 @@ net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 sudo sysctl --system > /dev/null 2>&1
 
-# Save rules persistently
-header "Saving iptables rules persistently"
-sudo netfilter-persistent save
-note "✓ iptables rules saved and will persist across reboots"
+# # HTTP: Redirect external 80 → 8080
+# # HTTPS: Redirect external 443 → 8443
+# sudo iptables -t nat -C PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080 2>/dev/null || \
+# sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+# sudo iptables -t nat -C PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8443 2>/dev/null || \
+# sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 8443
 
-# Display active rules
-header "Active NAT rules:"
-sudo iptables -t nat -L PREROUTING -n -v --line-numbers | grep -E "dpt:80|dpt:443" || echo "No matching rules found"
+# # Allow traffic on high ports
+# sudo iptables -t filter -C INPUT -p tcp --dport 8080 -j ACCEPT 2>/dev/null || \
+# sudo iptables -t filter -A INPUT -p tcp --dport 8080 -j ACCEPT
+# sudo iptables -t filter -C INPUT -p tcp --dport 8443 -j ACCEPT 2>/dev/null || \
+# sudo iptables -t filter -A INPUT -p tcp --dport 8443 -j ACCEPT
+
+# # Save rules persistently
+# header "Saving iptables rules persistently"
+# sudo netfilter-persistent save
+# note "✓ iptables rules saved and will persist across reboots"
+
+# # Display active rules
+# header "Active NAT rules:"
+# sudo iptables -t nat -L PREROUTING -n -v --line-numbers | grep -E "dpt:80|dpt:443" || echo "No matching rules found"
