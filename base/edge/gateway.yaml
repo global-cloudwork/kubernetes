@@ -9,22 +9,22 @@ spec:
   gatewayClassName: cilium
   listeners:
     - hostname: "*.promotesudbury.ca"
-      name: http-listener
+      name: http
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
           from: All
 
-    - hostname: "*.promotesudbury.ca"
-      name: https-listener
-      protocol: HTTPS
-      port: 443
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            name: wildcard-certificate
+    # - hostname: "*.promotesudbury.ca"
+    #   name: https-listener
+    #   protocol: HTTPS
+    #   port: 443
+    #   allowedRoutes:
+    #     namespaces:
+    #       from: All
+    #   tls:
+    #     mode: Terminate
+    #     certificateRefs:
+    #       - kind: Secret
+    #         name: wildcard-certificate
