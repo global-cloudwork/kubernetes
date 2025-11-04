@@ -13,3 +13,6 @@ helmCharts:
     namespace: argocd
     version: 8.3.1
     releaseName: argocd
+    valuesInline:
+      server:
+        insecure: true
