@@ -2,8 +2,6 @@ node-name: cloud-proxy
 cni: none
 disable-kube-proxy: true
 node-ip: ${INTERNAL_IP}
-advertise-address: ${INTERNAL_IP}
-bind-address: 172.0.0.1
 tls-san:
   - ${EXTERNAL_IP}
 disable:
