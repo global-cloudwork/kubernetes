@@ -1,13 +1,11 @@
 node-name: cloud-proxy
 cni: none
 disable-kube-proxy: true
-advertise-address: 127.0.0.1
-bind-address: 127.0.0.1
+node-ip: ${INTERNAL_IP}
+advertise-address: ${INTERNAL_IP}
+bind-address: 172.0.0.1
 tls-san:
   - ${EXTERNAL_IP}
 disable:
   - rke2-ingress-nginx
 write-kubeconfig-mode: "0600"
-
-kube-apiserver-arg:
-  - bind-address=127.0.0.1 
