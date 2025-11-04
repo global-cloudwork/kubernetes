@@ -9,6 +9,6 @@ helmCharts:
   - name: neo4j
     repo: https://neo4j.github.io/helm-charts/
     namespace: neo4j
-    version: 2025.9.0
+    version: 2025.10.1
     releaseName: neo4j
     valuesInline:
