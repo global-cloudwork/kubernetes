@@ -10,5 +10,5 @@ helmCharts:
     repo: https://helm.openwebui.com
     namespace: open-webui
     version: 8.12.3
-    releaseName: my-open-webui
-    valuesFile: values.yaml
+    releaseName: open-webui
+    valuesInline:

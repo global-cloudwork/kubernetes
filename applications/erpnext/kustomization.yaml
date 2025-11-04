@@ -7,4 +7,4 @@ helmCharts:
     namespace: default
     version: 7.0.247
     releaseName: my-erpnext
-    valuesFile: values.yaml
+    valuesInline:

@@ -6,5 +6,5 @@ helmCharts:
     repo: https://community-charts.github.io/helm-charts
     namespace: n8n
     version: 1.15.17
-    valuesFile: values.yaml
-    releaseName: my-n8n
+    releaseName: n8n
+    valuesInline:
