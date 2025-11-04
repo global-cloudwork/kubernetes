@@ -16,15 +16,15 @@ spec:
         namespaces:
           from: All
 
-    # - hostname: "*.promotesudbury.ca"
-    #   name: https-listener
-    #   protocol: HTTPS
-    #   port: 443
-    #   allowedRoutes:
-    #     namespaces:
-    #       from: All
-    #   tls:
-    #     mode: Terminate
-    #     certificateRefs:
-    #       - kind: Secret
-    #         name: wildcard-certificate
+    - hostname: "*.promotesudbury.ca"
+      name: https
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: wildcard-certificate

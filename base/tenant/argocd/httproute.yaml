@@ -6,7 +6,7 @@ metadata:
 spec:
   parentRefs:
     - name: gateway
-      sectionName: http
+      sectionName: https
   hostnames:
     - argocd.promotesudbury.ca
   rules:
@@ -16,4 +16,4 @@ spec:
             value: /
       backendRefs:
         - name: argocd-server
-          port: 80
+          port: 443
