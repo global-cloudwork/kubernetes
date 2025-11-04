@@ -7,9 +7,6 @@ metadata:
     cert-manager.io/cluster-issuer: cluster-issuer
 spec:
   gatewayClassName: cilium
-  addresses:
-    - type: IPAddress
-      value: 35.209.166.2
   listeners:
     - hostname: "*.promotesudbury.ca"
       name: http-listener
