@@ -6,7 +6,7 @@ metadata:
 spec:
   parentRefs:
     - name: gateway
-      sectionName: https-listener
+      sectionName: http-listener
   hostnames:
     - argocd.promotesudbury.ca
   rules:
