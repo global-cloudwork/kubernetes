@@ -1,0 +1,9 @@
+views:
+  - type: table
+    name: Table
+    filters:
+      and:
+        - title == "test"
+    sort:
+      - property: title
+        direction: ASC
