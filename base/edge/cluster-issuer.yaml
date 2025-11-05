@@ -4,20 +4,14 @@ metadata:
   name: cluster-issuer
 spec:
   acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
     email: josh.v.mcconnell@gmail.com
-    
-    # Secret to store the ACME account private key
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
-    
-    # DNS-01 challenge using Google Cloud DNS
     solvers:
     - dns01:
         cloudDNS:
-          # The ID of the GCP project
           project: global-cloudworks
-          # This is the secret used to access the service account
           serviceAccountSecretRef:
             name: dns-key
             key: key.json

@@ -4,6 +4,7 @@ disable-kube-proxy: true
 node-ip: ${INTERNAL_IP}
 tls-san:
   - ${EXTERNAL_IP}
+  - promotesudbury.ca
 disable:
   - rke2-ingress-nginx
 write-kubeconfig-mode: "0600"
