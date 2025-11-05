@@ -1,15 +1,12 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-cert-manager-dns
+  name: cert-manager-network-policy
   namespace: cert-manager 
 spec:
   endpointSelector:
     matchLabels:
       k8s-app: cert-manager
-    ingress:
-    - fromEndpoints:
-        - {} 
   egress:
     - toCIDRSet:
         - cidr: "10.43.0.10/32"
