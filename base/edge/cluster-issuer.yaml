@@ -16,7 +16,7 @@ spec:
     - dns01:
         cloudDNS:
           # GCP project ID where your DNS zone is hosted
-          project: your-gcp-project-id
+          project: global-cloudworks
           
           # Reference to the secret containing the GCP service account key
           serviceAccountSecretRef:
