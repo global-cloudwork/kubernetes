@@ -15,15 +15,9 @@ spec:
     solvers:
     - dns01:
         cloudDNS:
-          # GCP project ID where your DNS zone is hosted
+          # The ID of the GCP project
           project: global-cloudworks
-          
-          # Reference to the secret containing the GCP service account key
+          # This is the secret used to access the service account
           serviceAccountSecretRef:
             name: dns-key
             key: key.json
-      
-      # Optional: restrict to specific domains
-      selector:
-        dnsZones:
-        - "promotesudbury.ca"
