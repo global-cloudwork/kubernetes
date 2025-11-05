@@ -142,6 +142,5 @@ gcloud secrets versions access latest \
   --project="global-cloudworks" \
   > dns-key.json
 
-
 kubectl create secret generic dns-key --from-file=dns-key.json
 rm dns-key.json
