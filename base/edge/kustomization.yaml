@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - gateway.yaml
-  - httproute.yaml
   - cluster-issuer.yaml
   - cilium-load-balancer-ip-pool.yaml
   - cilium-network-policy.yaml
