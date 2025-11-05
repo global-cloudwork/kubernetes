@@ -1,28 +1,41 @@
-# apiVersion: cilium.io/v2
-# kind: CiliumNetworkPolicy
-# metadata:
-#   name: allow-cert-manager-acme-egress
-#   namespace: cert-manager
-#   annotations:
-#     io.cilium.description: "Allow cert-manager to resolve DNS and contact Let's Encrypt ACME endpoint"
-# spec:
-#   # Apply to all endpoints in the cert-manager namespace.
-#   endpointSelector: {}
-#   egress:
-#   # 1) Allow DNS queries to the cluster DNS (replace IP if your cluster DNS IP differs)
-#   - toCIDR:
-#     - "10.43.0.10/32"
-#     toPorts:
-#     - ports:
-#       - port: "53"
-#         protocol: UDP
-#       - port: "53"
-#         protocol: TCP
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-cert-manager-dns
+  namespace: cert-manager 
+spec:
+  # 1. Targets the cert-manager controller pod(s)
+  endpointSelector:
+    matchLabels:
+      k8s-app: cert-manager
+  
+  # 2. Define the INGRESS rule (Added to resolve the block/error)
+  ingress:
+    # Rule 1: Explicitly allow all incoming traffic to the cert-manager pod(s).
+    # This prevents the pod from going into default-deny for ingress.
+    - fromEndpoints:
+        - {} # An empty selector matches ALL endpoints (pods)
+  
+  # 3. Define the EGRESS rule (Unchanged DNS-only rule)
+  egress:
+    # Rule 1: Allow DNS to the cluster DNS Service IP (10.43.0.10)
+    - toCIDRSet:
+        - cidr: "10.43.0.10/32" # Your CoreDNS/kube-dns ClusterIP
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
 
-#   # 2) Allow HTTPS to the Let's Encrypt ACME v2 endpoint by FQDN
-#   - toFQDNs:
-#     - matchName: "acme-v02.api.letsencrypt.org"
-#     toPorts:
-#     - ports:
-#       - port: "443"
-#         protocol: TCP
+    # Rule 2: Explicitly allow access to the kube-dns Service using labels
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
