@@ -1,0 +1,28 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-cert-manager-acme-egress
+  namespace: cert-manager
+  annotations:
+    io.cilium.description: "Allow cert-manager to resolve DNS and contact Let's Encrypt ACME endpoint"
+spec:
+  # Apply to all endpoints in the cert-manager namespace.
+  endpointSelector: {}
+  egress:
+  # 1) Allow DNS queries to the cluster DNS (replace IP if your cluster DNS IP differs)
+  - toCIDR:
+    - "10.43.0.10/32"
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+
+  # 2) Allow HTTPS to the Let's Encrypt ACME v2 endpoint by FQDN
+  - toFQDNs:
+    - matchName: "acme-v02.api.letsencrypt.org"
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
