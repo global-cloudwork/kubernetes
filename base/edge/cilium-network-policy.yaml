@@ -4,31 +4,21 @@ metadata:
   name: allow-cert-manager-dns
   namespace: cert-manager 
 spec:
-  # 1. Targets the cert-manager controller pod(s)
   endpointSelector:
     matchLabels:
       k8s-app: cert-manager
-  
-  # 2. Define the INGRESS rule (Added to resolve the block/error)
-  ingress:
-    # Rule 1: Explicitly allow all incoming traffic to the cert-manager pod(s).
-    # This prevents the pod from going into default-deny for ingress.
+    ingress:
     - fromEndpoints:
-        - {} # An empty selector matches ALL endpoints (pods)
-  
-  # 3. Define the EGRESS rule (Unchanged DNS-only rule)
+        - {} 
   egress:
-    # Rule 1: Allow DNS to the cluster DNS Service IP (10.43.0.10)
     - toCIDRSet:
-        - cidr: "10.43.0.10/32" # Your CoreDNS/kube-dns ClusterIP
+        - cidr: "10.43.0.10/32"
       toPorts:
         - ports:
             - port: "53"
               protocol: UDP
             - port: "53"
               protocol: TCP
-
-    # Rule 2: Explicitly allow access to the kube-dns Service using labels
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
