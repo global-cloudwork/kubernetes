@@ -24,6 +24,12 @@ Deployed using the [[RKE2 & Cilium Boostrap]] it exposes a [[Gateway]] using [[H
 	- Allows you to find out what is exposed on the host.
 
 
+Check ebpf features 
+grep -E 'CONFIG_BPF|CONFIG_BPF_SYSCALL|CONFIG_NET_CLS_BPF|CONFIG_BPF_JIT' /boot/config-$(uname -r)
+
+Check tunneling features
+grep -E 'CONFIG_VXLAN|CONFIG_GENEVE|CONFIG_FIB_RULES' /boot/config-$(uname -r)
+
 ## Networking Architecture
 
 RKE2 first deploys itself without a CNI, afterwards networking crds are applied and Cilium is installed using helm with it's gateway api flag set, and in host network mode allowing the gateway to bind to 0.0.0.0.

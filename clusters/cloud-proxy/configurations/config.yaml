@@ -1,7 +1,6 @@
 node-name: cloud-proxy
 cni: none
 disable-kube-proxy: true
-node-ip: ${INTERNAL_IP}
 tls-san:
   - ${EXTERNAL_IP}
   - promotesudbury.ca
