@@ -16,4 +16,4 @@ helmCharts:
         enabled: true
       installCRDs: true
       webhook:
-        securePort: 10000
+        securePort: 6543
