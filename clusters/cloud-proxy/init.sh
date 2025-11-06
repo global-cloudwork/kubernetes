@@ -113,6 +113,7 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" |
 header "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
+header "Sleeping 2 minutes to allow RKE2 to restart"
 sleep 2m
 
 #===============================================================================
