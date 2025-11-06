@@ -23,6 +23,11 @@ Deployed using the [[RKE2 & Cilium Boostrap]] it exposes a [[Gateway]] using [[H
 - sudo ss -tulnp
 	- Allows you to find out what is exposed on the host.
 
+see network namespaces
+ip netns
+
+see specific namespace
+sudo ip netns exec cni-99ac8c56-eead-cf5f-a04c-b3aff30c30c0 ip a
 
 Check ebpf features 
 grep -E 'CONFIG_BPF|CONFIG_BPF_SYSCALL|CONFIG_NET_CLS_BPF|CONFIG_BPF_JIT' /boot/config-$(uname -r)
