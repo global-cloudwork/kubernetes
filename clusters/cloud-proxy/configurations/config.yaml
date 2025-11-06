@@ -4,6 +4,7 @@ disable-kube-proxy: true
 node-ip: ${INTERNAL_IP}
 tls-san:
   - ${EXTERNAL_IP}
+  - ${INTERNAL_IP}
   - promotesudbury.ca
   - "*.promotesudbury.ca"
 disable:
