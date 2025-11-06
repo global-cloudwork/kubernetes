@@ -139,10 +139,10 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH"
 gcloud secrets versions access latest \
   --secret="dns-solver-json-key" \
   --project="global-cloudworks" \
-  > dns-key.json
+  > key.json
 
 kubectl create secret generic dns-key \
-  --from-file=dns-key.json \
+  --from-file=key.json \
   --namespace=cert-manager
 
-rm dns-key.json
+rm key.json
