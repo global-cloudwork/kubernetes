@@ -30,3 +30,7 @@ helmCharts:
           enabled: true
         ui:
           enabled: true
+      nodeinit:
+        enabled: true
+      bpf:
+        masquerade: true
