@@ -15,5 +15,3 @@ helmCharts:
       crds:
         enabled: true
       installCRDs: true
-      webhook:
-        securePort: 6543
