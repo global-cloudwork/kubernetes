@@ -29,7 +29,3 @@ helmCharts:
           enabled: true
         ui:
           enabled: true
-      egressGateway:
-        enabled: true
-      bpf:
-        masquerade: true
