@@ -1,14 +1,14 @@
-# apiVersion: cert-manager.io/v1
-# kind: Certificate
-# metadata:
-#   name: wildcard-certificate
-#   namespace: gateway
-# spec:
-#   secretName: wildcard-certificate # Secret to store the TLS certificate
-#   issuerRef:
-#     name: cluster-issuer
-#     kind: ClusterIssuer
-#   commonName: "*.promotesudbury.ca"
-#   dnsNames:
-#     - promotesudbury.ca
-#     - "*.promotesudbury.ca"
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-certificate
+  namespace: gateway
+spec:
+  secretName: wildcard-certificate # Secret to store the TLS certificate
+  issuerRef:
+    name: cluster-issuer
+    kind: ClusterIssuer
+  commonName: "*.promotesudbury.ca"
+  dnsNames:
+    - promotesudbury.ca
+    - "*.promotesudbury.ca"
