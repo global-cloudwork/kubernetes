@@ -2,13 +2,12 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: cluster-issuer
-  namespace: edge
 spec:
   acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
     email: josh.v.mcconnell@gmail.com
-    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: cluster-issuer-key
+      name: letsencrypt-prod-account-key
     solvers:
     - dns01:
         cloudDNS:
@@ -16,6 +15,3 @@ spec:
           serviceAccountSecretRef:
             name: dns-key
             key: key.json
-      selector:
-        dnsZones:
-          - "promotesudbury.ca"
