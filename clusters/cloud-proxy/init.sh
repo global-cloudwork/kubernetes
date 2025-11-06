@@ -144,6 +144,6 @@ gcloud secrets versions access latest \
 
 kubectl create secret generic dns-key \
   --from-file=key.json \
-  --namespace=cert-manager
+  --namespace=gateway
 
 rm key.json
