@@ -5,6 +5,7 @@ resources:
   - httproute.yaml
   - gateway-class.yaml
   - cilium-load-balancer-ip-pool.yaml
+  - cilium-network-policy.yaml
   
 helmCharts:
   - name: cilium

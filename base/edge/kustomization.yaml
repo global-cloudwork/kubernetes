@@ -3,5 +3,4 @@ kind: Kustomization
 
 resources:
   - gateway.yaml
-  - cilium-network-policy.yaml
   - certificate.yaml
