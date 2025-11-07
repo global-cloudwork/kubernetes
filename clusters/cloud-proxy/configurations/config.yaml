@@ -1,3 +1,4 @@
+
 node-name: cloud-proxy
 cni: none
 disable-kube-proxy: true

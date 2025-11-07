@@ -35,8 +35,8 @@ helmCharts:
       bpf:
         mapDynamicSize: true
       kube-proxy:
-        service-cluster-ip-range: 10.43.0.0/16 # Match RKE2 service-cidr
+        service-cluster-ip-range: 10.43.0.0/16
       kubernetes:
-        service-cidr: 10.43.0.0/16 # Redundant check
+        service-cidr: 10.43.0.0/16
       nodeinit:
         enabled: true
