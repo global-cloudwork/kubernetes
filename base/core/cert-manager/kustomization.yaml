@@ -16,7 +16,7 @@ helmCharts:
         enabled: true
       installCRDs: true
       webhook:
-        securePort: 10260
+        securePort: 10250
       config:
         apiVersion: controller.config.cert-manager.io/v1alpha1
         kind: ControllerConfiguration
