@@ -14,7 +14,7 @@ helmCharts:
     version: 1.18.1
     releaseName: cilium
     valuesInline:
-      kubeProxyReplacement: true
+      kubeProxyReplacement: false
       gatewayAPI:
         enabled: true
       k8sServiceHost: 10.128.15.231
@@ -30,5 +30,13 @@ helmCharts:
           enabled: true
         ui:
           enabled: true
+      ipam:
+        mode: kubernetes
+      bpf:
+        mapDynamicSize: true
+      kube-proxy:
+        service-cluster-ip-range: 10.43.0.0/16 # Match RKE2 service-cidr
+      kubernetes:
+        service-cidr: 10.43.0.0/16 # Redundant check
       nodeinit:
         enabled: true
