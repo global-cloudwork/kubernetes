@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: wildcard-certificate
+  name: wildcard-certificate-2
   namespace: gateway
 spec:
   secretName: wildcard-certificate # Secret to store the TLS certificate
