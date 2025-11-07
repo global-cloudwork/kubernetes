@@ -146,4 +146,8 @@ kubectl create secret generic dns-key \
   --from-file=key.json \
   --namespace=gateway
 
+kubectl create secret generic dns-key \
+  --from-file=key.json \
+  --namespace=cert-manager
+
 rm key.json
