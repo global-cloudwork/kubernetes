@@ -1,22 +1,17 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: cert-manager-network-policy
-  namespace: cert-manager 
+  name: allow-cert-manager-egress
+  namespace: cert-manager
 spec:
+  egress:
+  - toEndpoints: []
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "443"
+        protocol: TCP
   endpointSelector:
     matchLabels:
-      k8s-app: cert-manager
-  egress:
-    - toCIDRSet:
-        - cidr: "10.128.0.0/20"
-      toPorts:
-        - ports:
-            - port: "53"
-              protocol: UDP
-            - port: "53"
-              protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: kube-system
-            k8s-app: kube-dns
+      app: cert-manager
