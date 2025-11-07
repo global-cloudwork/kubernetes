@@ -1,17 +1,111 @@
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
+apiVersion: "cilium.io/v2"
+kind: "CiliumNetworkPolicy"
 metadata:
-  name: allow-cert-manager-egress
-  namespace: cert-manager
+  name: "cert-manager-internal-network-policy"
+  namespace: "cert-manager" # Adjust the namespace if cert-manager is installed elsewhere
 spec:
-  egress:
-  - toEndpoints: []
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "443"
-        protocol: TCP
   endpointSelector:
     matchLabels:
-      app: cert-manager
+      app.kubernetes.io/instance: cert-manager
+      app.kubernetes.io/name: cert-manager
+  # ingress:
+  #   # 2. TCP: Kubernetes (API server) -> cert-manager (webhook)
+  #   # Allows the K8s API server to connect to the webhook.
+  #   - fromEndpoints:
+  #     - matchLabels:
+  #         k8s: kube-apiserver # This label might need adjustment based on your specific K8s environment
+  #     toPorts:
+  #     - ports:
+  #       - port: "10250" # Default webhook port in recent versions
+  #         protocol: TCP
+  #       # - port: "443" # Use if your webhook is exposed on 443 via a Service
+  #         protocol: TCP
+  #     # To ensure the API server can verify client certificates
+  #     # This flow is implicitly allowed by the general policy allowing communication within the cluster/namespace where the webhook resides,
+  #     # but explicitly selecting the API server endpoint adds control.
+
+  #   # 8. TCP: ACME (Let's Encrypt) -> cert-manager (acmesolver)
+  #   # Allows external traffic (via Ingress/LoadBalancer) to the acmesolver pods.
+  #   - fromEndpoints:
+  #     # Assuming traffic is coming from outside the cluster, you might need a broad rule for 'world'
+  #     # or a more specific selector for your ingress controller/load balancer source IPs/labels.
+  #     # For a basic allowance through ingress:
+  #     - matchLabels:
+  #         io.cilium.k8s.policy.serviceaccount: ingress-service-account # Adjust SA label for your ingress controller
+  #     toPorts:
+  #     - ports:
+  #       - port: "8081" # Default port for the acmesolver pod
+  #         protocol: TCP
+    
+  #   # 9. TCP: Metrics Collector -> cert-manager (controller, webhook, cainjector)
+  #   # Allows metrics server (e.g., Prometheus) to scrape metrics.
+  #   - fromEndpoints:
+  #     # Add labels for your metrics collector pod(s)
+  #     - matchLabels:
+  #         app: prometheus-k8s # Example labels for a Prometheus instance
+  #     toPorts:
+  #     - ports:
+  #       - port: "9402" # Default metrics port for all components
+  #         protocol: TCP
+
+  egress:
+    # 1. & 7. UDP / TCP: cert-manager (all) -> Kubernetes DNS / External DNS
+    # Allows all components to perform DNS lookups.
+    - toEndpoints:
+      - matchLabels:
+          "k8s:kube-dns" # Default label for KubeDNS service, might be different for CoreDNS
+    # Or simply allow access to any DNS service within the cluster
+    # - toServices:
+    #   - k8sService:
+    #       serviceName: kube-dns
+    #       namespace: kube-system
+      toPorts:
+      - ports:
+        - port: "53"
+          protocol: UDP
+        - port: "53"
+          protocol: TCP
+      # Apply this rule to all cert-manager components
+      # selector: {}
+
+    # 3. TCP: cert-manager (webhook, controller, cainjector, startupapicheck) -> Kubernetes API server
+    # Allows components to connect to the K8s API.
+    - toEndpoints:
+      - matchLabels:
+          k8s: kube-apiserver # This label might need adjustment based on your specific K8s environment
+      toPorts:
+      - ports:
+        - port: "6443" # Common API server port
+          protocol: TCP
+        - port: "443" # Alternative common API server port
+          protocol: TCP
+      # This applies to the relevant components due to the top-level endpointSelector
+
+    # 4, 5, 6, 7 (External part). TCP: cert-manager (controller) -> External APIs (Vault, CyberArk, Route53, ACME server, External DNS)
+    # These external requirements cannot be fully defined here without specific destination IPs/domains.
+    # You will likely need additional Egress rules targeting specific CIDRs or FQDNs using FQDN policies:
+
+    # Example for ACME server (Let's Encrypt v2 API):
+    # - toFQDNs:
+    #   - matchName: "acme-v02.api.letsencrypt.org"
+    #   toPorts:
+    #   - ports:
+    #     - port: "443"
+    #       protocol: TCP
+    # - toFQDNs:
+    #   - matchName: "api.letsencrypt.org"
+    #   toPorts:
+    #   - ports:
+    #     - port: "443"
+    #       protocol: TCP
+
+    # Example for HashiCorp Vault (if used):
+    # - toFQDNs:
+    #   - matchName: "vault.example.com"
+    #   toPorts:
+    #   - ports:
+    #     - port: "8200"
+    #       protocol: TCP
+
+# NOTE: This policy assumes a default-deny posture for pods not explicitly allowed.
+# Ensure that all necessary flows are covered, and adjust labels/ports as needed for your specific deployment.
