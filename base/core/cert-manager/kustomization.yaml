@@ -17,3 +17,4 @@ helmCharts:
       installCRDs: true
       webhook:
         securePort: 10260
+      enableGatewayAPI: true
