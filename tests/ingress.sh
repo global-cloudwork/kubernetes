@@ -19,3 +19,7 @@ kubectl run connectivity-test -it --rm --image=curlimages/curl --restart=Never \
 -- /bin/sh
 
 curl -k -v https://10.43.0.1:443
+
+ip route get 10.43.0.1
+
+curl -k https://$NODE_IP:$PORT/healthz
