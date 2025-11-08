@@ -1,16 +1,18 @@
 # 📘 Repository Directory & Documentation Index
 
-## User comments (will be included on next processing)
+## Users teritory
 
-Add your notes or temporary comments between the markers below. The processing tool that assembles the README will pick up any text placed between the START/END markers.
+<!-- USER-COMMENTS-START (do not change) -->
 
-<!-- USER-COMMENTS-START -->
+architecture: bash, rke2, cilium installed using helm
 
 core applications: cilium,cert-manager,argocd
 
 tenant applications: actualbudget,cockatrice,erpnext,example,foundry-vtt,homepage,keycloak,longhorn,n8n,neo4j,open-webui,vaultwarden
 
-<!-- USER-COMMENTS-END -->
+networking: cluster issuer for gateway annotation 
+
+<!-- USER-COMMENTS-END (do not change) -->
 
 This document serves as a starting point for navigating this repository and it's files.
 
