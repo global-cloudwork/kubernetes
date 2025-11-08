@@ -65,9 +65,6 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
 curl https://get.rke2.io \
   --remote-name-all --silent --show-error | sudo bash
 
-
-
-
 #===============================================================================
 # Configure and start the RKE2 service
 #===============================================================================
