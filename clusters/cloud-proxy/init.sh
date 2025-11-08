@@ -29,9 +29,7 @@
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
 export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
-source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/general.sh)
-source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/kubernetes.sh)
-source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/test-functions.sh)
+source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions/test-functions.sh)
 # Set PATH to include rke2 binaries
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 PATH=$PATH:/opt/rke2/bin
@@ -42,11 +40,11 @@ PATH=$PATH:/opt/rke2/bin
 #===============================================================================
 # Prepare the host system
 #===============================================================================
-section "Prepare the host system"
+echo "Section: Prepare the host system"
 #===============================================================================
 
 # Install required system packages and create necessary directories
-header "apt-get update & install"
+echo "apt-get update & install"
 sudo apt-get -qq update
 sudo apt-get -qq -y install git wireguard
 mkdir -p $HOME/.kube/$CLUSTER_NAME
@@ -68,11 +66,11 @@ curl https://get.rke2.io \
 #===============================================================================
 # Configure and start the RKE2 service
 #===============================================================================
-section "Configure and start the RKE2 service"
+echo "Section: Configure and start the RKE2 service"
 #===============================================================================
 
 # Enable on boot, then start of RKE2
-header "First start of RKE2 to install crd's"
+echo "First start of RKE2 to install crd's"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
 
@@ -91,36 +89,34 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 #===============================================================================
 # Deploy Base and Core, then restart RKE2
 #===============================================================================
-section "Deploy Base and Core, then restart RKE2"
+echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 
 # Deploy base
-header "Applying Kustomize PATH: base"
+echo "Applying Kustomize PATH: base"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-wait_for crds
-
 # Deploy core
-header "Applying Kustomize PATH: base/core"
+echo "Applying Kustomize PATH: base/core"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 # Restart RKE2 to pick up new manifests
-header "Restart RKE2 to pick up new manifests"
+echo "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
-header "Sleeping 2 minutes to allow RKE2 to restart"
+echo "Sleeping 2 minutes to allow RKE2 to restart"
 sleep 2m
 
 #===============================================================================
 # Deploy Edge and Tenant
 #===============================================================================
-section "Deploy Edge and Tenant"
+echo "Section: Deploy Edge and Tenant"
 #===============================================================================
 
 # Deploy edge
-header "Applying Kustomize PATH: base/edge"
+echo "Applying Kustomize PATH: base/edge"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
@@ -129,7 +125,7 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" |
 # # kubectl -n cert-manager wait --for=condition=ready pod -l "app.kubernetes.io/name=webhook" --timeout="180s"
 
 # Deploy tenant
-header "Applying Kustomize PATH: base/tenant"
+echo "Applying Kustomize PATH: base/tenant"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
