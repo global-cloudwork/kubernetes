@@ -5,6 +5,7 @@
     "esbenp.prettier-vscode", //easy readable code
     "pkief.material-icon-theme", //my folders have these
     "saoudrizwan.claude-dev", //ai assistant
-    "ms-vscode.remote-server" //hoping to make this declarative, it ssh's in to vscode servers
+    "ms-vscode.remote-server", //hoping to make this declarative, it ssh's in to vscode servers
+    "ms-vscode.vscode-speech" //speech to text for github codepilot
   ] 
 }
