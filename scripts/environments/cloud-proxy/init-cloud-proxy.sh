@@ -10,7 +10,7 @@
 
 
 # kubectl get pods -A -o custom-columns=:.metadata.name --no-headers | xargs -I {} kubectl logs -n argocd {} --tail=500 | grep -i error
-# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/clusters/cloud-proxy/init.sh | bash
+# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/environments/cloud-proxy/init-cloud-proxy.sh | bash
 #
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
@@ -29,7 +29,8 @@
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
 export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
-source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions/test-functions.sh)
+## Disabled: external test functions are no longer fetched
+# source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions/test-functions.sh)
 # Set PATH to include rke2 binaries
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 PATH=$PATH:/opt/rke2/bin
