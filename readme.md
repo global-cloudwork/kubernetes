@@ -1,5 +1,17 @@
 # 📘 Repository Directory & Documentation Index
 
+## User comments (will be included on next processing)
+
+Add your notes or temporary comments between the markers below. The processing tool that assembles the README will pick up any text placed between the START/END markers.
+
+<!-- USER-COMMENTS-START -->
+
+core applications: cilium,cert-manager,argocd
+
+tenant applications: actualbudget,cockatrice,erpnext,example,foundry-vtt,homepage,keycloak,longhorn,n8n,neo4j,open-webui,vaultwarden
+
+<!-- USER-COMMENTS-END -->
+
 This document serves as a starting point for navigating this repository and it's files.
 
 ## The documentation directory imitates the repo's directory hierarchy
