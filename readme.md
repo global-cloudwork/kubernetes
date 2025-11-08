@@ -4,12 +4,29 @@ This document serves as a starting point for navigating this repository and it's
 
 ## The documentation directory imitates the repo's directory hierarchy
 
-The `obsidian/documentation/repository-mirror/` directory. 
-- mirrors the folder structure of this repository
-- does not mirror the files, only the directory hierarchy is preserved
-- each folder contains a markdown file describing it's folder and it's contents 
+The `obsidian/documentation/repository-mirror/` directory mirrors the folder structure of this repository.
+- It mirrors only the directory hierarchy — not the file contents.
+- Each mirrored folder contains a markdown file that documents that folder and its contents.
 
-For example to research a file `core/edge/gateway.yaml` you should first read `obsidian/documentation/repository-mirror/core/edge/edge.md` because it contains information about each file in `core/edge/` including `core/edge/gateway.yaml`.
+
+## Obsidian (mirrored docs)
+
+This repository includes an `obsidian/` folder containing mirrored documentation and notes. The most relevant mirror is:
+
+- `obsidian/documentation/repository-mirror/` — directory-only mirror with a markdown file per folder describing its purpose and key files.
+
+Top-level notes in `obsidian/` that are useful to developers include:
+
+- `Applications.base` — overview of application layout and kustomize patterns
+- `cert manager.md` — notes about cert-manager usage and CRDs
+- `Cilium System Requirements.md` — Cilium/CNI requirements and constraints
+- `Cloud-Proxy.md`, `DNSO1.md`, `Firewall Rules (Most Common in GCE).md` — network and cloud-specific notes
+
+Keep the mirrored docs up-to-date when you add or rename directories: the mirror preserves structure so readers can find documentation by path. Update `obsidian/documentation/repository-mirror/<path>/<folder>.md` to document new folders.
+
+For quick reference, to find documentation for a file at `applications/open-webui/httproute.yaml` open `obsidian/documentation/repository-mirror/applications/open-webui/open-webui.md` (or the parent folder doc) which will describe the purpose and where to look next.
+
+### `base` Directory
 
 ### `base` Directory
 
