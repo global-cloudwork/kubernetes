@@ -40,3 +40,5 @@ helmCharts:
         service-cidr: 10.43.0.0/16
       nodeinit:
         enabled: true
+      hostServices:
+        enabled: true
