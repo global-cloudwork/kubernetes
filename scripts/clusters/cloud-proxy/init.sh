@@ -83,9 +83,6 @@ sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
 KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
 sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
-
-
-
 #===============================================================================
 # Deploy Base and Core, then restart RKE2
 #===============================================================================
