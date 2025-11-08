@@ -20,3 +20,7 @@ helmCharts:
         apiVersion: controller.config.cert-manager.io/v1alpha1
         kind: ControllerConfiguration
         enableGatewayAPI: true
+      certManager: # Assuming this is the correct path for the controller in the chart
+        securityContext:
+          capabilities:
+            add: ["NET_RAW"]
