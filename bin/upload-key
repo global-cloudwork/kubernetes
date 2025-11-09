@@ -1,2 +1,4 @@
+#!/bin/bash
+
 gcloud secrets versions add dns-solver-json-key \
-    --data-file=- < "../../key.json"
+    --data-file=- < "../key.json"
