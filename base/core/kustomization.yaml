@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - application-set.yaml
-  - cilium
-  - cert-manager
+  - ../../applications/cilium
+  - ../../applications/cert-manager
