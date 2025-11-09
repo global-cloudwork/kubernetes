@@ -3,7 +3,7 @@ apt update -y
 apt upgrade -y
 apt install wireguard git -y
 
-sudo curl --silent --show-error -o /usr/local/bin/bootstrap https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/environments/cloud-proxy/startup-script.sh
+sudo curl --silent --show-error -o /usr/local/bin/bootstrap https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/environments/cloud-proxy/init-cloud-proxy.sh
 sudo chmod 755 /usr/local/bin/bootstrap
 
 # Install K9s
