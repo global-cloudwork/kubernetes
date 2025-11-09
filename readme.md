@@ -274,3 +274,79 @@ Frontend Interaction Model
 I know it's typescript XD
 
 # need Vocabulary
+
+1. Repository & Core Setup
+
+You’ll merge your mirror document into your main Git repository.
+
+Integrate a Git MCP (Model Context Protocol) to analyze and vet code before pull requests merge.
+
+This MCP will connect with your browser controller and debugger to manage automated checks and deployment validation.
+
+Cilium will need proper eBPF permissions (CAP_SYS_ADMIN, hostPath mounts, privileged mode) to function fully in your Kubernetes environment.
+
+Your DNS-01 challenge (likely for cert-manager) will be verified and fixed if blocked by Cilium or permissions.
+
+2. Data Processing Architecture
+
+You’ll break the workflow into independent N8n flows, each handling a specific function:
+
+Flow 1 — Schema Detection & Neo4j Ingestion
+
+Starts with a webhook trigger, so it can receive data from any source.
+
+Uses a JavaScript app that:
+
+Detects what kind of data is received.
+
+Selects the appropriate schema (either local or dynamic lookup).
+
+Converts the data into JSON-LD format if needed.
+
+Pushes it into Neo4j using your JSON-LD → Cypher converter script.
+
+This makes the ingestion schema-agnostic — any structured data type can be stored as a graph.
+
+Flow 2 — Google Ingestion (via Google MCP)
+
+Ingests data from Gmail and other Google services using the Google MCP.
+
+Requires a Google Cloud service account and OAuth 2.0 credentials to authorize data flow into N8n.
+
+Once authenticated, it continuously syncs Google data for processing or graph updates.
+
+Flow 3 — Telegram Output / Notifications
+
+Handles communications and notifications via Telegram.
+
+Uses a Telegram node in N8n to send details, updates, or responses to you.
+
+Functions similarly to a webhook so your LLM or flows can send outbound messages directly.
+
+Flow 4 — Dynamic Cypher Query Generator
+
+Listens for requests (via Telegram, webhook, or other channel).
+
+Dynamically generates Cypher queries based on user intent or natural-language input.
+
+Runs the query on Neo4j and sends the results back through the same channel that made the request.
+
+Enables cross-platform querying and flexible data retrieval.
+
+3. Supporting Infrastructure
+
+The LLM (likely integrated through the MCP or N8n) acts as the reasoning layer:
+
+Interprets user queries or data context.
+
+Generates or refines Cypher queries.
+
+Communicates via webhooks or Telegram.
+
+Security & Access Control:
+
+Google Cloud OAuth 2.0 handles secure inbound traffic.
+
+Service account credentials are stored in N8n securely (using environment variables or encrypted credentials).
+
+Cilium and DNS-01 configuration ensure the environment is stable and network-safe.
