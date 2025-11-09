@@ -3,10 +3,9 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
-
 helmCharts:
-  - name: argo-cd
-    repo: https://argoproj.github.io/argo-helm
-    namespace: argocd
-    version: 8.2.7
-    releaseName: argocd
+  - name: keycloak
+    repo: https://charts.bitnami.com/bitnami
+    namespace: keycloak
+    version: 25.2.0
+    releaseName: my-keycloak
