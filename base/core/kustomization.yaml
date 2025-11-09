@@ -4,8 +4,13 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - application-set.yaml
-  - github.com/global-cloudworks/kubernetes/applications/cilium?ref=main
-  - github.com/global-cloudworks/kubernetes/applications/cert-manager?ref=main
-  - github.com/global-cloudworks/kubernetes/applications/argocd?ref=main
-  - github.com/global-cloudworks/kubernetes/applications/keycloak?ref=main
-  - github.com/global-cloudworks/kubernetes/applications/n8n?ref=main
+  - ../../applications/cilium
+  - ../../applications/cert-manager
+  - ../../applications/argocd
+  - ../../applications/keycloak
+  - ../../applications/n8n
+  # - github.com/global-cloudworks/kubernetes/applications/cilium?ref=main
+  # - github.com/global-cloudworks/kubernetes/applications/cert-manager?ref=main
+  # - github.com/global-cloudworks/kubernetes/applications/argocd?ref=main
+  # - github.com/global-cloudworks/kubernetes/applications/keycloak?ref=main
+  # - github.com/global-cloudworks/kubernetes/applications/n8n?ref=main
