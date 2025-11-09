@@ -6,3 +6,4 @@ resources:
   - application-set.yaml
   - ../../applications/cilium
   - ../../applications/cert-manager
+  # - github.com/my-org/my-repo//deploy/base?ref=v1.2.3

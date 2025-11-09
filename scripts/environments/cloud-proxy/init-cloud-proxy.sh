@@ -48,7 +48,7 @@ sudo touch /etc/rancher/rke2/cloud.conf
 
 # Download RKE2 configuration files, then substitute environment variables
 sudo curl --silent --show-error --remote-name-all --output-dir /tmp/ \
-  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/clusters/cloud-proxy/configurations/config.yaml
+  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/config.yaml
 sudo --preserve-env envsubst < /tmp/config.yaml | sudo tee /etc/rancher/rke2/config.yaml
 
 # Install Helm and RKE2
