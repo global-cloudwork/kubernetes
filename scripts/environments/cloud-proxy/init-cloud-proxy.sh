@@ -37,7 +37,7 @@ PATH=$PATH:/opt/rke2/bin
 
 # Install required system packages and create necessary directories
 sudo apt-get -qq update
-sudo apt-get -qq -y install git wireguard
+sudo apt-get -qq -y install git 
 echo "apt-get update & install"
 
 
