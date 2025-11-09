@@ -5,31 +5,25 @@ ITALIC="\e[3m"
 UNDERLINE="\e[4m"
 RESET="\e[0m"
 
-title()   { printf "\n${BOLD}${UNDERLINE}\e[38;5;231m%s${RESET}\n" "$1"; }
-section() { printf "\n${BOLD}${UNDERLINE}\e[38;5;51m%s${RESET}\n" "$1"; }
-header()  { printf "\n${ITALIC}\e[38;5;33m%s${RESET}\n\n" "$1"; }
-error()   { printf "\n${BOLD}${ITALIC}${UNDERLINE}\e[38;5;106m%s${RESET}\n" "$1"; }
-note()    { printf "\n${BOLD}${ITALIC}\e[38;5;82m%s${RESET}\n" "$1"; }
-
 # ======================== Style Ends Here ========================
 
 export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
 
-title "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
+echo "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
 
-header "apt installing wireguard"
+echo "apt installing wireguard"
 # sudo apt-get -qq update
 # sudo apt-get -qq -y install  git wireguard
 
-header "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
+echo "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
 wg genkey > $PRIVATE_KEY
 wg pubkey < $PRIVATE_KEY > $PUBLIC_KEY
 
-header "Getting environment variables from rke2 cluster"
+echo "Getting environment variables from rke2 cluster"
 CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml)
 TOKEN=$(sudo cat /var/lib/rancher/rke2/server/node-token)
 
-header "updating secrets in secret manager"
+echo "updating secrets in secret manager"
 gcloud secrets versions add public-key \
     --data-file=- < "$PUBLIC_KEY"
 gcloud secrets versions add cilium-certificate \
@@ -37,18 +31,18 @@ gcloud secrets versions add cilium-certificate \
 gcloud secrets versions add on-site-token \
     --data-file=- <<< "$TOKEN"
 
-header "checking if instance exists..."
+echo "checking if instance exists..."
 if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --format="value(name)" --project="$GCP_PROJECT" --zones="$GCP_ZONE")" ]; then
     echo "it exists, deleting"
     gcloud compute instances delete "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --quiet
 fi
 
-header "Waiting for instance to delete"
+echo "Waiting for instance to delete"
 while [[ $(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; echo $?) -eq 0 ]]; do
     sleep 5
 done
 
-header "Creating instance $INSTANCE_NAME"
+echo "Creating instance $INSTANCE_NAME"
 gcloud compute instances create "$INSTANCE_NAME" \
     --project="$GCP_PROJECT" \
     --zone="$GCP_ZONE" \
@@ -67,7 +61,7 @@ gcloud compute instances create "$INSTANCE_NAME" \
     --reservation-affinity=any \
     --metadata=startup-script-url="$STARTUP_SCRIPT_URL"
     
-header "Waiting for instance to be running"
+echo "Waiting for instance to be running"
 while true; do
     STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" \
         --project="$GCP_PROJECT" \
@@ -78,10 +72,10 @@ while true; do
         break
     fi
 
-    header "Waiting..."
+    echo "Waiting..."
     sleep 20
 done
-header "Wait finished, instance is running..."
+echo "Wait finished, instance is running..."
 
 gcloud compute ssh ubuntu@$INSTANCE_NAME \
     --project=$GCP_PROJECT \

@@ -35,9 +35,6 @@ export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 PATH=$PATH:/opt/rke2/bin
 
-
-
-
 #===============================================================================
 # Prepare the host system
 #===============================================================================
