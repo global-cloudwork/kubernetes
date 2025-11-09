@@ -35,20 +35,11 @@ export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 PATH=$PATH:/opt/rke2/bin
 
-# Install required system packages and create necessary directories
-sudo apt-get -qq update
-sudo apt-get -qq -y install git 
-echo "apt-get update & install"
-
-
 #===============================================================================
 # Prepare the host system
 #===============================================================================
 echo "Section: Prepare the host system"
 #===============================================================================
-
-
-
 
 mkdir -p $HOME/.kube/$CLUSTER_NAME
 sudo mkdir -p /etc/rancher/rke2/
