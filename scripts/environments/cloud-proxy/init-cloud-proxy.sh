@@ -35,16 +35,21 @@ export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 PATH=$PATH:/opt/rke2/bin
 
+# Install required system packages and create necessary directories
+sudo apt-get -qq update
+sudo apt-get -qq -y install git wireguard
+echo "apt-get update & install"
+
+
 #===============================================================================
 # Prepare the host system
 #===============================================================================
 echo "Section: Prepare the host system"
 #===============================================================================
 
-# Install required system packages and create necessary directories
-echo "apt-get update & install"
-sudo apt-get -qq update
-sudo apt-get -qq -y install git wireguard
+
+
+
 mkdir -p $HOME/.kube/$CLUSTER_NAME
 sudo mkdir -p /etc/rancher/rke2/
 sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
