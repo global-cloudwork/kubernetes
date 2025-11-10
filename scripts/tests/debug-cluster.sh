@@ -54,3 +54,7 @@ done
 [ -n "$EVENTS_ISSUES" ] && echo "=== Recent Warning Events (Issues Only) ===" && echo "$EVENTS_ISSUES"
 
 echo "===== SUMMARY COMPLETE ====="
+
+kubectl get nodes -o wide
+
+kubectl describe nodes
