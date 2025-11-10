@@ -1,7 +1,7 @@
 #!/bin/bash
-apt update -y
-apt upgrade -y
-apt install wireguard git -y
+apt-get update -qq
+apt-get upgrade -y -qq
+apt-get install wireguard git -y -qq
 
 git config --global user.email "josh.v.mcconnell@gmail.com"
 git config --global user.name "josh m"
@@ -10,5 +10,5 @@ sudo curl --silent --show-error -o /usr/local/bin/bootstrap https://raw.githubus
 sudo chmod 755 /usr/local/bin/bootstrap
 
 # Install K9s
-wget https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb && apt install ./k9s_linux_amd64.deb
+wget https://github.com/derailed/k9s/releases/latest/download/k9s_linux_amd64.deb && apt install ./k9s_linux_amd64.deb -y -qq
 rm k9s_linux_amd64.deb
