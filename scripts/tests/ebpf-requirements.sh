@@ -64,9 +64,9 @@ test_base_requirements() {
       val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
     fi
     if [[ -n $val ]]; then
-      echo "- $val [PASS]"
+      echo "[PASS] - $val"
     else
-      echo "- $opt [FAIL]"
+      echo "[FAIL] - $opt"
     fi
   done
 }
@@ -89,9 +89,9 @@ test_iptables_masquerading() {
       val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
     fi
     if [[ -n $val ]]; then
-      echo "- $val [PASS]"
+      echo "[PASS] - $val"
     else
-      echo "- $opt [FAIL]"
+      echo "[FAIL] - $opt"
     fi
   done
 }
@@ -113,9 +113,9 @@ test_tunneling_routing() {
       val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
     fi
     if [[ -n $val ]]; then
-      echo "- $val [PASS]"
+      echo "[PASS] - $val"
     else
-      echo "- $opt [FAIL]"
+      echo "[FAIL] - $opt"
     fi
   done
 }
@@ -139,9 +139,9 @@ test_l7_fqdn_policies() {
       val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
     fi
     if [[ -n $val ]]; then
-      echo "- $val [PASS]"
+      echo "[PASS] - $val"
     else
-      echo "- $opt [FAIL]"
+      echo "[FAIL] - $opt"
     fi
   done
 }
