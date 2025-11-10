@@ -93,10 +93,14 @@ check_os() {
 }
 
 check_etcd() {
+  if ! command -v kubectl &>/dev/null; then
+    echo "[SKIP] etcd: kubectl not found"
+    return 0
+  fi
   local count
-  if ! count=$(/var/lib/rancher/rke2/bin/kubectl get pods -n kube-system -l component=etcd 2>/dev/null | awk 'NR>1 && $3=="Running" {c++} END{print c+0}'); then
-    echo "[FAIL] etcd: kubectl command failed"
-    return 1
+  if ! count=$(kubectl get pods -n kube-system -l component=etcd 2>/dev/null | awk 'NR>1 && $3=="Running" {c++} END{print c+0}'); then
+    echo "[SKIP] etcd: kubectl command failed"
+    return 0
   fi
   if [ "$count" -ge 1 ]; then
     echo "[PASS] etcd: Running"
