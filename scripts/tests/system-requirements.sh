@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #
+# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/test/system-requirements.sh | bash
 # system-requirements.sh
 # Checks host compatibility for Cilium system requirements.
 
@@ -20,33 +21,36 @@ case "$arch" in
   aarch64) arch_name="AArch64"; arch_ok=0 ;;
   *) arch_name="$arch"; arch_ok=1 ;;
 esac
-printf "Architecture: %s -> %s\n" "$arch" "$arch_ok" && \
-  ( [ $arch_ok -eq 0 ] && echo "  PASS: Supported architecture ($arch_name)" || echo "  FAIL: Unsupported architecture ($arch_name)" )
+if [ $arch_ok -eq 0 ]; then
+  echo "[PASS] Architecture: $arch_name"
+else
+  echo "[FAIL] Architecture: $arch_name"
+fi
 
 # 2. Linux kernel
 kernel_full=$(uname -r)
 kernel_base=${kernel_full%%-*}
 if version_ge "$kernel_base" "5.10" || version_ge "$kernel_base" "4.18"; then
   kernel_ok=0
-  echo "Kernel: $kernel_full -> PASS (>= 5.10 or >= 4.18)"
+  echo "[PASS] Kernel: $kernel_full"
 else
   kernel_ok=1
-  echo "Kernel: $kernel_full -> FAIL (requires >=5.10 or >=4.18)"
+  echo "[FAIL] Kernel: $kernel_full (requires >=5.10 or >=4.18)"
 fi
 
 # 3. clang+LLVM
 if command -v clang &>/dev/null; then
-  clang_ver=$(clang --version | head -n1 | sed -E 's/.*version ([0-9]+\.[0-9]+).*/\1/')
+  clang_ver=$(clang --version | head -n1 | sed -E 's/.*version ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
   if version_ge "$clang_ver" "18.1"; then
     clang_ok=0
-    echo "clang+LLVM: $clang_ver -> PASS (>=18.1)"
+    echo "[PASS] clang+LLVM: $clang_ver"
   else
     clang_ok=1
-    echo "clang+LLVM: $clang_ver -> FAIL (requires >=18.1)"
+    echo "[FAIL] clang+LLVM: $clang_ver (requires >=18.1)"
   fi
 else
   clang_ok=1
-  echo "clang+LLVM: not found -> FAIL"
+  echo "[FAIL] clang+LLVM: not found"
 fi
 
 # 4. etcd
@@ -54,42 +58,32 @@ if command -v etcd &>/dev/null; then
   etcd_ver=$(etcd --version 2>&1 | grep -Eo 'etcd Version: v?([0-9]+\.[0-9]+\.[0-9]+)' | awk '{print $3}')
   if version_ge "$etcd_ver" "3.1.0"; then
     etcd_ok=0
-    echo "etcd: $etcd_ver -> PASS (>=3.1.0)"
+    echo "[PASS] etcd: $etcd_ver"
   else
     etcd_ok=1
-    echo "etcd: $etcd_ver -> FAIL (requires >=3.1.0)"
+    echo "[FAIL] etcd: $etcd_ver (requires >=3.1.0)"
   fi
 else
   etcd_ok=1
-  echo "etcd: not found -> FAIL"
+  echo "[FAIL] etcd: not found"
 fi
 
 # Summary
 echo
-echo "Summary of checks:"
-declare -A results=(
-  ["Architecture"]=$arch_ok
-  ["Kernel"]=$kernel_ok
-  ["clang+LLVM"]=$clang_ok
-  ["etcd"]=$etcd_ok
-)
+echo "Test Summary:"
+declare -a passed=()
+declare -a failed=()
 
-all_ok=0
-for name in "${!results[@]}"; do
-  if [ "${results[$name]}" -ne 0 ]; then
-    all_ok=1
-    printf "- %s: FAIL\n" "$name"
-  else
-    printf "- %s: PASS\n" "$name"
-  fi
-done
+if [ $arch_ok -eq 0 ]; then passed+=("Architecture"); else failed+=("Architecture"); fi
+if [ $kernel_ok -eq 0 ]; then passed+=("Kernel"); else failed+=("Kernel"); fi
+if [ $clang_ok -eq 0 ]; then passed+=("clang+LLVM"); else failed+=("clang+LLVM"); fi
+if [ $etcd_ok -eq 0 ]; then passed+=("etcd"); else failed+=("etcd"); fi
 
-if [ $all_ok -eq 0 ]; then
-  echo
-  echo "All checks passed. System meets Cilium requirements."
+if [ ${#failed[@]} -eq 0 ]; then
+  echo "[PASS] All checks passed: ${passed[*]}"
   exit 0
 else
-  echo
-  echo "Some checks failed. Please address the above failures."
+  echo "[PASS] Passed: ${passed[*]}"
+  echo "[FAIL] Failed: ${failed[*]}"
   exit 1
 fi
