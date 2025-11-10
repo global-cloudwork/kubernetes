@@ -76,8 +76,17 @@ check_kernel() {
 check_os() {
   if [ -f /etc/os-release ]; then
     . /etc/os-release
-    check_requirement "OS: $NAME $VERSION_ID" \
-      "[[ \"$ID\" == \"ubuntu\" && version_ge \"$VERSION_ID\" \"20.04\" ]]"
+    if [ "$ID" = "ubuntu" ]; then
+      if version_ge "$VERSION_ID" "20.04"; then
+        echo "[PASS] OS: $NAME $VERSION_ID"
+      else
+        echo "[FAIL] OS: $NAME $VERSION_ID (requires Ubuntu >=20.04)"
+        return 1
+      fi
+    else
+      echo "[FAIL] OS: $NAME $VERSION_ID (unsupported)"
+      return 1
+    fi
   else
     echo "[FAIL] OS: Unknown (requires Ubuntu >=20.04)"
     return 1
