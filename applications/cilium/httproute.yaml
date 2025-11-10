@@ -6,7 +6,7 @@ metadata:
 spec:
   parentRefs:
     - name: gateway
-      sectionName: http-listener
+      sectionName: http
   hostnames:
     - "hubble.promotesudbury.ca"
   rules:
