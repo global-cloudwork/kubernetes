@@ -138,3 +138,5 @@ kubectl create secret generic dns-key \
   --namespace=cert-manager
 
 rm key.json
+
+curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/test/system-requirements.sh | bash
