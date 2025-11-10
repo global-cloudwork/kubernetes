@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 # ==============================================================================
 # SCRIPT METADATA
 # ==============================================================================
@@ -8,7 +9,7 @@
 # Author:     Your Name
 # Date:       2025-11-09
 # Version:    1.0.0
-# License:    MIT
+# Run: curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/system-requirements.sh | bash
 
 # --- Configuration ---
 set -euo pipefail
