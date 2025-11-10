@@ -1,55 +1,47 @@
-# !/bin/bash
-# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/debug-cluster.sh | bash
-# debug-cluster: Collects cluster info and checks for errors in resources
+#!/bin/bash
 
-echo "===== DEBUGGING KUBERNETES CLUSTER ====="
+echo "===== CLUSTER DEBUG SUMMARY ====="
 
-# 1. List all namespaces
-echo "===== NAMESPACES ====="
-kubectl get namespaces
+# 1. Namespaces
+echo "=== Namespaces ==="
+kubectl get ns
 echo
 
-# 2. Node details
-echo "===== NODES (wide) ====="
-kubectl get nodes -o wide
+# 2. Node status
+echo "=== Nodes ==="
+kubectl get nodes -o wide | awk '$2!="Ready"{print "Node not ready:", $0}'
 echo
 
-# 3. Pods: check logs for errors
-echo "===== POD LOGS ====="
+# 3. Pods with issues
+echo "=== Pods with Issues ==="
+kubectl get pods -A --field-selector=status.phase!=Running \
+  -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,STATUS:.status.phase
+
+echo "--- Pods with errors in logs (last 100 lines) ---"
 for pod in $(kubectl get pods -A -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name --no-headers | sed 's/  */,/g'); do
   NAMESPACE=$(echo $pod | cut -d',' -f1)
   NAME=$(echo $pod | cut -d',' -f2)
-  echo "--- Checking logs for $NAMESPACE/$NAME ---"
-  kubectl logs -n $NAMESPACE $NAME --tail=500 2>/dev/null | grep -i error
-  echo
+  ERRORS=$(kubectl logs -n $NAMESPACE $NAME --tail=100 2>/dev/null | grep -i error)
+  [ -n "$ERRORS" ] && echo "$NAMESPACE/$NAME: $(echo "$ERRORS" | head -1) ..."
+done
+echo
+
+# 4. Services without endpoints
+echo "=== Services without Endpoints ==="
+for ns in $(kubectl get ns -o custom-columns=NAME:.metadata.name --no-headers); do
+  for svc in $(kubectl get svc -n $ns -o custom-columns=NAME:.metadata.name --no-headers); do
+    EPS=$(kubectl get endpoints $svc -n $ns -o jsonpath='{.subsets}' 2>/dev/null)
+    [ -z "$EPS" ] && echo "$ns/$svc has no endpoints"
+  done
+done
+echo
+
+# 5. Recent critical events
+echo "=== Recent Critical Events ==="
+for ns in $(kubectl get ns -o custom-columns=NAME:.metadata.name --no-headers); do
+  kubectl get events -n $ns --field-selector=type=Warning \
+    --sort-by='.lastTimestamp' -o custom-columns=TIME:.lastTimestamp,OBJ:.involvedObject.name,REASON:.reason,MESSAGE:.message \
+    | tail -5
 done
 
-# 4. Services: describe each service
-echo "===== SERVICES ====="
-for svc in $(kubectl get svc -A -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name --no-headers | sed 's/  */,/g'); do
-  NAMESPACE=$(echo $svc | cut -d',' -f1)
-  NAME=$(echo $svc | cut -d',' -f2)
-  echo "--- Describing service $NAMESPACE/$NAME ---"
-  kubectl describe svc -n $NAMESPACE $NAME
-  echo
-done
-
-# 5. Endpoints: describe each endpoint
-echo "===== ENDPOINTS ====="
-for ep in $(kubectl get endpoints -A -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name --no-headers | sed 's/  */,/g'); do
-  NAMESPACE=$(echo $ep | cut -d',' -f1)
-  NAME=$(echo $ep | cut -d',' -f2)
-  echo "--- Describing endpoint $NAMESPACE/$NAME ---"
-  kubectl describe endpoints -n $NAMESPACE $NAME
-  echo
-done
-
-# 6. Additional pod checks (events)
-echo "===== POD EVENTS ====="
-for ns in $(kubectl get namespaces -o custom-columns=NAME:.metadata.name --no-headers); do
-  echo "--- Events in namespace $ns ---"
-  kubectl get events -n $ns --sort-by='.lastTimestamp'
-  echo
-done
-
-echo "===== DEBUGGING COMPLETE ====="
+echo "===== SUMMARY COMPLETE ====="
