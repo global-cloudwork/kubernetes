@@ -146,6 +146,88 @@ test_l7_fqdn_policies() {
   done
 }
 
+
+# ==============================================================================
+# TEST GROUP: Requirements for IPsec
+# ==============================================================================
+test_ipsec_requirements() {
+  local cfg
+  cfg=$(get_config_file)
+  for opt in \
+    CONFIG_XFRM \
+    CONFIG_XFRM_OFFLOAD \
+    CONFIG_XFRM_STATISTICS \
+    CONFIG_XFRM_ALGO \
+    CONFIG_XFRM_USER \
+    CONFIG_INET{,6}_ESP \
+    CONFIG_INET{,6}_IPCOMP \
+    CONFIG_INET{,6}_XFRM_TUNNEL \
+    CONFIG_INET{,6}_TUNNEL \
+    CONFIG_INET_XFRM_MODE_TUNNEL \
+    CONFIG_CRYPTO_AEAD \
+    CONFIG_CRYPTO_AEAD2 \
+    CONFIG_CRYPTO_GCM \
+    CONFIG_CRYPTO_SEQIV \
+    CONFIG_CRYPTO_CBC \
+    CONFIG_CRYPTO_HMAC \
+    CONFIG_CRYPTO_SHA256 \
+    CONFIG_CRYPTO_AES; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+    fi
+  done
+}
+
+# ==============================================================================
+# TEST GROUP: Bandwidth Manager Requirements
+# ==============================================================================
+test_bandwidth_manager() {
+  local cfg
+  cfg=$(get_config_file)
+  for opt in CONFIG_NET_SCH_FQ; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+    fi
+  done
+}
+
+# ==============================================================================
+# TEST GROUP: Netkit Device Mode Requirements
+# ==============================================================================
+test_netkit_device_mode() {
+  local cfg
+  cfg=$(get_config_file)
+  for opt in CONFIG_NETKIT; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+    fi
+  done
+}
+
 # ==============================================================================
 # MAIN EXECUTION & SUMMARY
 # ==============================================================================
@@ -163,6 +245,15 @@ test_tunneling_routing || ((failures++))
 
 echo -e "\n[TEST D] L7 and FQDN Policies"
 test_l7_fqdn_policies || ((failures++))
+
+echo -e "\n[TEST E] Requirements for IPsec"
+test_ipsec_requirements || ((failures++))
+
+echo -e "\n[TEST F] Bandwidth Manager Requirements"
+test_bandwidth_manager || ((failures++))
+
+echo -e "\n[TEST G] Netkit Device Mode Requirements"
+test_netkit_device_mode || ((failures++))
 
 echo -e "\n--- Summary ---"
 if [ $failures -eq 0 ]; then
