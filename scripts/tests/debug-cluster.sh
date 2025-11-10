@@ -8,8 +8,13 @@ echo "=== Namespaces ==="
 kubectl get ns
 
 # Node status
-echo "=== Nodes ==="
+echo "=== Node Status ==="
 kubectl get nodes -o wide | awk '$2!="Ready"{print "Node not ready:", $0}'
+
+# Describe the single node
+NODE_NAME=$(kubectl get nodes -o jsonpath='{.items[0].metadata.name}')
+echo "=== Describe Node: $NODE_NAME ==="
+kubectl describe node $NODE_NAME
 
 # Pods with issues
 echo "=== Pods with Issues ==="
