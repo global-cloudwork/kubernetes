@@ -1,96 +1,128 @@
-# !/usr/bin/env bash
-#
-# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/system-requirements.sh | bash
-# system-requirements.sh
-# Checks host compatibility for Cilium system requirements.
+#!/usr/bin/env bash
 
-set -e
+# ==============================================================================
+# SCRIPT METADATA
+# ==============================================================================
+# Filename:   system-requirements.sh
+# Purpose:    Checks host compatibility for Cilium system requirements.
+# Author:     Your Name
+# Date:       2025-11-09
+# Version:    1.0.0
+# License:    MIT
 
-# Utility: compare semver versions (version_ge <version> <required>)
+# --- Configuration ---
+set -euo pipefail
+# set -x # Uncomment for debugging
+
+# ==============================================================================
+# ERROR CODES
+# ==============================================================================
+# 0 - Success
+# 1 - Generic/Unknown Error
+# 2 - Invalid Input/Argument Error
+# 3 - Dependency Not Found
+# 4 - Operation Failed
+# 5 - Permission Denied
+
+# ==============================================================================
+# FUNCTION: check_requirement
+# ==============================================================================
+# Purpose:    Run a command string, report pass/fail with name, return status.
+# Arguments:  $1 - Descriptive name for the requirement
+#             $2 - Command string to evaluate
+# Returns:    0 if pass, non-zero on failure
+check_requirement() {
+  local name="$1"
+  local cmd="$2"
+  if eval "$cmd"; then
+    echo "[PASS] $name"
+    return 0
+  else
+    echo "[FAIL] $name"
+    return 1
+  fi
+}
+
+# ==============================================================================
+# HELPER FUNCTION: version_ge (semantic version comparison)
+# ==============================================================================
 version_ge() {
   printf '%s\n%s\n' "$2" "$1" | sort -V | head -n1 | grep -qx "$2"
 }
 
-echo "Checking Cilium System Requirements..."
+# ==============================================================================
+# SPECIFIC CHECKS
+# ==============================================================================
+check_architecture() {
+  local arch_name
+  arch_name=$(uname -m)
+  case "$arch_name" in
+    x86_64) arch_name="AMD64" ;;
+    aarch64) arch_name="AArch64" ;;
+  esac
+  check_requirement "Architecture: $arch_name" \
+    "[[ \"$arch_name\" == \"AMD64\" || \"$arch_name\" == \"AArch64\" ]]"
+}
+
+check_kernel() {
+  local full base
+  full=$(uname -r)
+  base=${full%%-*}
+  check_requirement "Kernel: $full" \
+    "version_ge \"$base\" \"5.10\" || version_ge \"$base\" \"4.18\""
+}
+
+check_os() {
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    check_requirement "OS: $NAME $VERSION_ID" \
+      "[[ \"$ID\" == \"ubuntu\" && version_ge \"$VERSION_ID\" \"20.04\" ]]"
+  else
+    echo "[FAIL] OS: Unknown (requires Ubuntu >=20.04)"
+    return 1
+  fi
+}
+
+check_etcd() {
+  if command -v etcd &>/dev/null; then
+    local ver
+    ver=$(etcd --version 2>&1 | grep -Eo 'etcd Version: v?([0-9]+\.[0-9]+\.[0-9]+)' | awk '{print $3}')
+    check_requirement "etcd: $ver" \
+      "version_ge \"$ver\" \"3.1.0\""
+  else
+    echo "[FAIL] etcd: not found"
+    return 1
+  fi
+}
+
+# ==============================================================================
+# MAIN EXECUTION & DEMONSTRATION
+# ==============================================================================
+echo "--- Demonstration of System Requirements Checks ---"
 echo
 
-# 1. Architecture
-arch=$(uname -m)
-case "$arch" in
-  x86_64) arch_name="AMD64"; arch_ok=0 ;;
-  aarch64) arch_name="AArch64"; arch_ok=0 ;;
-  *) arch_name="$arch"; arch_ok=1 ;;
-esac
-if [ $arch_ok -eq 0 ]; then
-  echo "[PASS] Architecture: $arch_name"
-else
-  echo "[FAIL] Architecture: $arch_name"
-fi
+declare -i failures=0
 
-# 2. Linux kernel
-kernel_full=$(uname -r)
-kernel_base=${kernel_full%%-*}
-if version_ge "$kernel_base" "5.10" || version_ge "$kernel_base" "4.18"; then
-  kernel_ok=0
-  echo "[PASS] Kernel: $kernel_full"
-else
-  kernel_ok=1
-  echo "[FAIL] Kernel: $kernel_full (requires >=5.10 or >=4.18)"
-fi
+echo -e "\n[TEST A] Architecture"
+check_architecture || ((failures++))
 
-# 3. OS version (Ubuntu)
-if [ -f /etc/os-release ]; then
-  . /etc/os-release
-  if [ "$ID" != "ubuntu" ]; then
-    os_ok=1
-    echo "[FAIL] OS: $NAME ($ID) (requires Ubuntu >=20.04)"
-  else
-    if version_ge "$VERSION_ID" "20.04"; then
-      os_ok=0
-      echo "[PASS] OS: $NAME $VERSION_ID"
-    else
-      os_ok=1
-      echo "[FAIL] OS: $NAME $VERSION_ID (requires >=20.04)"
-    fi
-  fi
-else
-  os_ok=1
-  echo "[FAIL] OS: Unknown (requires Ubuntu >=20.04)"
-fi
+echo -e "\n[TEST B] Kernel"
+check_kernel || ((failures++))
 
-# 4. etcd
-if command -v etcd &>/dev/null; then
-  etcd_ver=$(etcd --version 2>&1 | grep -Eo 'etcd Version: v?([0-9]+\.[0-9]+\.[0-9]+)' | awk '{print $3}')
-  if version_ge "$etcd_ver" "3.1.0"; then
-    etcd_ok=0
-    echo "[PASS] etcd: $etcd_ver"
-  else
-    etcd_ok=1
-    echo "[FAIL] etcd: $etcd_ver (requires >=3.1.0)"
-  fi
-else
-  etcd_ok=1
-  echo "[FAIL] etcd: not found"
-fi
+echo -e "\n[TEST C] OS Version"
+check_os || ((failures++))
 
-# Summary
-echo
-echo "Test Summary:"
-declare -a passed=()
-declare -a failed=()
+echo -e "\n[TEST D] etcd"
+check_etcd || ((failures++))
 
-if [ $arch_ok -eq 0 ]; then passed+=("Architecture"); else failed+=("Architecture"); fi
-if [ $kernel_ok -eq 0 ]; then passed+=("Kernel"); else failed+=("Kernel"); fi
-if [ $etcd_ok -eq 0 ]; then passed+=("etcd"); else failed+=("etcd"); fi
-
-# Add OS result to summary
-if [ $os_ok -eq 0 ]; then passed+=("OS version"); else failed+=("OS version"); fi
-
-if [ ${#failed[@]} -eq 0 ]; then
-  echo "[PASS] All checks passed: ${passed[*]}"
+# ==============================================================================
+# SUMMARY OUTPUT AND FINAL EXIT
+# ==============================================================================
+echo -e "\n--- Summary ---"
+if [ $failures -eq 0 ]; then
+  echo "[PASS] All checks passed"
   exit 0
 else
-  echo "[PASS] Passed: ${passed[*]}"
-  echo "[FAIL] Failed: ${failed[*]}"
+  echo "[FAIL] $failures check(s) failed"
   exit 1
 fi
