@@ -70,4 +70,4 @@ else
   echo "[PASS] Passed: ${passed[*]}"
   echo "[FAIL] Failed: ${failed[*]}"
   exit 1
-fi
+fis
