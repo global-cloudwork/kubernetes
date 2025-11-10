@@ -15,7 +15,7 @@ helmCharts:
     version: 1.18.1
     releaseName: cilium
     valuesInline:
-      kubeProxyReplacement: partial
+      kubeProxyReplacement: true
       gatewayAPI:
         enabled: true
       k8sServiceHost: 10.128.15.231
