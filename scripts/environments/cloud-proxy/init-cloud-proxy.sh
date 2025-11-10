@@ -87,13 +87,13 @@ echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 
 # Deploy base
-echo "Applying Kustomize PATH: base"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base?ref=$BRANCH" | \
+echo "Applying Kustomize PATH: base/core/kustomization.yaml"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 # Deploy core
-echo "Applying Kustomize PATH: base/core"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+echo "Applying Kustomize PATH: /kustomization.yaml"
+kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 # Restart RKE2 to pick up new manifests
@@ -110,7 +110,7 @@ echo "Section: Deploy Edge and Tenant"
 #===============================================================================
 
 # Deploy edge
-echo "Applying Kustomize PATH: base/edge"
+echo "Applying Kustomize PATH: base/edge/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
@@ -119,7 +119,7 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" |
 # # kubectl -n cert-manager wait --for=condition=ready pod -l "app.kubernetes.io/name=webhook" --timeout="180s"
 
 # Deploy tenant
-echo "Applying Kustomize PATH: base/tenant"
+echo "Applying Kustomize PATH: base/tenant/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
