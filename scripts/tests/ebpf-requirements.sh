@@ -7,7 +7,7 @@
 # Purpose:    Checks host kernel configuration for required eBPF options for Cilium.
 # Author:     Your Name
 # Date:       2025-11-09
-# Version:    1.0.0
+# Version:    1.1.0
 # Run: curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/ebpf-requirements.sh | bash
 
 # --- Configuration ---
@@ -15,14 +15,10 @@ set -euo pipefail
 # set -x # Uncomment for debugging
 
 # ==============================================================================
-# ERROR CODES
+# GLOBAL STATE
 # ==============================================================================
-# 0 - Success
-# 1 - Generic/Unknown Error
-# 2 - Invalid Input/Argument Error
-# 3 - Dependency Not Found
-# 4 - Operation Failed
-# 5 - Permission Denied
+declare -i failures=0
+declare -a failed_items=()
 
 # ==============================================================================
 # FUNCTION: get_config_file
@@ -42,7 +38,7 @@ get_config_file() {
 # TEST GROUP: Base Requirements
 # ==============================================================================
 test_base_requirements() {
-  local cfg
+  local cfg group_failed=0
   cfg=$(get_config_file)
   for opt in \
     CONFIG_BPF \
@@ -67,15 +63,18 @@ test_base_requirements() {
       echo "[PASS] - $val"
     else
       echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
     fi
   done
+  return $group_failed
 }
 
 # ==============================================================================
 # TEST GROUP: Iptables-based Masquerading
 # ==============================================================================
 test_iptables_masquerading() {
-  local cfg
+  local cfg group_failed=0
   cfg=$(get_config_file)
   for opt in \
     CONFIG_NETFILTER_XT_SET \
@@ -92,15 +91,18 @@ test_iptables_masquerading() {
       echo "[PASS] - $val"
     else
       echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
     fi
   done
+  return $group_failed
 }
 
 # ==============================================================================
 # TEST GROUP: Tunneling and Routing
 # ==============================================================================
 test_tunneling_routing() {
-  local cfg
+  local cfg group_failed=0
   cfg=$(get_config_file)
   for opt in \
     CONFIG_VXLAN \
@@ -116,15 +118,18 @@ test_tunneling_routing() {
       echo "[PASS] - $val"
     else
       echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
     fi
   done
+  return $group_failed
 }
 
 # ==============================================================================
 # TEST GROUP: L7 and FQDN Policies
 # ==============================================================================
 test_l7_fqdn_policies() {
-  local cfg
+  local cfg group_failed=0
   cfg=$(get_config_file)
   for opt in \
     CONFIG_NETFILTER_XT_TARGET_TPROXY \
@@ -142,16 +147,18 @@ test_l7_fqdn_policies() {
       echo "[PASS] - $val"
     else
       echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
     fi
   done
+  return $group_failed
 }
-
 
 # ==============================================================================
 # TEST GROUP: Requirements for IPsec
 # ==============================================================================
 test_ipsec_requirements() {
-  local cfg
+  local cfg group_failed=0
   cfg=$(get_config_file)
   for opt in \
     CONFIG_XFRM \
@@ -159,10 +166,14 @@ test_ipsec_requirements() {
     CONFIG_XFRM_STATISTICS \
     CONFIG_XFRM_ALGO \
     CONFIG_XFRM_USER \
-    CONFIG_INET{,6}_ESP \
-    CONFIG_INET{,6}_IPCOMP \
-    CONFIG_INET{,6}_XFRM_TUNNEL \
-    CONFIG_INET{,6}_TUNNEL \
+    CONFIG_INET_ESP \
+    CONFIG_INET6_ESP \
+    CONFIG_INET_IPCOMP \
+    CONFIG_INET6_IPCOMP \
+    CONFIG_INET_XFRM_TUNNEL \
+    CONFIG_INET6_XFRM_TUNNEL \
+    CONFIG_INET_TUNNEL \
+    CONFIG_INET6_TUNNEL \
     CONFIG_INET_XFRM_MODE_TUNNEL \
     CONFIG_CRYPTO_AEAD \
     CONFIG_CRYPTO_AEAD2 \
@@ -182,15 +193,18 @@ test_ipsec_requirements() {
       echo "[PASS] - $val"
     else
       echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
     fi
   done
+  return $group_failed
 }
 
 # ==============================================================================
 # TEST GROUP: Bandwidth Manager Requirements
 # ==============================================================================
 test_bandwidth_manager() {
-  local cfg
+  local cfg group_failed=0
   cfg=$(get_config_file)
   for opt in CONFIG_NET_SCH_FQ; do
     local val
@@ -203,15 +217,18 @@ test_bandwidth_manager() {
       echo "[PASS] - $val"
     else
       echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
     fi
   done
+  return $group_failed
 }
 
 # ==============================================================================
 # TEST GROUP: Netkit Device Mode Requirements
 # ==============================================================================
 test_netkit_device_mode() {
-  local cfg
+  local cfg group_failed=0
   cfg=$(get_config_file)
   for opt in CONFIG_NETKIT; do
     local val
@@ -224,42 +241,61 @@ test_netkit_device_mode() {
       echo "[PASS] - $val"
     else
       echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
     fi
   done
+  return $group_failed
 }
 
 # ==============================================================================
 # MAIN EXECUTION & SUMMARY
 # ==============================================================================
-echo "--- eBPF Requirements Checks ---"
-declare -i failures=0
+echo "===================================="
+echo "=== eBPF Requirements Checks ======="
+echo "===================================="
+echo
 
-echo -e "\n[TEST A] Base Requirements"
+echo "[TEST A] Base Requirements"
 test_base_requirements || ((failures++))
 
-echo -e "\n[TEST B] Iptables-based Masquerading"
+echo
+echo "[TEST B] Iptables-based Masquerading"
 test_iptables_masquerading || ((failures++))
 
-echo -e "\n[TEST C] Tunneling and Routing"
+echo
+echo "[TEST C] Tunneling and Routing"
 test_tunneling_routing || ((failures++))
 
-echo -e "\n[TEST D] L7 and FQDN Policies"
+echo
+echo "[TEST D] L7 and FQDN Policies"
 test_l7_fqdn_policies || ((failures++))
 
-echo -e "\n[TEST E] Requirements for IPsec"
+echo
+echo "[TEST E] Requirements for IPsec"
 test_ipsec_requirements || ((failures++))
 
-echo -e "\n[TEST F] Bandwidth Manager Requirements"
+echo
+echo "[TEST F] Bandwidth Manager Requirements"
 test_bandwidth_manager || ((failures++))
 
-echo -e "\n[TEST G] Netkit Device Mode Requirements"
+echo
+echo "[TEST G] Netkit Device Mode Requirements"
 test_netkit_device_mode || ((failures++))
 
-echo -e "\n--- Summary ---"
+echo
+echo "===================================="
+echo "=== Summary ==="
+echo "===================================="
 if [ $failures -eq 0 ]; then
-  echo "[PASS] All eBPF requirements satisfied"
+  echo "### ALL PASS: All eBPF requirements satisfied ###"
   exit 0
 else
-  echo "[FAIL] $failures test group(s) had failures"
+  echo "### FAIL: $failures failures detected ###"
+  echo
+  echo "Failed items:"
+  for item in "${failed_items[@]}"; do
+    echo "- $item"
+  done
   exit 1
 fi
