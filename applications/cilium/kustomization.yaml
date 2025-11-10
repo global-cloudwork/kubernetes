@@ -33,3 +33,4 @@ helmCharts:
           enabled: true
         ui:
           enabled: true
+      bpf-lb-acceleration: native
