@@ -1,7 +1,6 @@
 # !/usr/bin/env bash
 #
-# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/test/system-requirements.sh | bash
-#
+# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/system-requirements.sh | bash
 # system-requirements.sh
 # Checks host compatibility for Cilium system requirements.
 
