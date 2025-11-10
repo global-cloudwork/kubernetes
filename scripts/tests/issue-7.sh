@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/issue-7.sh | bash
 # Cert-Manager + Cilium BPF Connectivity Debugger
 # This script helps diagnose why cert-manager can't reach the API server through Cilium
 
