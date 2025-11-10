@@ -200,7 +200,7 @@ CONFIG_NETKIT=y
 
 ## Key-Value Store
 
-Cilium optionally uses a distributed Key-Value store to manage, synchronize, and distribute security identities across all cluster nodes. Supported stores:
+Cilium optionally uses a distributed Key-Value store to manage, synchronize, and distribute security identities across all cluster nodes. The system requirements script will skip the etcd check if kubectl is not available or cannot connect to etcd pods. Supported stores:
 
 - etcd **>= 3.1.0**
 
