@@ -12,6 +12,7 @@
 
 # --- Configuration ---
 set -euo pipefail
+set +e
 # set -x # Uncomment for debugging
 
 # ==============================================================================
@@ -39,6 +40,7 @@ check_requirement() {
     return 0
   else
     echo "[FAIL] $name"
+    failed_items+=("$name")
     return 1
   fi
 }
@@ -80,14 +82,17 @@ check_os() {
         echo "[PASS] OS: $NAME $VERSION_ID"
       else
         echo "[FAIL] OS: $NAME $VERSION_ID (requires Ubuntu >=20.04)"
+        failed_items+=("OS: $NAME $VERSION_ID (requires Ubuntu >=20.04)")
         return 1
       fi
     else
       echo "[FAIL] OS: $NAME $VERSION_ID (unsupported)"
+      failed_items+=("OS: $NAME $VERSION_ID (unsupported)")
       return 1
     fi
   else
     echo "[FAIL] OS: Unknown (requires Ubuntu >=20.04)"
+    failed_items+=("OS: Unknown (requires Ubuntu >=20.04)")
     return 1
   fi
 }
@@ -107,6 +112,7 @@ check_etcd() {
     return 0
   else
     echo "[FAIL] etcd: not found or not Running"
+    failed_items+=("etcd: not found or not Running")
     return 1
   fi
 }
