@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 
-
 # ==============================================================================
 # SCRIPT METADATA
 # ==============================================================================
 # Filename:   system-requirements.sh
-# Purpose:    Checks host compatibility for Cilium system requirements.
+# Purpose:    Checks host compatibility for Cilium system requirements, including kernel eBPF configuration options.
 # Author:     Your Name
-# Date:       2025-11-09
-# Version:    1.0.0
+# Date:       2025-11-10
+# Version:    2.0.0
 # Run: curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/system-requirements.sh | bash
 
 # --- Configuration ---
@@ -52,7 +51,7 @@ version_ge() {
 }
 
 # ==============================================================================
-# SPECIFIC CHECKS
+# SPECIFIC CHECKS (System)
 # ==============================================================================
 check_architecture() {
   local arch_name
@@ -94,7 +93,6 @@ check_os() {
 }
 
 check_etcd() {
-  # Use kubectl to check etcd pods in Running state
   local count
   if ! count=$(/var/lib/rancher/rke2/bin/kubectl get pods -n kube-system -l component=etcd 2>/dev/null | awk 'NR>1 && $3=="Running" {c++} END{print c+0}'); then
     echo "[FAIL] etcd: kubectl command failed"
@@ -110,12 +108,220 @@ check_etcd() {
 }
 
 # ==============================================================================
-# MAIN EXECUTION & DEMONSTRATION
+# eBPF Requirements Checks
+# ==============================================================================
+get_config_file() {
+  if [ -f /proc/config.gz ]; then
+    echo "/proc/config.gz"
+  elif [ -f /boot/config-$(uname -r) ]; then
+    echo "/boot/config-$(uname -r)"
+  else
+    echo "[FAIL] Kernel config file not found" >&2
+    exit 1
+  fi
+}
+
+test_base_requirements() {
+  local cfg group_failed=0
+  cfg=$(get_config_file)
+  for opt in \
+    CONFIG_BPF \
+    CONFIG_BPF_SYSCALL \
+    CONFIG_NET_CLS_BPF \
+    CONFIG_BPF_JIT \
+    CONFIG_NET_CLS_ACT \
+    CONFIG_NET_SCH_INGRESS \
+    CONFIG_CRYPTO_SHA1 \
+    CONFIG_CRYPTO_USER_API_HASH \
+    CONFIG_CGROUPS \
+    CONFIG_CGROUP_BPF \
+    CONFIG_PERF_EVENTS \
+    CONFIG_SCHEDSTATS; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
+    fi
+  done
+  return $group_failed
+}
+
+test_iptables_masquerading() {
+  local cfg group_failed=0
+  cfg=$(get_config_file)
+  for opt in \
+    CONFIG_NETFILTER_XT_SET \
+    CONFIG_IP_SET \
+    CONFIG_IP_SET_HASH_IP \
+    CONFIG_NETFILTER_XT_MATCH_COMMENT; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
+    fi
+  done
+  return $group_failed
+}
+
+test_tunneling_routing() {
+  local cfg group_failed=0
+  cfg=$(get_config_file)
+  for opt in \
+    CONFIG_VXLAN \
+    CONFIG_GENEVE \
+    CONFIG_FIB_RULES; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
+    fi
+  done
+  return $group_failed
+}
+
+test_l7_fqdn_policies() {
+  local cfg group_failed=0
+  cfg=$(get_config_file)
+  for opt in \
+    CONFIG_NETFILTER_XT_TARGET_TPROXY \
+    CONFIG_NETFILTER_XT_TARGET_MARK \
+    CONFIG_NETFILTER_XT_TARGET_CT \
+    CONFIG_NETFILTER_XT_MATCH_MARK \
+    CONFIG_NETFILTER_XT_MATCH_SOCKET; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
+    fi
+  done
+  return $group_failed
+}
+
+test_ipsec_requirements() {
+  local cfg group_failed=0
+  cfg=$(get_config_file)
+  for opt in \
+    CONFIG_XFRM \
+    CONFIG_XFRM_OFFLOAD \
+    CONFIG_XFRM_STATISTICS \
+    CONFIG_XFRM_ALGO \
+    CONFIG_XFRM_USER \
+    CONFIG_INET_ESP \
+    CONFIG_INET6_ESP \
+    CONFIG_INET_IPCOMP \
+    CONFIG_INET6_IPCOMP \
+    CONFIG_INET_XFRM_TUNNEL \
+    CONFIG_INET6_XFRM_TUNNEL \
+    CONFIG_INET_TUNNEL \
+    CONFIG_INET6_TUNNEL \
+    CONFIG_INET_XFRM_MODE_TUNNEL \
+    CONFIG_CRYPTO_AEAD \
+    CONFIG_CRYPTO_AEAD2 \
+    CONFIG_CRYPTO_GCM \
+    CONFIG_CRYPTO_SEQIV \
+    CONFIG_CRYPTO_CBC \
+    CONFIG_CRYPTO_HMAC \
+    CONFIG_CRYPTO_SHA256 \
+    CONFIG_CRYPTO_AES; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
+    fi
+  done
+  return $group_failed
+}
+
+test_bandwidth_manager() {
+  local cfg group_failed=0
+  cfg=$(get_config_file)
+  for opt in CONFIG_NET_SCH_FQ; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
+    fi
+  done
+  return $group_failed
+}
+
+test_netkit_device_mode() {
+  local cfg group_failed=0
+  cfg=$(get_config_file)
+  for opt in CONFIG_NETKIT; do
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "[PASS] - $val"
+    else
+      echo "[FAIL] - $opt"
+      failed_items+=("$opt")
+      group_failed=1
+    fi
+  done
+  return $group_failed
+}
+
+# ==============================================================================
+# MAIN EXECUTION & SUMMARY
 # ==============================================================================
 echo "--- Demonstration of System Requirements Checks ---"
 echo
 
 declare -i failures=0
+declare -a failed_items=()
 
 echo -e "\n[TEST A] Architecture"
 check_architecture || ((failures++))
@@ -129,14 +335,37 @@ check_os || ((failures++))
 echo -e "\n[TEST D] etcd"
 check_etcd || ((failures++))
 
-# ==============================================================================
-# SUMMARY OUTPUT AND FINAL EXIT
-# ==============================================================================
+echo -e "\n[TEST E] eBPF Base Requirements"
+test_base_requirements || ((failures++))
+
+echo -e "\n[TEST F] Iptables-based Masquerading"
+test_iptables_masquerading || ((failures++))
+
+echo -e "\n[TEST G] Tunneling and Routing"
+test_tunneling_routing || ((failures++))
+
+echo -e "\n[TEST H] L7 and FQDN Policies"
+test_l7_fqdn_policies || ((failures++))
+
+echo -e "\n[TEST I] Requirements for IPsec"
+test_ipsec_requirements || ((failures++))
+
+echo -e "\n[TEST J] Bandwidth Manager Requirements"
+test_bandwidth_manager || ((failures++))
+
+echo -e "\n[TEST K] Netkit Device Mode Requirements"
+test_netkit_device_mode || ((failures++))
+
 echo -e "\n--- Summary ---"
 if [ $failures -eq 0 ]; then
   echo "[PASS] All checks passed"
   exit 0
 else
   echo "[FAIL] $failures check(s) failed"
+  echo
+  echo "Failed items:"
+  for item in "${failed_items[@]}"; do
+    echo "- $item"
+  done
   exit 1
 fi
