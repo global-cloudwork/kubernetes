@@ -1,4 +1,6 @@
 #!/bin/bash
+# Run: curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/debug-cluster.sh | bash
+
 echo "===== CLUSTER DEBUG SUMMARY ====="
 
 # Namespaces
