@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 # curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/tests/debug-cluster.sh | bash
 # debug-cluster: Collects cluster info and checks for errors in resources
 
