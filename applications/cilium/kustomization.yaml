@@ -31,15 +31,3 @@ helmCharts:
           enabled: true
         ui:
           enabled: true
-      ipam:
-        mode: kubernetes
-      bpf:
-        mapDynamicSize: true
-      kube-proxy:
-        service-cluster-ip-range: 10.43.0.0/16
-      kubernetes:
-        service-cidr: 10.43.0.0/16
-      nodeinit:
-        enabled: true
-      hostServices:
-        enabled: true
