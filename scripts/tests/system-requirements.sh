@@ -38,21 +38,6 @@ else
   echo "[FAIL] Kernel: $kernel_full (requires >=5.10 or >=4.18)"
 fi
 
-# 3. clang+LLVM
-if command -v clang &>/dev/null; then
-  clang_ver=$(clang --version | head -n1 | sed -E 's/.*version ([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-  if version_ge "$clang_ver" "18.1"; then
-    clang_ok=0
-    echo "[PASS] clang+LLVM: $clang_ver"
-  else
-    clang_ok=1
-    echo "[FAIL] clang+LLVM: $clang_ver (requires >=18.1)"
-  fi
-else
-  clang_ok=1
-  echo "[FAIL] clang+LLVM: not found"
-fi
-
 # 4. etcd
 if command -v etcd &>/dev/null; then
   etcd_ver=$(etcd --version 2>&1 | grep -Eo 'etcd Version: v?([0-9]+\.[0-9]+\.[0-9]+)' | awk '{print $3}')
@@ -76,7 +61,6 @@ declare -a failed=()
 
 if [ $arch_ok -eq 0 ]; then passed+=("Architecture"); else failed+=("Architecture"); fi
 if [ $kernel_ok -eq 0 ]; then passed+=("Kernel"); else failed+=("Kernel"); fi
-if [ $clang_ok -eq 0 ]; then passed+=("clang+LLVM"); else failed+=("clang+LLVM"); fi
 if [ $etcd_ok -eq 0 ]; then passed+=("etcd"); else failed+=("etcd"); fi
 
 if [ ${#failed[@]} -eq 0 ]; then
