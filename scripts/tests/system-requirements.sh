@@ -38,6 +38,26 @@ else
   echo "[FAIL] Kernel: $kernel_full (requires >=5.10 or >=4.18)"
 fi
 
+# 3. OS version (Ubuntu)
+if [ -f /etc/os-release ]; then
+  . /etc/os-release
+  if [ "$ID" != "ubuntu" ]; then
+    os_ok=1
+    echo "[FAIL] OS: $NAME ($ID) (requires Ubuntu >=20.04)"
+  else
+    if version_ge "$VERSION_ID" "20.04"; then
+      os_ok=0
+      echo "[PASS] OS: $NAME $VERSION_ID"
+    else
+      os_ok=1
+      echo "[FAIL] OS: $NAME $VERSION_ID (requires >=20.04)"
+    fi
+  fi
+else
+  os_ok=1
+  echo "[FAIL] OS: Unknown (requires Ubuntu >=20.04)"
+fi
+
 # 4. etcd
 if command -v etcd &>/dev/null; then
   etcd_ver=$(etcd --version 2>&1 | grep -Eo 'etcd Version: v?([0-9]+\.[0-9]+\.[0-9]+)' | awk '{print $3}')
@@ -63,6 +83,9 @@ if [ $arch_ok -eq 0 ]; then passed+=("Architecture"); else failed+=("Architectur
 if [ $kernel_ok -eq 0 ]; then passed+=("Kernel"); else failed+=("Kernel"); fi
 if [ $etcd_ok -eq 0 ]; then passed+=("etcd"); else failed+=("etcd"); fi
 
+# Add OS result to summary
+if [ $os_ok -eq 0 ]; then passed+=("OS"); else failed+=("OS"); fi
+
 if [ ${#failed[@]} -eq 0 ]; then
   echo "[PASS] All checks passed: ${passed[*]}"
   exit 0
@@ -70,4 +93,4 @@ else
   echo "[PASS] Passed: ${passed[*]}"
   echo "[FAIL] Failed: ${failed[*]}"
   exit 1
-fis
+fi
