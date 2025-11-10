@@ -84,7 +84,7 @@ if [ $kernel_ok -eq 0 ]; then passed+=("Kernel"); else failed+=("Kernel"); fi
 if [ $etcd_ok -eq 0 ]; then passed+=("etcd"); else failed+=("etcd"); fi
 
 # Add OS result to summary
-if [ $os_ok -eq 0 ]; then passed+=("OS"); else failed+=("OS"); fi
+if [ $os_ok -eq 0 ]; then passed+=("OS version"); else failed+=("OS version"); fi
 
 if [ ${#failed[@]} -eq 0 ]; then
   echo "[PASS] All checks passed: ${passed[*]}"
