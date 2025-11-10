@@ -256,37 +256,37 @@ echo "=== eBPF Requirements Checks ======="
 echo "===================================="
 echo
 
-echo "[TEST A] Base Requirements"
+echo "== A. Base Requirements"
 test_base_requirements || ((failures++))
 
 echo
-echo "[TEST B] Iptables-based Masquerading"
+echo "== B. Iptables-based Masquerading"
 test_iptables_masquerading || ((failures++))
 
 echo
-echo "[TEST C] Tunneling and Routing"
+echo "== C. Tunneling and Routing"
 test_tunneling_routing || ((failures++))
 
 echo
-echo "[TEST D] L7 and FQDN Policies"
+echo "== D. L7 and FQDN Policies"
 test_l7_fqdn_policies || ((failures++))
 
 echo
-echo "[TEST E] Requirements for IPsec"
+echo "== E. Requirements for IPsec"
 test_ipsec_requirements || ((failures++))
 
 echo
-echo "[TEST F] Bandwidth Manager Requirements"
+echo "== F. Bandwidth Manager Requirements"
 test_bandwidth_manager || ((failures++))
 
 echo
-echo "[TEST G] Netkit Device Mode Requirements"
+echo "== G. Netkit Device Mode Requirements"
 test_netkit_device_mode || ((failures++))
 
 echo
-echo "===================================="
-echo "=== Summary ==="
-echo "===================================="
+echo "=================================================="
+echo "=============== Summary Report =================="
+echo "=================================================="
 if [ $failures -eq 0 ]; then
   echo "### ALL PASS: All eBPF requirements satisfied ###"
   exit 0
