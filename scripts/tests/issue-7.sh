@@ -68,12 +68,12 @@ kubectl exec -n kube-system "$CILIUM_POD" -- cilium service list | grep -A5 "$AP
 # 4. Check Host Routing
 print_header "4. Host Routing Table"
 echo "Checking route to API server from host..."
-kubectl debug node/"$NODE_NAME" -it --image=nicolaka/netshoot -- ip route get "$API_SERVER_IP" || print_error "Could not check host routing"
+kubectl debug node/"$NODE_NAME" --image=nicolaka/netshoot --container=debugger -- ip route get "$API_SERVER_IP" || print_error "Could not check host routing"
 
 # 5. Check BPF Filesystem
 print_header "5. BPF Filesystem Status"
-kubectl debug node/"$NODE_NAME" -it --image=nicolaka/netshoot -- mount | grep bpf || print_error "BPF not mounted"
-kubectl debug node/"$NODE_NAME" -it --image=nicolaka/netshoot -- ls -la /sys/fs/bpf/ || print_error "Cannot access BPF filesystem"
+kubectl debug node/"$NODE_NAME" --image=nicolaka/netshoot --container=debugger -- mount | grep bpf || print_error "BPF not mounted"
+kubectl debug node/"$NODE_NAME" --image=nicolaka/netshoot --container=debugger -- ls -la /sys/fs/bpf/ || print_error "Cannot access BPF filesystem"
 
 # 6. Cert-Manager Pod Configuration
 print_header "6. Cert-Manager Pod Configuration"
@@ -163,10 +163,10 @@ kubectl exec -n kube-system "$CILIUM_POD" -- cilium config | grep -i "host-reach
 # 9. Check for AppArmor/SELinux
 print_header "9. Security Module Status"
 echo "Checking AppArmor status on node..."
-kubectl debug node/"$NODE_NAME" -it --image=nicolaka/netshoot -- cat /sys/module/apparmor/parameters/enabled 2>/dev/null || echo "AppArmor status unknown"
+kubectl debug node/"$NODE_NAME" --image=nicolaka/netshoot --container=debugger -- cat /sys/module/apparmor/parameters/enabled 2>/dev/null || echo "AppArmor status unknown"
 
 echo -e "\nChecking SELinux status on node..."
-kubectl debug node/"$NODE_NAME" -it --image=nicolaka/netshoot -- getenforce 2>/dev/null || echo "SELinux not present or disabled"
+kubectl debug node/"$NODE_NAME" --image=nicolaka/netshoot --container=debugger -- getenforce 2>/dev/null || echo "SELinux not present or disabled"
 
 # 10. Summary and Recommendations
 print_header "10. Summary and Recommended Actions"
