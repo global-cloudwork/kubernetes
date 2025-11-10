@@ -25,28 +25,8 @@ set -euo pipefail
 # 5 - Permission Denied
 
 # ==============================================================================
-# FUNCTION: check_requirement
-# ==============================================================================
-# Purpose:    Run a command string, report pass/fail with name, return status.
-# Arguments:  $1 - Descriptive name for the requirement
-#             $2 - Command string to evaluate
-# Returns:    0 if pass, non-zero on failure
-check_requirement() {
-  local name="$1"
-  local cmd="$2"
-  if eval "$cmd"; then
-    echo "[PASS] $name"
-    return 0
-  else
-    echo "[FAIL] $name"
-    return 1
-  fi
-}
-
-# ==============================================================================
 # FUNCTION: get_config_file
 # ==============================================================================
-# Purpose:    Determine the kernel config file location
 get_config_file() {
   if [ -f /proc/config.gz ]; then
     echo "/proc/config.gz"
@@ -59,13 +39,11 @@ get_config_file() {
 }
 
 # ==============================================================================
-# TEST GROUPS
+# TEST GROUP: Base Requirements
 # ==============================================================================
-
 test_base_requirements() {
-  local config_file
-  config_file=$(get_config_file)
-  echo "Checking base eBPF kernel options in $config_file"
+  local cfg
+  cfg=$(get_config_file)
   for opt in \
     CONFIG_BPF \
     CONFIG_BPF_SYSCALL \
@@ -79,46 +57,92 @@ test_base_requirements() {
     CONFIG_CGROUP_BPF \
     CONFIG_PERF_EVENTS \
     CONFIG_SCHEDSTATS; do
-    check_requirement "$opt" "if [[ \"${config_file##*.}\" == \"gz\" ]]; then zgrep -E '^$opt=(y|m)' \"$config_file\"; else grep -E '^$opt=(y|m)' \"$config_file\"; fi"
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "- $val [PASS]"
+    else
+      echo "- $opt [FAIL]"
+    fi
   done
 }
 
+# ==============================================================================
+# TEST GROUP: Iptables-based Masquerading
+# ==============================================================================
 test_iptables_masquerading() {
-  local config_file
-  config_file=$(get_config_file)
-  echo "Checking iptables-based masquerading options in $config_file"
+  local cfg
+  cfg=$(get_config_file)
   for opt in \
     CONFIG_NETFILTER_XT_SET \
     CONFIG_IP_SET \
     CONFIG_IP_SET_HASH_IP \
     CONFIG_NETFILTER_XT_MATCH_COMMENT; do
-    check_requirement "$opt" "if [[ \"${config_file##*.}\" == \"gz\" ]]; then zgrep -E '^$opt=(y|m)' \"$config_file\"; else grep -E '^$opt=(y|m)' \"$config_file\"; fi"
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "- $val [PASS]"
+    else
+      echo "- $opt [FAIL]"
+    fi
   done
 }
 
+# ==============================================================================
+# TEST GROUP: Tunneling and Routing
+# ==============================================================================
 test_tunneling_routing() {
-  local config_file
-  config_file=$(get_config_file)
-  echo "Checking tunneling and routing options in $config_file"
+  local cfg
+  cfg=$(get_config_file)
   for opt in \
     CONFIG_VXLAN \
     CONFIG_GENEVE \
     CONFIG_FIB_RULES; do
-    check_requirement "$opt" "if [[ \"${config_file##*.}\" == \"gz\" ]]; then zgrep -E '^$opt=(y|m)' \"$config_file\"; else grep -E '^$opt=(y|m)' \"$config_file\"; fi"
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "- $val [PASS]"
+    else
+      echo "- $opt [FAIL]"
+    fi
   done
 }
 
+# ==============================================================================
+# TEST GROUP: L7 and FQDN Policies
+# ==============================================================================
 test_l7_fqdn_policies() {
-  local config_file
-  config_file=$(get_config_file)
-  echo "Checking L7 / FQDN policy kernel options in $config_file"
+  local cfg
+  cfg=$(get_config_file)
   for opt in \
     CONFIG_NETFILTER_XT_TARGET_TPROXY \
     CONFIG_NETFILTER_XT_TARGET_MARK \
     CONFIG_NETFILTER_XT_TARGET_CT \
     CONFIG_NETFILTER_XT_MATCH_MARK \
     CONFIG_NETFILTER_XT_MATCH_SOCKET; do
-    check_requirement "$opt" "if [[ \"${config_file##*.}\" == \"gz\" ]]; then zgrep -E '^$opt=(y|m)' \"$config_file\"; else grep -E '^$opt=(y|m)' \"$config_file\"; fi"
+    local val
+    if [[ "${cfg##*.}" == "gz" ]]; then
+      val=$(zgrep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    else
+      val=$(grep -E "^$opt=(y|m)" "$cfg" | head -n1 || true)
+    fi
+    if [[ -n $val ]]; then
+      echo "- $val [PASS]"
+    else
+      echo "- $opt [FAIL]"
+    fi
   done
 }
 
