@@ -94,13 +94,17 @@ check_os() {
 }
 
 check_etcd() {
-  if command -v etcd &>/dev/null; then
-    local ver
-    ver=$(etcd --version 2>&1 | grep -Eo 'etcd Version: v?([0-9]+\.[0-9]+\.[0-9]+)' | awk '{print $3}')
-    check_requirement "etcd: $ver" \
-      "version_ge \"$ver\" \"3.1.0\""
+  # Use kubectl to check etcd pods in Running state
+  local count
+  if ! count=$(/var/lib/rancher/rke2/bin/kubectl get pods -n kube-system -l component=etcd 2>/dev/null | awk 'NR>1 && $3=="Running" {c++} END{print c+0}'); then
+    echo "[FAIL] etcd: kubectl command failed"
+    return 1
+  fi
+  if [ "$count" -ge 1 ]; then
+    echo "[PASS] etcd: Running"
+    return 0
   else
-    echo "[FAIL] etcd: not found"
+    echo "[FAIL] etcd: not found or not Running"
     return 1
   fi
 }
