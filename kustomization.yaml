@@ -5,5 +5,5 @@ resources:
   - applications/cilium
   - applications/cert-manager
   - applications/argocd
-  - applications/keycloak
-  - applications/n8n
+  # - applications/keycloak
+  # - applications/n8n
