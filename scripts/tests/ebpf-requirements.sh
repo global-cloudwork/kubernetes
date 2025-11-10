@@ -254,33 +254,26 @@ test_netkit_device_mode() {
 echo "===================================="
 echo "=== eBPF Requirements Checks ======="
 echo "===================================="
-echo
 
-echo "== A. Base Requirements"
+echo "==== A. Base Requirements"
 test_base_requirements || ((failures++))
 
-echo
-echo "== B. Iptables-based Masquerading"
+echo "==== B. Iptables-based Masquerading"
 test_iptables_masquerading || ((failures++))
 
-echo
-echo "== C. Tunneling and Routing"
+echo "==== C. Tunneling and Routing"
 test_tunneling_routing || ((failures++))
 
-echo
-echo "== D. L7 and FQDN Policies"
+echo "==== D. L7 and FQDN Policies"
 test_l7_fqdn_policies || ((failures++))
 
-echo
-echo "== E. Requirements for IPsec"
+echo "==== E. Requirements for IPsec"
 test_ipsec_requirements || ((failures++))
 
-echo
-echo "== F. Bandwidth Manager Requirements"
+echo "==== F. Bandwidth Manager Requirements"
 test_bandwidth_manager || ((failures++))
 
-echo
-echo "== G. Netkit Device Mode Requirements"
+echo "==== G. Netkit Device Mode Requirements"
 test_netkit_device_mode || ((failures++))
 
 echo

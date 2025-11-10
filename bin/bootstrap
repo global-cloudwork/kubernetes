@@ -77,6 +77,33 @@ while true; do
 done
 echo "Wait finished, instance is running..."
 
+echo "${BOLD}Forcing a remote reboot to load new kernel modules...${RESET}"
+
+gcloud compute ssh ubuntu@$INSTANCE_NAME \
+    --project=$GCP_PROJECT \
+    --zone=$GCP_ZONE \
+    --command="sudo reboot" \
+    --quiet
+
+echo "Reboot command sent. Waiting for instance to become available again (this may take 60-90 seconds)..."
+sleep 10
+
+while true; do
+    STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" \
+        --project="$GCP_PROJECT" \
+        --zone="$GCP_ZONE" \
+        --format='get(status)' 2>/dev/null)
+
+    if [[ "$STATUS" == "RUNNING" ]]; then
+        sleep 5 
+        break
+    fi
+    echo "Instance status: $STATUS. Still waiting..."
+    sleep 15
+done
+
+echo "${BOLD}Reboot successful. Kernel modules are now loaded.${RESET}"
+
 gcloud compute ssh ubuntu@$INSTANCE_NAME \
     --project=$GCP_PROJECT \
     --zone=$GCP_ZONE \
