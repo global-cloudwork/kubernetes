@@ -22,7 +22,6 @@ helmCharts:
       k8sServicePort: 6443
       ipam:
         mode: kubernetes
-      tunnel: disabled
       routingMode: native
       ipv4NativeRoutingCIDR: 10.42.0.0/16
       operator:
