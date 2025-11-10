@@ -35,6 +35,9 @@ export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google
 export PATH=/var/lib/rancher/rke2/bin:$PATH
 PATH=$PATH:/opt/rke2/bin
 
+git config --global user.email "josh.v.mcconnell@gmail.com"
+git config --global user.name "josh m"
+
 #===============================================================================
 # Prepare the host system
 #===============================================================================
