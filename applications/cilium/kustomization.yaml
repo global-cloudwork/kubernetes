@@ -15,7 +15,7 @@ helmCharts:
     version: 1.18.1
     releaseName: cilium
     valuesInline:
-      allow-localhost: always
+      enable-bpf-masquerade: false
       kubeProxyReplacement: true
       gatewayAPI:
         enabled: true
