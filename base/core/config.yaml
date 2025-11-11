@@ -7,6 +7,7 @@ tls-san:
   - promotesudbury.ca
   - "*.promotesudbury.ca"
 disable:
+  - rke2-cilium 
   - rke2-ingress-nginx
   - rke2-snapshot-controller
   - rke2-snapshot-controller-crds
