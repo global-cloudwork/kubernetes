@@ -17,6 +17,7 @@ helmCharts:
     valuesInline:
       bpf:
         masquerade: true
+        lbExternalClusterIP: true
       kubeProxyReplacement: true
       gatewayAPI:
         enabled: true
