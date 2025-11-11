@@ -3,7 +3,7 @@
 # kubectl logs -n kube-system cilium-4qf4f -c cilium-agent | grep -E 'BPF|failed|error|warn|host routing|Legacy'
 
 # kubectl logs -n kube-system $(kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -c cilium-agent | grep -E 'BPF|failed|error|warn|host routing|Legacy'
-
+# kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}' | xargs -I {} kubectl exec -n kube-system {} -- cilium-dbg <command>
 
 # for pod in $(kubectl get pods -A -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name --no-headers | sed 's/  */,/g'); do
 #   NAMESPACE=$(echo $pod | cut -d',' -f1)
