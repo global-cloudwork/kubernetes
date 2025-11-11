@@ -16,7 +16,8 @@ helmCharts:
     releaseName: cilium
     valuesInline:
       routing-mode: native
-      ipam: kubernetes
+      ipam:
+        mode: kubernetes
       ipv4-native-routing-cidr: 10.128.0.0/20
       auto-direct-node-routes: true
       bpf:
