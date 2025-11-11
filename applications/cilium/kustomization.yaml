@@ -15,6 +15,15 @@ helmCharts:
     version: 1.18.1
     releaseName: cilium
     valuesInline:
+      routingMode: native
+      bpf:
+        dataPathMode: netkit
+        masquade: true
+        distrubitedLRU:
+          enabled: true
+        mapDynamicSizeRatio: 0.08
+      ipv4:
+        enabled: true
       kubeProxyReplacement: true
       gatewayAPI:
         enabled: true
