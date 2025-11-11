@@ -15,13 +15,16 @@ helmCharts:
     version: 1.9.12
     releaseName: cilium
     valuesInline:
+      ipam:
+        operator: 
+          clusterPoolIPv4MaskSize: 26
+          clusterPoolIPv4PodCIDR: 10.128.0.0/20
       hostServices:
         enabled: true
-      ipam:
-        mode: kubernetes
       ipv4-native-routing-cidr: 10.128.0.0/20
       autoDirectNodeRoutes: true
       masquerade: true
+      tunnel: disabled
       externalIPs: 
         enabled: true
       kubeProxyReplacement: true
@@ -35,8 +38,5 @@ helmCharts:
         enabled: true
         type: wireguard
       hubble:
-        enabled: true
-        relay:
-          enabled: true
         ui:
           enabled: true
