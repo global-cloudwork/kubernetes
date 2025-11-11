@@ -12,10 +12,12 @@ helmCharts:
   - name: cilium
     repo: https://helm.cilium.io/
     namespace: kube-system
-    version: 1.18.1
+    version: 1.9.12
     releaseName: cilium
     valuesInline:
       routing-mode: native
+      hostServices:
+        enabled: true
       ipam:
         mode: kubernetes
       ipv4-native-routing-cidr: 10.128.0.0/20
