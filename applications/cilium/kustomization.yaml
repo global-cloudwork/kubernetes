@@ -5,7 +5,6 @@ resources:
   - httproute.yaml
   - gateway-class.yaml
   - cilium-load-balancer-ip-pool.yaml
-  - cilium-network-policy.yaml
   - namespace.yaml
   
 helmCharts:
@@ -21,7 +20,6 @@ helmCharts:
           clusterPoolIPv4PodCIDR: 10.128.0.0/20
       hostServices:
         enabled: true
-      ipv4-native-routing-cidr: 10.128.0.0/20
       autoDirectNodeRoutes: true
       masquerade: true
       tunnel: disabled
