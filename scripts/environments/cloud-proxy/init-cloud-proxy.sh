@@ -100,12 +100,12 @@ echo "Section: Deploy Base and Core, then restart RKE2"
 # Deploy base
 echo "Applying Kustomize PATH: base/core/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f --debug -
+  kubectl apply --server-side --force-conflicts --debug -f -
 
 # Deploy core
 echo "Applying Kustomize PATH: /kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f --debug -
+  kubectl apply --server-side --force-conflicts --debug -f -
 
 # Swap in cilium cni none
 sed -i 's/^cni: none$/cni: cilium/' /etc/rancher/rke2/config.yaml
