@@ -15,16 +15,15 @@ helmCharts:
     version: 1.9.12
     releaseName: cilium
     valuesInline:
-      routing-mode: native
       hostServices:
         enabled: true
       ipam:
         mode: kubernetes
       ipv4-native-routing-cidr: 10.128.0.0/20
-      auto-direct-node-routes: true
-      bpf:
-        masquerade: true
-        lbExternalClusterIP: true
+      autoDirectNodeRoutes: true
+      masquerade: true
+      externalIPs: 
+        enabled: true
       kubeProxyReplacement: true
       gatewayAPI:
         enabled: true
