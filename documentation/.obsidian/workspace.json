@@ -1,0 +1,254 @@
+{
+  "main": {
+    "id": "6ba5a80f9d6a28d3",
+    "type": "split",
+    "children": [
+      {
+        "id": "895ea2cc81ce15fa",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a19a3dbb9a4bffb1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "sort/debug.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "debug"
+            }
+          },
+          {
+            "id": "abe33e4818f14c00",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Specific IP Addresses in Your Setup.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Specific IP Addresses in Your Setup"
+            }
+          },
+          {
+            "id": "20cf64faabf10cac",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Cloud-Proxy.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Cloud-Proxy"
+            }
+          },
+          {
+            "id": "188aa9fc0fdb86e6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "cert manager.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "cert manager"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "400f6f20ce0b7666",
+    "type": "split",
+    "children": [
+      {
+        "id": "c58dcc80116f2588",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "256c8533b7c38636",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "c8f1354f5db3bebc",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "cert",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "decb4aeb8dec027f",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 344.5
+  },
+  "right": {
+    "id": "593154f481864b55",
+    "type": "split",
+    "children": [
+      {
+        "id": "a9ca0d112ae1b1bc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5ab5c71a4d21d343",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Debug Cluster.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Debug Cluster"
+            }
+          },
+          {
+            "id": "fab1e5ab68c0f54c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Debug Cluster.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Debug Cluster"
+            }
+          },
+          {
+            "id": "8ee4b1d022bb1a1b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "8d784b5514d4a13e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Debug Cluster.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Debug Cluster"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "188aa9fc0fdb86e6",
+  "lastOpenFiles": [
+    "documentation/templates",
+    "documentation/sort/subnets.md",
+    "documentation/sort/sexy-bot-work.md",
+    "documentation/sort/mermaid-diagrams.md",
+    "documentation/sort/how-to-debug-cloud.md",
+    "documentation/sort/host-setup.md",
+    "documentation/sort/debug.md",
+    "documentation/sort/Tenant.md",
+    "documentation/sort/RKE2 - Advanced Options and Configuration.md",
+    "documentation/sort/Google-Cloud.md",
+    "documentation/sort/Gateway API Support.md",
+    "documentation/sort/Edge.md",
+    "documentation/sort/Directories.md",
+    "documentation/sort/Deployment-Script.md",
+    "documentation/sort/Debug Method.md",
+    "documentation/sort/Cilium as startup CNI, taints, and tollerations.md",
+    "documentation/sort/Architecture Diagrams.md",
+    "documentation/sort/Applications-ArgoCD.md",
+    "documentation/sort/Applications & Tools.md",
+    "documentation/sort/AI Notes.md",
+    "documentation/sort",
+    "documentation/repository-mirror/templates.md",
+    "documentation/repository-mirror/sort.md",
+    "documentation/repository-mirror/obsidian-notes.md",
+    "documentation/repository-mirror/base/tenant.md",
+    "documentation/repository-mirror/base/data.md",
+    "documentation/repository-mirror/base/edge.md",
+    "documentation/Schema/schemaorgcontext.jsonld",
+    "documentation/Schema/schemaorg.owl",
+    "documentation/Schema/schemaorg-subclasses.shacl",
+    "documentation/Schema/schemaorg-shapes.shexj",
+    "documentation/Schema/schemaorg-shapes.shacl",
+    "documentation/Schema/schemaorg-current-https.ttl",
+    "documentation/Schema/schemaorg-current-https.rdf",
+    "documentation/Schema/schemaorg-current-https.nt",
+    "documentation/Schema/schemaorg-current-https.nq"
+  ]
+}
