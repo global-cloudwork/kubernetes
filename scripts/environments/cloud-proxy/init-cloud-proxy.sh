@@ -100,12 +100,12 @@ echo "Section: Deploy Base and Core, then restart RKE2"
 # Deploy base
 echo "Applying Kustomize PATH: base/core/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+  kubectl apply --server-side --force-conflicts -f --debug -
 
 # Deploy core
 echo "Applying Kustomize PATH: /kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+  kubectl apply --server-side --force-conflicts -f --debug -
 
 # Swap in cilium cni none
 sed -i 's/^cni: none$/cni: cilium/' /etc/rancher/rke2/config.yaml
@@ -126,7 +126,7 @@ echo "Section: Deploy Edge and Tenant"
 # Deploy edge
 echo "Applying Kustomize PATH: base/edge/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+  kubectl apply --server-side --force-conflicts --debug -f -
 
 # # # Wait for deployments and pods to be ready
 # # kubectl -n cert-manager wait --for=condition=available "deployment/cert-manager-webhook" --timeout="180s"
@@ -135,7 +135,7 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" |
 # Deploy tenant
 echo "Applying Kustomize PATH: base/tenant/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+  kubectl apply --server-side --force-conflicts --debug -f -
 
 # Create dns challenge key
 gcloud secrets versions access latest \
