@@ -134,8 +134,8 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" |
 
 # Deploy tenant
 echo "Applying Kustomize PATH: base/tenant/kustomization.yaml"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
+kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" \ 
+  | kubectl apply --server-side --force-conflicts -f -
 
 # Create dns challenge key
 gcloud secrets versions access latest \
