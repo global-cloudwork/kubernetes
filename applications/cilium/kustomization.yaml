@@ -24,8 +24,3 @@ helmCharts:
       encryption:
         enabled: true
         type: wireguard
-      hubble:
-        ui:
-          enabled: true
-        relay:
-          enabled: true
