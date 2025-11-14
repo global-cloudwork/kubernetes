@@ -52,6 +52,7 @@ git config --global user.name "josh m"
 #===============================================================================
 # Prepare the host system
 #===============================================================================
+echo
 echo "Section: Prepare the host system"
 #===============================================================================
 
@@ -74,10 +75,12 @@ curl https://get.rke2.io \
 #===============================================================================
 # Configure and start the RKE2 service
 #===============================================================================
+echo
 echo "Section: Configure and start the RKE2 service"
 #===============================================================================
 
 # Enable on boot, then start of RKE2
+echo
 echo "First start of RKE2 to install crd's"
 sudo systemctl enable rke2-server.service
 sudo systemctl start rke2-server.service
@@ -94,15 +97,18 @@ sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /h
 #===============================================================================
 # Deploy Base and Core, then restart RKE2
 #===============================================================================
+echo
 echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 
 # Deploy base
+echo
 echo "Applying Kustomize PATH: base/core/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 # Deploy core
+echo
 echo "Applying Kustomize PATH: /kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
@@ -111,19 +117,23 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
 # sed -i 's/^cni: none$/cni: cilium/' /etc/rancher/rke2/config.yaml
 
 # Restart RKE2 to pick up new manifests
+echo
 echo "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
+echo
 echo "Sleeping 2 minutes to allow RKE2 to restart"
 sleep 2m
 
 #===============================================================================
 # Deploy Edge and Tenant
 #===============================================================================
+echo
 echo "Section: Deploy Edge and Tenant"
 #===============================================================================
 
 # Deploy edge
+echo
 echo "Applying Kustomize PATH: base/edge/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
@@ -133,6 +143,7 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" |
 # # kubectl -n cert-manager wait --for=condition=ready pod -l "app.kubernetes.io/name=webhook" --timeout="180s"
 
 # Deploy tenant
+echo
 echo "Applying Kustomize PATH: base/tenant/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
