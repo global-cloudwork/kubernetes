@@ -1,0 +1,10 @@
+0000..007F; Basic Latin
+0080..00FF; Latin-1 Supplement
+0100..017F; Latin Extended-A
+0180..024F; Latin Extended-B
+2000..206F; General Punctuation
+2100..214F; Letterlike Symbols
+2200..22FF; Mathematical Operators
+27C0..27EF; Miscellaneous Mathematical Symbols-A
+2980..29FF; Miscellaneous Mathematical Symbols-B
+2A00..2AFF; Supplemental Mathematical Operators
