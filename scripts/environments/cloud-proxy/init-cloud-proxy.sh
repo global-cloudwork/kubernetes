@@ -164,3 +164,14 @@ kubectl create secret generic dns-key \
 
 rm key.json
 
+set -euo pipefail
+
+# Determine the Cilium pod name (name contains 'cilium')
+CILIUM_POD=$(kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}')
+
+# If a Cilium pod was found, show relevant agent logs to help with BPF initialization issues
+if [ -n "${CILIUM_POD:-}" ]; then
+  kubectl logs -n kube-system "$CILIUM_POD" -c cilium-agent | \
+    grep -E 'BPF|failed|error|warn|host routing|Legacy' || true
+fi
+
