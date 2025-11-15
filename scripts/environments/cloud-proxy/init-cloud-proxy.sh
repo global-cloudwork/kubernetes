@@ -164,7 +164,8 @@ kubectl create secret generic dns-key \
 
 rm key.json
 
-set -euo pipefail
+# Wait for Cilium readiness to avoid PodInitializing errors during tenant deployment
+kubectl wait --for=condition=Ready pod -l k8s-app=cilium -n kube-system --timeout=180s 2>/dev/null || true
 
 # Determine the Cilium pod name (name contains 'cilium')
 CILIUM_POD=$(kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}')
