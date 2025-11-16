@@ -1,3 +1,6 @@
+**Summary**
+
+Hive Minds is an autonomous knowledge platform that transforms unstructured data into actionable insights through a self-organizing, hive-inspired architecture. Agents (“bees”) forage, process, and evolve across generations under the direction of a central “Queen,” ensuring dynamic scaling and continuous improvement. Core workflows are defined by hexagon templates, enabling automated data ingestion into a graph database with minimal human intervention. The open-source, versioned system delivers immediate value, hands-off deployment, and real-time, queryable knowledge.
 Hive Minds: Autonomous Knowledge Growth
 
 Business Problem
