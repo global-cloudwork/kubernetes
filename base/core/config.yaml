@@ -19,7 +19,7 @@ tls-san:
 
 cluster-cidr: 10.42.0.0/16
 service-cidr: 10.43.0.0/16
-cluster-dns: 10.43.0.10
+# cluster-dns: 10.43.0.10
 
-advertise-address: ${INTERNAL_IP}
+# advertise-address: ${INTERNAL_IP}
 
