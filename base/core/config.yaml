@@ -4,7 +4,6 @@ write-kubeconfig-mode: "0644"
 
 cni: none
 disable-kube-proxy: true
-disable-cloud-controller: true
 disable:
   - rke2-ingress-nginx
   - rke2-metrics-server
@@ -19,7 +18,7 @@ tls-san:
 
 cluster-cidr: 10.42.0.0/16
 service-cidr: 10.43.0.0/16
-# cluster-dns: 10.43.0.10
+cluster-dns: 10.43.0.10
 
 # advertise-address: ${INTERNAL_IP}
 
