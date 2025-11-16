@@ -17,21 +17,12 @@ tls-san:
   - promotesudbury.ca
   - "promotesudbury.ca"
 
-cluster-cidr: "10.32.0.0/15"
-service-cidr: "10.42.0.0/15"
-cluster-dns: "10.42.0.10"
+cluster-cidr: 10.42.0.0/16
+service-cidr: 10.43.0.0/16
+cluster-dns: 10.43.0.10
 
 advertise-address: ${INTERNAL_IP}
 
-etcd-expose-metrics: true
-etcd-arg: "--quota-backend-bytes 2048000000"
-etcd-snapshot-schedule-cron: "0 3 * * *"
-etcd-snapshot-retention: 10
-
 node-taint:
   - "node.cilium.io/agent-not-ready"
-
-kube-apiserver-arg:
-kube-controller-manager-arg:
-kubelet-arg:
 
