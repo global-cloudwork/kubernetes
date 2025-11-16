@@ -23,6 +23,3 @@ cluster-dns: 10.43.0.10
 
 advertise-address: ${INTERNAL_IP}
 
-node-taint:
-  - "node.cilium.io/agent-not-ready"
-
