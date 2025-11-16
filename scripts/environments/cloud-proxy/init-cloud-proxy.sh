@@ -123,7 +123,7 @@ sudo systemctl restart rke2-server.service
 
 echo
 echo "Sleeping 2 minutes to allow RKE2 to restart"
-sleep 2m
+sleep 1m
 
 #===============================================================================
 # Deploy Edge and Tenant
