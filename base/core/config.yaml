@@ -22,5 +22,8 @@ cluster-cidr: 10.42.0.0/16
 service-cidr: 10.43.0.0/16
 cluster-dns: 10.43.0.10
 
-# advertise-address: ${INTERNAL_IP}
+kubelet-arg:
+  - "register-with-taints=node.cilium.io/agent-not-ready=true:NoSchedule"
 
+# advertise-address: ${INTERNAL_IP}
+# kubectl get pods --all-namespaces -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,HOSTNETWORK:.spec.hostNetwork --no-headers=true | grep '<none>' | awk '{print "-n "$1" "$2}' | xargs -L 1 -r kubectl delete pod
