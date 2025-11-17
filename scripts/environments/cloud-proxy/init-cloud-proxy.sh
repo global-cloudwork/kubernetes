@@ -3,7 +3,9 @@
 # kubectl logs -n kube-system cilium-4qf4f -c cilium-agent | grep -E 'BPF|failed|error|warn|host routing|Legacy'
 
 
-#kubectl -n kube-system exec cilium-operator-7664d7f4d9-pbnqq -- cilium status
+#kubectl -n kube-system exec $(kubectl -n kube-system get pod -o name | grep cilium-operator | head -n 1) -- cilium status
+
+
 # kubectl -n kube-system exec -it cilium-l7hrc -- bash
 # cilium status
 
