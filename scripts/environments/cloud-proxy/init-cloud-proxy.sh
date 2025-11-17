@@ -126,7 +126,7 @@ echo "Restart RKE2 to pick up new manifests"
 sudo systemctl restart rke2-server.service
 
 echo
-echo "Sleeping 2 minutes to allow RKE2 to restart"
+echo "Sleeping 1 minute to allow RKE2 to restart"
 sleep 1m
 
 #===============================================================================
