@@ -116,6 +116,8 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
 # Swap in cilium cni none
 # sed -i 's/^cni: none$/cni: cilium/' /etc/rancher/rke2/config.yaml
 
+echo
+echo "Switching CNI to Cilium in /etc/rancher/rke2/config.yaml"
 sudo sed -i -e '/^cni: none/d' -e '$a cni: cilium' /etc/rancher/rke2/config.yaml
 
 # Restart RKE2 to pick up new manifests
