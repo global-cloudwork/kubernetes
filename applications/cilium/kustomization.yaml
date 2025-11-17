@@ -11,10 +11,10 @@ helmCharts:
   - name: cilium
     repo: https://helm.cilium.io/
     namespace: kube-system
-    version: 1.9.12
+    version: 1.19.0-pre.2
     releaseName: cilium
     valuesInline:
-      kubeProxyReplacement: "strict"
+      kubeProxyReplacement: "true"
       gatewayAPI:
         enabled: true
       k8sServiceHost: 10.128.15.231
