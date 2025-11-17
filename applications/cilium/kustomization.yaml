@@ -13,9 +13,9 @@ helmCharts:
     namespace: kube-system
     version: 1.19.0-pre.2
     releaseName: cilium
-    bpf:
-      masquade: true
     valuesInline:
+      bpf:
+        masquade: true
       kubeProxyReplacement: "true"
       gatewayAPI:
         enabled: true
