@@ -6,21 +6,21 @@ cni: cilium
 disable-kube-proxy: true
 disable:
   - rke2-ingress-nginx
-  - rke2-metrics-server
-  - rke2-snapshot-controller
-  - rke2-snapshot-controller-crd
-  - rke2-snapshot-validation-webhook
+  # - rke2-metrics-server
+  # - rke2-snapshot-controller
+  # - rke2-snapshot-controller-crd
+  # - rke2-snapshot-validation-webhook
 
 tls-san:
   - ${EXTERNAL_IP}
   - promotesudbury.ca
   - "*.promotesudbury.ca"
 
-node-ip: ${INTERNAL_IP}
+# node-ip: ${INTERNAL_IP}
 
-cluster-cidr: 10.42.0.0/16
-service-cidr: 10.43.0.0/16
-cluster-dns: 10.43.0.10
+# cluster-cidr: 10.42.0.0/16
+# service-cidr: 10.43.0.0/16
+# cluster-dns: 10.43.0.10
 
 #kubelet-arg:
 #  - "register-with-taints=node.cilium.io/agent-not-ready=true:NoSchedule"
