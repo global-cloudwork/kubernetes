@@ -1,5 +1,5 @@
 
-node-name: cloud-proxy
+node-name: gateway
 write-kubeconfig-mode: "0644"
 
 cni: cilium

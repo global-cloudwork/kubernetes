@@ -28,7 +28,7 @@
 
 
 # kubectl get pods -A -o custom-columns=:.metadata.name --no-headers | xargs -I {} kubectl logs -n argocd {} --tail=500 | grep -i error
-# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/environments/cloud-proxy/init-cloud-proxy.sh | bash
+# curl --silent --show-error https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/environments/gateway/init-gateway.sh | bash
 #
 #sudo journalctl -u google-startup-scripts.service --no-pager
 #sudo systemctl status rke2-server.service
@@ -64,42 +64,26 @@ echo "Section: Prepare the host system"
 #===============================================================================
 
 mkdir -p $HOME/.kube/$CLUSTER_NAME
-sudo mkdir -p /etc/rancher/rke2/
-sudo mkdir -p /var/lib/rancher/rke2/server/manifests/
-sudo touch /etc/rancher/rke2/cloud.conf
-
-# Download RKE2 configuration files, then substitute environment variables
-sudo curl --silent --show-error --remote-name-all --output-dir /tmp/ \
-  https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/base/core/config.yaml
-sudo --preserve-env envsubst < /tmp/config.yaml | sudo tee /etc/rancher/rke2/config.yaml
 
 # Install Helm and RKE2
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
     --remote-name-all --silent --show-error | bash
-curl https://get.rke2.io \
-  --remote-name-all --silent --show-error | sudo bash
 
-#===============================================================================
-# Configure and start the RKE2 service
-#===============================================================================
-echo
-echo "Section: Configure and start the RKE2 service"
-#===============================================================================
+# For AMD64 / x86_64
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.30.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
 
-# Enable on boot, then start of RKE2
-echo
-echo "First start of RKE2 to install crd's"
-sudo systemctl enable rke2-server.service
-sudo systemctl start rke2-server.service
+kind create cluster
 
-# Link kubectl command avoiding race conditions
-sudo ln -s /var/lib/rancher/rke2/bin/kubectl /usr/local/bin/kubectl
+echo "Sleeping 1 minute"
+sleep 1m
 
-# Copy RKE2-generated kubeconfig, set proper ownership, and merge all kubeconfig files
-sudo cp -f /etc/rancher/rke2/rke2.yaml $HOME/.kube/$CLUSTER_NAME/config
-sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
-KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
-sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+# # Copy RKE2-generated kubeconfig, set proper ownership, and merge all kubeconfig files
+# sudo cp -f /etc/rancher/rke2/rke2.yaml $HOME/.kube/$CLUSTER_NAME/config
+# sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+# KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+# sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
 
 #===============================================================================
 # Deploy Base and Core, then restart RKE2
@@ -108,69 +92,27 @@ echo
 echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 
-# Deploy base
-echo
-echo "Applying Kustomize PATH: base/core/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-
-# Deploy core
-echo
-echo "Applying Kustomize PATH: /kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-
-# Swap in cilium cni none
-# sed -i 's/^cni: none$/cni: cilium/' /etc/rancher/rke2/config.yaml
-
-echo
-echo "Switching CNI to Cilium in /etc/rancher/rke2/config.yaml"
-sudo sed -i -e '/^cni: none/d' -e '$a cni: cilium' /etc/rancher/rke2/config.yaml
-
-# Restart RKE2 to pick up new manifests
-echo
-echo "Restart RKE2 to pick up new manifests"
-sudo systemctl restart rke2-server.service
-
-echo
-echo "Sleeping 1 minute to allow RKE2 to restart"
-sleep 1m
-
-#===============================================================================
-# Deploy Edge and Tenant
-#===============================================================================
-echo
-echo "Section: Deploy Edge and Tenant"
-#===============================================================================
-
-# Deploy edge
-echo
-echo "Applying Kustomize PATH: base/edge/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-
-# # # Wait for deployments and pods to be ready
-# # kubectl -n cert-manager wait --for=condition=available "deployment/cert-manager-webhook" --timeout="180s"
-# # kubectl -n cert-manager wait --for=condition=ready pod -l "app.kubernetes.io/name=webhook" --timeout="180s"
-
-# Deploy tenant
-echo
-echo "Applying Kustomize PATH: base/tenant/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-# Create dns challenge key
-gcloud secrets versions access latest \
-  --secret="dns-solver-json-key" \
-  --project="global-cloudworks" \
-  > key.json
+# # Create dns challenge key
+# gcloud secrets versions access latest \
+#   --secret="dns-solver-json-key" \
+#   --project="global-cloudworks" \
+#   > key.json
 
-kubectl create secret generic dns-key \
-  --from-file=key.json \
-  --namespace=gateway
+# kubectl create secret generic dns-key \
+#   --from-file=key.json \
+#   --namespace=gateway
 
-kubectl create secret generic dns-key \
-  --from-file=key.json \
-  --namespace=cert-manager
+# kubectl create secret generic dns-key \
+#   --from-file=key.json \
+#   --namespace=cert-manager
 
 rm key.json

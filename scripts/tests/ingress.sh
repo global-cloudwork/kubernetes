@@ -13,7 +13,7 @@ kubectl run dns-test --image=busybox:latest --restart=Never --rm -it -- sh
 kubectl get pod cert-manager-794db7f658-cfhbj -n cert-manager -o wide
 
 kubectl run connectivity-test -it --rm --image=curlimages/curl --restart=Never \
---overrides='{"spec": {"nodeSelector": {"kubernetes.io/hostname": "cloud-proxy"}}}' \
+--overrides='{"spec": {"nodeSelector": {"kubernetes.io/hostname": "gateway"}}}' \
 -- /bin/sh
 
 curl -k -v https://10.43.0.1:443

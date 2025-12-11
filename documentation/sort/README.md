@@ -4,7 +4,7 @@ This folder contains project-specific notes and a directory-only mirror of the r
 
 Quick pointers:
 - `obsidian/documentation/repository-mirror/` — mirrors the repository directory structure and contains one markdown file per folder describing intent, important files and where to look in the code.
-- Top-level notes (e.g. `Cilium System Requirements.md`, `Cloud-Proxy.md`) hold operational guidance and design decisions.
+- Top-level notes (e.g. `Cilium System Requirements.md`, `gateway.md`) hold operational guidance and design decisions.
 
 Guidance for contributors:
 - When you add or rename a folder in the repo, add or update the corresponding file under `obsidian/documentation/repository-mirror/<path>/` so readers can find documentation by path.

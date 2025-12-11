@@ -5,10 +5,10 @@ set -e  # exit immediately on error
 # Load environment variables
 # -------------------------------
 # Source main env file
-if [ -f ../.cloud-proxy.dev.env ]; then
-    source ../.cloud-proxy.dev.env
+if [ -f ../.gateway.dev.env ]; then
+    source ../.gateway.dev.env
 else
-    echo "ERROR: ../.cloud-proxy.dev.env not found!"
+    echo "ERROR: ../.gateway.dev.env not found!"
     exit 1
 fi
 
