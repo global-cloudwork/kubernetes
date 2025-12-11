@@ -1,97 +1,104 @@
 #!/bin/bash
+set -e  # exit immediately on error
 
-BOLD="\e[1m"
-ITALIC="\e[3m"
-UNDERLINE="\e[4m"
-RESET="\e[0m"
+# -------------------------------
+# Load environment variables
+# -------------------------------
+# Source main env file
+if [ -f ../.cloud-proxy.dev.env ]; then
+    source ../.cloud-proxy.dev.env
+else
+    echo "ERROR: ../.cloud-proxy.dev.env not found!"
+    exit 1
+fi
 
-# ======================== Style Ends Here ========================
+echo "Creating EC2 Instance $INSTANCE_NAME in AWS"
 
-export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
-
-echo "Creating Compute Instance $INSTANCE_NAME in Project $GCP_PROJECT"
-
-echo "apt installing wireguard"
-# sudo apt-get -qq update
-# sudo apt-get -qq -y install  git wireguard
-
-echo "Generate Wireguard Keys, Curl and decrypt metadata, and set variables"
-wg genkey > $PRIVATE_KEY
-wg pubkey < $PRIVATE_KEY > $PUBLIC_KEY
-
-echo "Getting environment variables from rke2 cluster"
+# -------------------------------
+# Get secrets from RKE2 cluster
+# -------------------------------
+echo "Getting environment variables from RKE2 cluster..."
 CILIUM_CA=$(kubectl get secret -n kube-system cilium-ca -o yaml)
 TOKEN=$(sudo cat /var/lib/rancher/rke2/server/node-token)
 
-echo "updating secrets in secret manager"
-gcloud secrets versions add public-key \
-    --data-file=- < "$PUBLIC_KEY"
-gcloud secrets versions add cilium-certificate \
-    --data-file=- <<< "$CILIUM_CA"
-gcloud secrets versions add on-site-token \
-    --data-file=- <<< "$TOKEN"
+# -------------------------------
+# Update AWS Secrets Manager (optional)
+# -------------------------------
+# Uncomment and adjust if needed
+# aws secretsmanager create-secret --name public-key --secret-string file://"$PUBLIC_KEY" 2>/dev/null || \
+# aws secretsmanager put-secret-value --secret-id public-key --secret-string file://"$PUBLIC_KEY"
+#
+# aws secretsmanager create-secret --name cilium-certificate --secret-string "$CILIUM_CA" 2>/dev/null || \
+# aws secretsmanager put-secret-value --secret-id cilium-certificate --secret-string "$CILIUM_CA"
+#
+# aws secretsmanager create-secret --name on-site-token --secret-string "$TOKEN" 2>/dev/null || \
+# aws secretsmanager put-secret-value --secret-id on-site-token --secret-string "$TOKEN"
 
-echo "checking if instance exists..."
-if [ -n "$(gcloud compute instances list --filter="name:($INSTANCE_NAME)" --format="value(name)" --project="$GCP_PROJECT" --zones="$GCP_ZONE")" ]; then
-    echo "it exists, deleting"
-    gcloud compute instances delete "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" --quiet
+# -------------------------------
+# Terminate existing instance(s)
+# -------------------------------
+echo "Checking if EC2 instance exists..."
+INSTANCE_IDS=$(aws ec2 describe-instances \
+    --filters "Name=tag:Name,Values=$INSTANCE_NAME" "Name=instance-state-name,Values=pending,running,stopping,stopped" \
+    --query "Reservations[*].Instances[*].InstanceId" --output text)
+
+if [ -n "$INSTANCE_IDS" ]; then
+    echo "Instance(s) found: $INSTANCE_IDS"
+    echo "Terminating..."
+    aws ec2 terminate-instances --instance-ids $INSTANCE_IDS
+    aws ec2 wait instance-terminated --instance-ids $INSTANCE_IDS
+    echo "Instance(s) terminated."
+else
+    echo "No instance found with Name=$INSTANCE_NAME"
 fi
 
-echo "Waiting for instance to delete"
-while [[ $(gcloud compute instances describe "$INSTANCE_NAME" --project="$GCP_PROJECT" --zone="$GCP_ZONE" &> /dev/null; echo $?) -eq 0 ]]; do
-    sleep 5
-done
+# -------------------------------
+# Create new EC2 instance
+# -------------------------------
+echo "Creating EC2 instance $INSTANCE_NAME..."
 
-echo "Creating instance $INSTANCE_NAME"
-gcloud compute instances create "$INSTANCE_NAME" \
-    --project="$GCP_PROJECT" \
-    --zone="$GCP_ZONE" \
-    --machine-type="$MACHINE_TYPE" \
-    --network-interface=network-tier=STANDARD,stack-type=IPV4_ONLY,subnet=default,address=cloud-proxy,private-network-ip=cloud-proxy-internal \
-    --maintenance-policy=TERMINATE \
-    --provisioning-model=SPOT \
-    --scopes=cloud-platform \
-    --service-account="$SERVICE_ACCOUNT" \
-    --tags=http-server,https-server \
-    --create-disk=auto-delete=yes,boot=yes,device-name=wireguard,image="$IMAGE",mode=rw,size=15,type=pd-standard \
-    --no-shielded-secure-boot \
-    --shielded-vtpm \
-    --shielded-integrity-monitoring \
-    --labels=goog-ec-src=vm_add-gcloud \
-    --reservation-affinity=any \
-    --metadata=startup-script-url="$STARTUP_SCRIPT_URL"
-    
-echo "Waiting for instance to be running"
+# Handle user-data if it is a URL
+if [[ "$STARTUP_SCRIPT_URL" =~ ^https?:// ]]; then
+    USER_DATA=$(curl -s "$STARTUP_SCRIPT_URL")
+else
+    USER_DATA="$STARTUP_SCRIPT_URL"
+fi
 
-RETRY_INTERVAL=20
+INSTANCE_ID=$(aws ec2 run-instances \
+    --image-id "ami-0f5fcdfbd140e4ab7" \
+    --count 1 \
+    --instance-type "$INSTANCE_TYPE" \
+    --key-name "$KEY_NAME" \
+    --subnet-id "$SUBNET_ID" \
+    --associate-public-ip-address \
+    --security-group-ids "$SECURITY_GROUP_IDS" \
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME}]" \
+    --user-data "$STARTUP_SCRIPT_URL" \
+    --query 'Instances[0].InstanceId' \
+    --output text)
+
+echo "Waiting for instance to be running..."
+aws ec2 wait instance-running --instance-ids "$INSTANCE_ID"
+
+# Get the public DNS
+PUBLIC_DNS=$(aws ec2 describe-instances \
+    --instance-ids "$INSTANCE_ID" \
+    --query 'Reservations[0].Instances[0].PublicDnsName' \
+    --output text)
+
+echo "Instance is running at $PUBLIC_DNS"
+
+# -------------------------------
+# SSH into the instance
+# -------------------------------
 SSH_RETRIES=4
 SSH_DELAY=10
 
-while true; do
-    STATUS=$(gcloud compute instances describe "$INSTANCE_NAME" \
-        --project="$GCP_PROJECT" \
-        --zone="$GCP_ZONE" \
-        --format='get(status)' 2>/dev/null)
-
-    if [[ "$STATUS" == "RUNNING" ]]; then
-        break
-    fi
-
-    echo "Waiting..."
-    sleep $RETRY_INTERVAL
-done
-
-echo "Wait finished, instance is running..."
-
-# Retry SSH up to SSH_RETRIES times
-for ((i=1; i<=SSH_RETRIES; i++)); do
-    echo "Attempt $i to SSH into $INSTANCE_NAME..."
-    
-    gcloud compute ssh ubuntu@$INSTANCE_NAME \
-        --project=$GCP_PROJECT \
-        --zone=$GCP_ZONE \
-        --ssh-flag="-o UserKnownHostsFile=/dev/null" && break
-    
+for ((i=1;i<=SSH_RETRIES;i++)); do
+    echo "Attempt $i to SSH into $PUBLIC_DNS..."
+    ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ubuntu@"$PUBLIC_DNS" && break
     echo "SSH failed, retrying in $SSH_DELAY seconds..."
     sleep $SSH_DELAY
 done
+
+echo "Script completed successfully."
