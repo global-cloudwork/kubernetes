@@ -74,7 +74,7 @@ curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 
-kind create cluster
+kind create cluster --config=kind-config.yaml
 
 echo "Sleeping 1 minute"
 sleep 1m
