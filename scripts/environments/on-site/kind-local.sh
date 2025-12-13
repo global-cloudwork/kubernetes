@@ -2,6 +2,7 @@
 # CILIUM_POD="${kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}'}"
 # kubectl logs -n kube-system cilium-4qf4f -c cilium-agent | grep -E 'BPF|failed|error|warn|host routing|Legacy'
 
+source ./.on-site.dev.env
 
 #kubectl -n kube-system exec $(kubectl -n kube-system get pod -o name | grep cilium-operator | head -n 1) -- cilium status
 

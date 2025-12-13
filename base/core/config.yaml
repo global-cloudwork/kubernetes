@@ -1,4 +1,3 @@
-
 node-name: gateway
 write-kubeconfig-mode: "0644"
 
