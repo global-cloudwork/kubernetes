@@ -7,3 +7,4 @@ helmCharts:
     namespace: homepage
     version: 4.4.1
     releaseName: my-homepage
+
