@@ -6,7 +6,7 @@ resources:
   # - applications/cert-manager
   - applications/argocd
   # - applications/homepage
-  - applications/erpnext
+  # - applications/erpnext
   - applications/actualbudget
   - applications/n8n
   - applications/neo4j
