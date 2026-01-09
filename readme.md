@@ -1,3 +1,8 @@
+kubectl -n default patch secret argocd-secret \
+  -p '{"stringData": {"server.secretkey": "'$(openssl rand -base64 32)'"}}'
+
+
+
 # 📘 Repository Directory & Documentation Index
 
 This document contains instructions on how to navigate the documentation.
