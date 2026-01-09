@@ -10,5 +10,5 @@ resources:
   # - applications/actualbudget
   - applications/n8n
   - applications/neo4j
-  - applications/openwebui
+  - applications/open-webui
   - applications/vaultwarden
