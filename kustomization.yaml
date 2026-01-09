@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   # - applications/cilium
   # - applications/cert-manager
-  # - applications/argocd
+  - applications/argocd
   - applications/homepage
   - applications/erpnext
   - applications/actualbudget

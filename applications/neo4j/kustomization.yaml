@@ -11,4 +11,3 @@ helmCharts:
     namespace: neo4j
     version: 2025.10.1
     releaseName: neo4j
-    valuesInline:

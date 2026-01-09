@@ -11,4 +11,3 @@ helmCharts:
     namespace: open-webui
     version: 8.12.3
     releaseName: open-webui
-    valuesInline:

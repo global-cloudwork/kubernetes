@@ -7,4 +7,3 @@ helmCharts:
     namespace: n8n
     version: 1.15.17
     releaseName: n8n
-    valuesInline:
