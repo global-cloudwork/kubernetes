@@ -5,7 +5,7 @@ resources:
   # - applications/cilium
   # - applications/cert-manager
   - applications/argocd
-  - applications/homepage
+  # - applications/homepage
   - applications/erpnext
   - applications/actualbudget
   - applications/n8n
