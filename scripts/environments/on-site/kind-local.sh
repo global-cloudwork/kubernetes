@@ -2,6 +2,7 @@
 # CILIUM_POD="${kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}'}"
 # kubectl logs -n kube-system cilium-4qf4f -c cilium-agent | grep -E 'BPF|failed|error|warn|host routing|Legacy'
 
+source ./.on-site.dev.env
 
 #kubectl -n kube-system exec $(kubectl -n kube-system get pod -o name | grep cilium-operator | head -n 1) -- cilium status
 
@@ -43,80 +44,76 @@
 #
 #===============================================================================
 
+# # Import environment variables from Secret Manager, instance metadata, and bash
+# export $(gcloud secrets versions access latest --secret=development-env-file | xargs)
+# export EXTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
+# export INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip)
+# ## Disabled: external test functions are no longer fetched
+# # source <(curl -sSL https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/scripts/functions/test-functions.sh)
+# # Set PATH to include rke2 binaries
+# export PATH=/var/lib/rancher/rke2/bin:$PATH
+# PATH=$PATH:/opt/rke2/bin
 
-export ../../../
-PATH=$PATH:/opt/rke2/bin
+# git config --global user.email "josh.v.mcconnell@gmail.com"
+# git config --global user.name "josh m"
 
-git config --global user.email "josh.v.mcconnell@gmail.com"
-git config --global user.name "josh m"
+# #===============================================================================
+# # Prepare the host system
+# #===============================================================================
+# echo
+# echo "Section: Prepare the host system"
+# #===============================================================================
 
-# Install Helm and RKE2
+# mkdir -p $HOME/.kube/$CLUSTER_NAME
+
+# # Install Helm and RKE2
 # curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
-#    --remote-name-all --silent --show-error | bash
+#     --remote-name-all --silent --show-error | bash
 
-# Deploy core
+# # For AMD64 / x86_64
+# [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.30.0/kind-linux-amd64
+# chmod +x ./kind
+# sudo mv ./kind /usr/local/bin/kind
+
+# kind create cluster --config=kind-config.yaml
+
+# echo "Sleeping 1 minute"
+# sleep 1m
+
+# # Copy RKE2-generated kubeconfig, set proper ownership, and merge all kubeconfig files
+# sudo cp -f /etc/rancher/rke2/rke2.yaml $HOME/.kube/$CLUSTER_NAME/config
+# sudo chown "$USER":"$USER" "$HOME/.kube/$CLUSTER_NAME/config"
+# KUBECONFIG_LIST=$(find -L /home/ubuntu/.kube -mindepth 2 -type f -name config | paste -sd:)
+# sudo kubectl --kubeconfig="$KUBECONFIG_LIST" config view --flatten | sudo tee /home/ubuntu/.kube/config > /dev/null
+
+#===============================================================================
+# Deploy Base and Core, then restart RKE2
+#===============================================================================
 echo
-echo "Applying Kustomize PATH: base/core/kustomization.yaml"
+echo "Section: Deploy Base and Core, then restart RKE2"
+#===============================================================================
+
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-
-# Deploy root
-echo
-echo "Applying Kustomize PATH: /kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
+# kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
+#   kubectl apply --server-side --force-conflicts -f -
 
-# Swap in cilium cni none
-# sed -i 's/^cni: none$/cni: cilium/' /etc/rancher/rke2/config.yaml
+# # Create dns challenge key
+# gcloud secrets versions access latest \
+#   --secret="dns-solver-json-key" \
+#   --project="global-cloudworks" \
+#   > key.json
 
-echo
-echo "Switching CNI to Cilium in /etc/rancher/rke2/config.yaml"
-sudo sed -i -e '/^cni: none/d' -e '$a cni: cilium' /etc/rancher/rke2/config.yaml
+# kubectl create secret generic dns-key \
+#   --from-file=key.json \
+#   --namespace=gateway
 
-# Restart RKE2 to pick up new manifests
-echo
-echo "Restart RKE2 to pick up new manifests"
-sudo systemctl restart rke2-server.service
-
-echo
-echo "Sleeping 1 minute to allow RKE2 to restart"
-sleep 1m
-
-#===============================================================================
-# Deploy Edge and Tenant
-#===============================================================================
-echo
-echo "Section: Deploy Edge and Tenant"
-#===============================================================================
-
-# Deploy edge
-echo
-echo "Applying Kustomize PATH: base/edge/kustomization.yaml"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
-
-# # # Wait for deployments and pods to be ready
-# # kubectl -n cert-manager wait --for=condition=available "deployment/cert-manager-webhook" --timeout="180s"
-# # kubectl -n cert-manager wait --for=condition=ready pod -l "app.kubernetes.io/name=webhook" --timeout="180s"
-
-# Deploy tenant
-echo
-echo "Applying Kustomize PATH: base/tenant/kustomization.yaml"
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
-
-# Create dns challenge key
-gcloud secrets versions access latest \
-  --secret="dns-solver-json-key" \
-  --project="global-cloudworks" \
-  > key.json
-
-kubectl create secret generic dns-key \
-  --from-file=key.json \
-  --namespace=gateway
-
-kubectl create secret generic dns-key \
-  --from-file=key.json \
-  --namespace=cert-manager
+# kubectl create secret generic dns-key \
+#   --from-file=key.json \
+#   --namespace=cert-manager
 
 rm key.json
