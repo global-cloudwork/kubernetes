@@ -54,13 +54,13 @@ git config --global user.name "josh m"
 # curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
 #    --remote-name-all --silent --show-error | bash
 
-# Deploy base
+# Deploy core
 echo
 echo "Applying Kustomize PATH: base/core/kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-# Deploy core
+# Deploy root
 echo
 echo "Applying Kustomize PATH: /kustomization.yaml"
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
