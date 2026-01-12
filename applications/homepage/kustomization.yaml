@@ -7,4 +7,7 @@ helmCharts:
     namespace: homepage
     version: 1.8.1
     releaseName: homepage
-
+    valuesInline:
+      service:
+        type: NodePort   # or NodePort
+        port: 3000
