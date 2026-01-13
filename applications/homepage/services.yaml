@@ -1,59 +1,73 @@
 - Infrastructure:
-  - Kubernetes:
-      icon: kubernetes.png
-      description: "Cluster management and workloads"
-      href: https://kubernetes.default
-  - Traefik:
-      icon: traefik.png
-      description: "Ingress controller"
-      href: https://traefik.example.com
-  - Longhorn:
-      icon: longhorn.png
-      description: "Persistent storage"
-      href: https://longhorn.example.com
   - Argo CD:
       icon: argocd.png
-      description: "GitOps deployments"
+      description: "GitOps application management"
       href: https://argocd.example.com
+  - Cert-Manager:
+      icon: certificate.png
+      description: "TLS certificates & issuers"
+      href: https://cert-manager.example.com
+  - Cilium:
+      icon: cilium.png
+      description: "CNI, network policies & LB IP pools"
+      href: https://cilium.example.com
+  - Keycloak:
+      icon: keycloak.png
+      description: "Identity & access management"
+      href: https://auth.example.com
+
+- Core Services:
+  - Vaultwarden:
+      icon: vaultwarden.png
+      description: "Password manager"
+      href: https://vault.example.com
+  - Neo4j:
+      icon: neo4j.png
+      description: "Graph database"
+      href: https://neo4j.example.com
+  - n8n:
+      icon: n8n.png
+      description: "Workflow automation"
+      href: https://n8n.example.com
+  - Open WebUI:
+      icon: open-webui.png
+      description: "AI / LLM web interface"
+      href: https://ai.example.com
 
 - Applications:
-  - GitLab:
-      icon: gitlab.png
-      description: "Source control & CI/CD"
-      href: https://gitlab.example.com
-  - Nextcloud:
-      icon: nextcloud.png
-      description: "File sync & collaboration"
-      href: https://cloud.example.com
-  - Home Assistant:
-      icon: home-assistant.png
-      description: "Smart home control"
-      href: https://ha.example.com
+  - Actual Budget:
+      icon: actual.png
+      description: "Personal finance & budgeting"
+      href: https://budget.example.com
+  - ERPNext:
+      icon: erpnext.png
+      description: "ERP & business management"
+      href: https://erp.example.com
+  - Cockatrice:
+      icon: cards.png
+      description: "MTG card database & play client"
+      href: https://cockatrice.example.com
+  - Foundry VTT:
+      icon: foundry.png
+      description: "Virtual tabletop for RPGs"
+      href: https://vtt.example.com
 
-- Monitoring:
-  - Grafana:
-      icon: grafana.png
-      description: "Dashboards & metrics"
-      href: https://grafana.example.com
-  - Prometheus:
-      icon: prometheus.png
-      description: "Metrics collection"
-      href: https://prometheus.example.com
-  - Uptime Kuma:
-      icon: uptime-kuma.png
-      description: "Service uptime monitoring"
-      href: https://status.example.com
+- Platform:
+  - Homepage:
+      icon: homepage.png
+      description: "Service dashboard & links"
+      href: https://home.example.com
 
 - Resources:
   - Documentation:
       icon: book.png
-      description: "Internal runbooks & docs"
+      description: "Cluster & app docs"
       href: https://docs.example.com
-  - Status Page:
+  - Repository:
+      icon: github.png
+      description: "Kubernetes manifests & kustomize"
+      href: https://git.example.com/your-org/your-repo
+  - Status:
       icon: alert-circle.png
-      description: "System health overview"
+      description: "Service & cluster health"
       href: https://status.example.com
-  - Support:
-      icon: headset.png
-      description: "Helpdesk & tickets"
-      href: https://support.example.com
