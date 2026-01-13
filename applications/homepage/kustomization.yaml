@@ -11,3 +11,13 @@ helmCharts:
       service:
         type: NodePort   # or NodePort
         port: 3000
+      config:
+        settings.yaml: |
+          title: "Global Cloudworks"
+          theme: dark
+          language: en
+          color: slate
+          layout:
+            Home:
+              style: row
+              columns: 3
