@@ -1,0 +1,29 @@
+          - Work:
+              - GitHub:
+                  - abbr: GH
+                    href: https://github.com
+              - Jira:
+                  - abbr: JR
+                    href: https://jira.example.com
+              - Confluence:
+                  - abbr: CF
+                    href: https://confluence.example.com
+
+          - Cloud:
+              - AWS Console:
+                  - abbr: AWS
+                    href: https://console.aws.amazon.com
+              - Google Cloud:
+                  - abbr: GCP
+                    href: https://console.cloud.google.com
+              - Azure Portal:
+                  - abbr: AZ
+                    href: https://portal.azure.com
+
+          - Personal:
+              - Email:
+                  - abbr: EM
+                    href: https://mail.example.com
+              - Calendar:
+                  - abbr: CAL
+                    href: https://calendar.example.com

@@ -1,6 +1,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# 1. Turn real files into a ConfigMap
+configMapGenerator:
+  - name: homepage-config
+    files:
+      - homepage-config/settings.yaml
+      - homepage-config/services.yaml
+      - homepage-config/bookmarks.yaml
+      - homepage-config/widgets.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+# 2. Helm chart still uses valuesInline
 helmCharts:
   - name: homepage
     repo: https://unknowniq.github.io/helm-charts/
@@ -8,176 +21,12 @@ helmCharts:
     version: 1.8.1
     releaseName: homepage
     valuesInline:
-
-      # --- Service exposure ---
       service:
         type: NodePort
         port: 3000
-
-      # --- 🔐 FIX: allow NodePort host ---
       env:
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: "*"
-          # or be strict:
-          # value: "172.18.0.2:31455,localhost,homepage.localhost"
-
-      # --- Homepage config files ---
+      # 3. Point the chart to the ConfigMap created above
       config:
-        settings.yaml: |
-          title: "Operations Dashboard"
-          host:
-            - "172.18.0.2"
-            - "localhost"
-            - "homepage.localhost"
-          theme: dark
-          color: slate
-          language: en
-
-          background:
-            image: ""
-            blur: sm
-            opacity: 20
-
-          layout:
-            Infrastructure:
-              style: row
-              columns: 4
-            Applications:
-              style: row
-              columns: 3
-            Monitoring:
-              style: row
-              columns: 3
-            Resources:
-              style: row
-              columns: 4
-
-          headerStyle: clean
-          statusStyle: dot
-          quicklaunch:
-            searchDescriptions: true
-            hideInternetSearch: true
-            hideVisitURL: false
-
-        services.yaml: |
-          - Infrastructure:
-              - Kubernetes:
-                  icon: kubernetes.png
-                  description: "Cluster management and workloads"
-                  href: https://kubernetes.default
-              - Traefik:
-                  icon: traefik.png
-                  description: "Ingress controller"
-                  href: https://traefik.example.com
-              - Longhorn:
-                  icon: longhorn.png
-                  description: "Persistent storage"
-                  href: https://longhorn.example.com
-              - Argo CD:
-                  icon: argocd.png
-                  description: "GitOps deployments"
-                  href: https://argocd.example.com
-
-          - Applications:
-              - GitLab:
-                  icon: gitlab.png
-                  description: "Source control & CI/CD"
-                  href: https://gitlab.example.com
-              - Nextcloud:
-                  icon: nextcloud.png
-                  description: "File sync & collaboration"
-                  href: https://cloud.example.com
-              - Home Assistant:
-                  icon: home-assistant.png
-                  description: "Smart home control"
-                  href: https://ha.example.com
-
-          - Monitoring:
-              - Grafana:
-                  icon: grafana.png
-                  description: "Dashboards & metrics"
-                  href: https://grafana.example.com
-              - Prometheus:
-                  icon: prometheus.png
-                  description: "Metrics collection"
-                  href: https://prometheus.example.com
-              - Uptime Kuma:
-                  icon: uptime-kuma.png
-                  description: "Service uptime monitoring"
-                  href: https://status.example.com
-
-          - Resources:
-              - Documentation:
-                  icon: book.png
-                  description: "Internal runbooks & docs"
-                  href: https://docs.example.com
-              - Status Page:
-                  icon: alert-circle.png
-                  description: "System health overview"
-                  href: https://status.example.com
-              - Support:
-                  icon: headset.png
-                  description: "Helpdesk & tickets"
-                  href: https://support.example.com
-
-        bookmarks.yaml: |
-          - Work:
-              - GitHub:
-                  - abbr: GH
-                    href: https://github.com
-              - Jira:
-                  - abbr: JR
-                    href: https://jira.example.com
-              - Confluence:
-                  - abbr: CF
-                    href: https://confluence.example.com
-
-          - Cloud:
-              - AWS Console:
-                  - abbr: AWS
-                    href: https://console.aws.amazon.com
-              - Google Cloud:
-                  - abbr: GCP
-                    href: https://console.cloud.google.com
-              - Azure Portal:
-                  - abbr: AZ
-                    href: https://portal.azure.com
-
-          - Personal:
-              - Email:
-                  - abbr: EM
-                    href: https://mail.example.com
-              - Calendar:
-                  - abbr: CAL
-                    href: https://calendar.example.com
-
-        widgets.yaml: |
-          - resources:
-              cpu: true
-              memory: true
-              disk: /
-              expanded: false
-
-          - search:
-              provider: google
-              target: _blank
-
-          - datetime:
-              text_size: xl
-              format:
-                timeStyle: short
-                dateStyle: full
-
-          - weather:
-              location: "New York"
-              units: metric
-              provider: openweathermap
-              apiKey: "REPLACE_ME"
-
-          - kubernetes:
-              cluster:
-                show: true
-              nodes:
-                show: true
-              pods:
-                show: false
+        existingConfigMap: homepage-config

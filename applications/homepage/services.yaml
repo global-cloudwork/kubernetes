@@ -1,0 +1,59 @@
+Infrastructure:
+  - Kubernetes:
+      icon: kubernetes.png
+      description: "Cluster management and workloads"
+      href: https://kubernetes.default
+  - Traefik:
+      icon: traefik.png
+      description: "Ingress controller"
+      href: https://traefik.example.com
+  - Longhorn:
+      icon: longhorn.png
+      description: "Persistent storage"
+      href: https://longhorn.example.com
+  - Argo CD:
+      icon: argocd.png
+      description: "GitOps deployments"
+      href: https://argocd.example.com
+
+Applications:
+  - GitLab:
+      icon: gitlab.png
+      description: "Source control & CI/CD"
+      href: https://gitlab.example.com
+  - Nextcloud:
+      icon: nextcloud.png
+      description: "File sync & collaboration"
+      href: https://cloud.example.com
+  - Home Assistant:
+      icon: home-assistant.png
+      description: "Smart home control"
+      href: https://ha.example.com
+
+Monitoring:
+  - Grafana:
+      icon: grafana.png
+      description: "Dashboards & metrics"
+      href: https://grafana.example.com
+  - Prometheus:
+      icon: prometheus.png
+      description: "Metrics collection"
+      href: https://prometheus.example.com
+  - Uptime Kuma:
+      icon: uptime-kuma.png
+      description: "Service uptime monitoring"
+      href: https://status.example.com
+
+Resources:
+  - Documentation:
+      icon: book.png
+      description: "Internal runbooks & docs"
+      href: https://docs.example.com
+  - Status Page:
+      icon: alert-circle.png
+      description: "System health overview"
+      href: https://status.example.com
+  - Support:
+      icon: headset.png
+      description: "Helpdesk & tickets"
+      href: https://support.example.com

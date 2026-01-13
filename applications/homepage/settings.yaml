@@ -1,0 +1,31 @@
+blockHighlights:
+  levels:
+    good: "bg-emerald-500/40 text-emerald-950 dark:bg-emerald-900/60 dark:text-emerald-400"
+    warn: "bg-amber-300/30 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200"
+    danger: "bg-rose-700/45 text-rose-200 dark:bg-rose-950/70 dark:text-rose-400"
+bookmarksStyle: icons
+
+title: "Global Cloudworks"
+host:
+  - "172.18.0.2"
+  - "localhost"
+  - "homepage.localhost"
+theme: dark
+color: slate
+language: en
+
+background:
+  image: ""
+  blur: sm
+  opacity: 20
+
+layout:
+  Infrastructure:
+    style: row
+    columns: 4
+  Applications:
+    style: row
+    columns: 3
+
+headerStyle: clean
+statusStyle: dot
