@@ -28,6 +28,7 @@ helmCharts:
           value: "*"
 
 patches:
+  # --- existing Deployment patch ---
   - target:
       kind: Deployment
       name: homepage
@@ -64,3 +65,13 @@ patches:
               name: homepage-config
           - name: homepage-config-writable
             emptyDir: {}
+
+  # --- NEW: force NodePort ---
+  - target:
+      kind: Service
+      name: homepage
+      namespace: homepage
+    patch: |-
+      - op: add
+        path: /spec/ports/0/nodePort
+        value: 31376
