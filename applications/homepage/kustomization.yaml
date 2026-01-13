@@ -14,7 +14,7 @@ generatorOptions:
 
 helmCharts:
   - name: homepage
-    repo: unknowniq.github.io
+    repo: https://unknowniq.github.io/helm-charts/
     namespace: homepage
     version: 1.8.1
     releaseName: homepage
@@ -26,7 +26,6 @@ helmCharts:
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: "*"
 
-# This patch replaces the broken read-only mount with a writable emptyDir
 patches:
   - target:
       kind: Deployment
