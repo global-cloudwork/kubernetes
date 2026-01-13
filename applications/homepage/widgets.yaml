@@ -14,11 +14,11 @@
       timeStyle: short
       dateStyle: full
 
-- weather:
-    location: "New York"
-    units: metric
-    provider: openweathermap
-    apiKey: "REPLACE_ME"
+# - weather:
+#     location: "New York"
+#     units: metric
+#     provider: openweathermap
+#     apiKey: "REPLACE_ME"
 
 - kubernetes:
     cluster:
