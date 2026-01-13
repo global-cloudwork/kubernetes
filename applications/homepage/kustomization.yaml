@@ -5,10 +5,10 @@ kind: Kustomization
 configMapGenerator:
   - name: homepage-config
     files:
-      - homepage-config/settings.yaml
-      - homepage-config/services.yaml
-      - homepage-config/bookmarks.yaml
-      - homepage-config/widgets.yaml
+      - settings.yaml
+      - services.yaml
+      - bookmarks.yaml
+      - widgets.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
