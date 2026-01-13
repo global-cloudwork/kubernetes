@@ -8,9 +8,20 @@ helmCharts:
     version: 1.8.1
     releaseName: homepage
     valuesInline:
+
+      # --- Service exposure ---
       service:
-        type: NodePort   # or NodePort
+        type: NodePort
         port: 3000
+
+      # --- 🔐 FIX: allow NodePort host ---
+      env:
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: "*"
+          # or be strict:
+          # value: "172.18.0.2:31455,localhost,homepage.localhost"
+
+      # --- Homepage config files ---
       config:
         settings.yaml: |
           title: "Operations Dashboard"
@@ -21,6 +32,7 @@ helmCharts:
           theme: dark
           color: slate
           language: en
+
           background:
             image: ""
             blur: sm
