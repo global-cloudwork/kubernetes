@@ -33,7 +33,7 @@ kind: Namespace
 metadata:
   name: gateway
 ---
-apiVersion: v3
+apiVersion: v1
 kind: Namespace
 metadata:
   name: homepage
