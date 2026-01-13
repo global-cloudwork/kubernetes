@@ -17,6 +17,7 @@ helmCharts:
           host:
             - "172.18.0.2"
             - "localhost"
+            - "homepage.localhost"
           theme: dark
           color: slate
           language: en
