@@ -15,7 +15,6 @@ helmCharts:
         settings.yaml: |
           title: "Operations Dashboard"
           host:
-            - "homepage.local"
             - "172.18.0.2"
             - "localhost"
           theme: dark
