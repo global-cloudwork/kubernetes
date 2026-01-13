@@ -22,7 +22,7 @@ helmCharts:
       service:
         type: NodePort
         port: 3000
-        nodePort: 312638
+        nodePort: 31376
       env:
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: "*"
