@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# 1. Turn real files into a ConfigMap
 configMapGenerator:
   - name: homepage-config
     files:
@@ -13,10 +12,9 @@ configMapGenerator:
 generatorOptions:
   disableNameSuffixHash: true
 
-# 2. Helm chart still uses valuesInline
 helmCharts:
   - name: homepage
-    repo: https://unknowniq.github.io/helm-charts/
+    repo: unknowniq.github.io
     namespace: homepage
     version: 1.8.1
     releaseName: homepage
@@ -27,6 +25,34 @@ helmCharts:
       env:
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: "*"
-      # 3. Point the chart to the ConfigMap created above
-      config:
-        existingConfigMap: homepage-config
+
+# This patch replaces the broken read-only mount with a writable emptyDir
+patches:
+  - target:
+      kind: Deployment
+      name: homepage
+    patch: |-
+      - op: add
+        path: /spec/template/spec/initContainers
+        value:
+          - name: copy-configs
+            image: busybox
+            command: ['sh', '-c', 'cp /config-src/* /app/config/']
+            volumeMounts:
+              - name: homepage-config-src
+                mountPath: /config-src
+              - name: homepage-config-writable
+                mountPath: /app/config
+      - op: replace
+        path: /spec/template/spec/containers/0/volumeMounts
+        value:
+          - name: homepage-config-writable
+            mountPath: /app/config
+      - op: add
+        path: /spec/template/spec/volumes
+        value:
+          - name: homepage-config-src
+            configMap:
+              name: homepage-config
+          - name: homepage-config-writable
+            emptyDir: {}

@@ -20,10 +20,17 @@ background:
   opacity: 20
 
 layout:
+layout:
   Infrastructure:
     style: row
     columns: 4
   Applications:
+    style: row
+    columns: 3
+  Monitoring:
+    style: row
+    columns: 3
+  Resources:
     style: row
     columns: 3
 
