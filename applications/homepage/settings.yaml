@@ -20,7 +20,6 @@ background:
   opacity: 20
 
 layout:
-layout:
   Infrastructure:
     style: row
     columns: 4
