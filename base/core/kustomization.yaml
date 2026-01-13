@@ -14,7 +14,7 @@ resources:
   - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
   # Argo CD CRDs (v3.1.9)
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/crds.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/install.yaml
 
   # Cilium CRDs (v1.18.1)
   - https://raw.githubusercontent.com/cilium/cilium/main/pkg/k8s/apis/cilium.io/client/crds/v2/ciliumbgpadvertisements.yaml
