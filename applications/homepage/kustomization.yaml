@@ -36,17 +36,25 @@ patches:
         value:
           - name: copy-configs
             image: busybox
-            command: ['sh', '-c', 'cp /config-src/* /app/config/']
+            command:
+              - sh
+              - -c
+              - |
+                mkdir -p /app/config && \
+                cp /config-src/* /app/config/ && \
+                chown -R 1000:1000 /app/config
             volumeMounts:
               - name: homepage-config-src
                 mountPath: /config-src
               - name: homepage-config-writable
                 mountPath: /app/config
+
       - op: replace
         path: /spec/template/spec/containers/0/volumeMounts
         value:
           - name: homepage-config-writable
             mountPath: /app/config
+
       - op: add
         path: /spec/template/spec/volumes
         value:
