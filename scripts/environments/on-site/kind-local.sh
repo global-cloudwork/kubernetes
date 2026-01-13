@@ -93,6 +93,8 @@ echo
 echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 
+kind create cluster --config kind.yaml
+
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
