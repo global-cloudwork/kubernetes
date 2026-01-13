@@ -13,11 +13,155 @@ helmCharts:
         port: 3000
       config:
         settings.yaml: |
-          title: "Global Cloudworks"
+          title: "Operations Dashboard"
           theme: dark
-          language: en
           color: slate
+          language: en
+          background:
+            image: ""
+            blur: sm
+            opacity: 20
+
           layout:
-            Home:
+            Infrastructure:
+              style: row
+              columns: 4
+            Applications:
               style: row
               columns: 3
+            Monitoring:
+              style: row
+              columns: 3
+            Resources:
+              style: row
+              columns: 4
+
+          headerStyle: clean
+          statusStyle: dot
+          quicklaunch:
+            searchDescriptions: true
+            hideInternetSearch: true
+            hideVisitURL: false
+
+        services.yaml: |
+          - Infrastructure:
+              - Kubernetes:
+                  icon: kubernetes.png
+                  description: "Cluster management and workloads"
+                  href: https://kubernetes.default
+              - Traefik:
+                  icon: traefik.png
+                  description: "Ingress controller"
+                  href: https://traefik.example.com
+              - Longhorn:
+                  icon: longhorn.png
+                  description: "Persistent storage"
+                  href: https://longhorn.example.com
+              - Argo CD:
+                  icon: argocd.png
+                  description: "GitOps deployments"
+                  href: https://argocd.example.com
+
+          - Applications:
+              - GitLab:
+                  icon: gitlab.png
+                  description: "Source control & CI/CD"
+                  href: https://gitlab.example.com
+              - Nextcloud:
+                  icon: nextcloud.png
+                  description: "File sync & collaboration"
+                  href: https://cloud.example.com
+              - Home Assistant:
+                  icon: home-assistant.png
+                  description: "Smart home control"
+                  href: https://ha.example.com
+
+          - Monitoring:
+              - Grafana:
+                  icon: grafana.png
+                  description: "Dashboards & metrics"
+                  href: https://grafana.example.com
+              - Prometheus:
+                  icon: prometheus.png
+                  description: "Metrics collection"
+                  href: https://prometheus.example.com
+              - Uptime Kuma:
+                  icon: uptime-kuma.png
+                  description: "Service uptime monitoring"
+                  href: https://status.example.com
+
+          - Resources:
+              - Documentation:
+                  icon: book.png
+                  description: "Internal runbooks & docs"
+                  href: https://docs.example.com
+              - Status Page:
+                  icon: alert-circle.png
+                  description: "System health overview"
+                  href: https://status.example.com
+              - Support:
+                  icon: headset.png
+                  description: "Helpdesk & tickets"
+                  href: https://support.example.com
+
+        bookmarks.yaml: |
+          - Work:
+              - GitHub:
+                  - abbr: GH
+                    href: https://github.com
+              - Jira:
+                  - abbr: JR
+                    href: https://jira.example.com
+              - Confluence:
+                  - abbr: CF
+                    href: https://confluence.example.com
+
+          - Cloud:
+              - AWS Console:
+                  - abbr: AWS
+                    href: https://console.aws.amazon.com
+              - Google Cloud:
+                  - abbr: GCP
+                    href: https://console.cloud.google.com
+              - Azure Portal:
+                  - abbr: AZ
+                    href: https://portal.azure.com
+
+          - Personal:
+              - Email:
+                  - abbr: EM
+                    href: https://mail.example.com
+              - Calendar:
+                  - abbr: CAL
+                    href: https://calendar.example.com
+
+        widgets.yaml: |
+          - resources:
+              cpu: true
+              memory: true
+              disk: /
+              expanded: false
+
+          - search:
+              provider: google
+              target: _blank
+
+          - datetime:
+              text_size: xl
+              format:
+                timeStyle: short
+                dateStyle: full
+
+          - weather:
+              location: "New York"
+              units: metric
+              provider: openweathermap
+              apiKey: "REPLACE_ME"
+
+          - kubernetes:
+              cluster:
+                show: true
+              nodes:
+                show: true
+              pods:
+                show: false
