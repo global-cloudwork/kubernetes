@@ -1,18 +1,18 @@
-- resources:
-    cpu: true
-    memory: true
-    disk: /
-    expanded: false
+# - resources:
+#     cpu: true
+#     memory: true
+#     disk: /
+#     expanded: false
 
-- search:
-    provider: google
-    target: _blank
+# - search:
+#     provider: google
+#     target: _blank
 
-- datetime:
-    text_size: xl
-    format:
-      timeStyle: short
-      dateStyle: full
+# - datetime:
+#     text_size: xl
+#     format:
+#       timeStyle: short
+#       dateStyle: full
 
 # - weather:
 #     location: "New York"
@@ -20,10 +20,10 @@
 #     provider: openweathermap
 #     apiKey: "REPLACE_ME"
 
-- kubernetes:
-    cluster:
-      show: true
-    nodes:
-      show: true
-    pods:
-      show: false
+# - kubernetes:
+#     cluster:
+#       show: true
+#     nodes:
+#       show: true
+#     pods:
+#       show: false

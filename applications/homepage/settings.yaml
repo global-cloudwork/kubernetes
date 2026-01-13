@@ -14,24 +14,24 @@ theme: dark
 color: slate
 language: en
 
-background:
-  image: ""
-  blur: sm
-  opacity: 20
+# background:
+#   image: ""
+#   blur: sm
+#   opacity: 20
 
-layout:
-  Infrastructure:
-    style: row
-    columns: 4
-  Applications:
-    style: row
-    columns: 3
-  Monitoring:
-    style: row
-    columns: 3
-  Resources:
-    style: row
-    columns: 3
+# layout:
+#   Infrastructure:
+#     style: row
+#     columns: 4
+#   Applications:
+#     style: row
+#     columns: 3
+#   Monitoring:
+#     style: row
+#     columns: 3
+#   Resources:
+#     style: row
+#     columns: 3
 
-headerStyle: clean
-statusStyle: dot
+# headerStyle: clean
+# statusStyle: dot
