@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
-  - httproute.yaml
+  # - httproute.yaml
   - secret.yaml
   - app-project.yaml
 
