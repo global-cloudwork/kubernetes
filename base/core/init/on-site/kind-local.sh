@@ -99,8 +99,8 @@ REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-# kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
-#   kubectl apply --server-side --force-conflicts -f -
+kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 # kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/edge?ref=$BRANCH" | \
 #   kubectl apply --server-side --force-conflicts -f -
 # kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/tenant?ref=$BRANCH" | \
