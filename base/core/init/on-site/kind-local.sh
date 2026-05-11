@@ -93,14 +93,7 @@ echo
 echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 
-
-
 kind create cluster --config kind.yaml
-
-kubectl apply -f namespace.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/install.yaml
-
 
 REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
