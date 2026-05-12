@@ -115,5 +115,3 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
 # kubectl create secret generic dns-key \
 #   --from-file=key.json \
 #   --namespace=cert-manager
-
-rm key.json
