@@ -83,9 +83,9 @@ kind create cluster --config kind.yaml
 
 REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
+kubectl kustomize "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-kubectl kustomize --enablehelm "github.com/$REPOSITORY?ref=$BRANCH" | \
+kubectl kustomize "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 # # Create dns challenge key
