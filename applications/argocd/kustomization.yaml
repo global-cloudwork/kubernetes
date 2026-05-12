@@ -13,6 +13,7 @@ helmCharts:
     namespace: argocd
     version: 9.1.0
     releaseName: argocd
+    includeCRDs: true
     valuesInline:
       configs:
         params:

@@ -9,3 +9,15 @@ helmCharts:
     namespace: keycloak
     version: 25.2.0
     releaseName: my-keycloak
+    valuesInline:
+      image:
+        registry: docker.io
+        repository: bitnami/keycloak
+        tag: 26.3.3-debian-11-r0
+        pullPolicy: IfNotPresent
+      postgresql:
+        image:
+          registry: docker.io
+          repository: bitnami/postgresql
+          tag: 17.6.0-debian-11-r0
+          pullPolicy: IfNotPresent

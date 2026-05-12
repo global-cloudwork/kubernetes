@@ -1,18 +1,4 @@
 #!/usr/bin/env bash
-# CILIUM_POD="${kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}'}"
-# kubectl logs -n kube-system cilium-4qf4f -c cilium-agent | grep -E 'BPF|failed|error|warn|host routing|Legacy'
-
-# source ./.on-site.dev.env
-
-#kubectl -n kube-system exec $(kubectl -n kube-system get pod -o name | grep cilium-operator | head -n 1) -- cilium status
-
-
-# kubectl -n kube-system exec -it cilium-l7hrc -- bash
-# cilium status
-
-# kubectl logs -n kube-system $(kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}') -c cilium-agent | grep -E 'BPF|failed|error|warn|host routing|Legacy'
-# kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}' | xargs -I {} kubectl exec -n kube-system {} -- cilium-dbg <command>
-
 # kubectl run <pod-name> \
 #   --rm -it \
 #   --restart=Never \
@@ -99,7 +85,7 @@ REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
 kubectl kustomize --enable-helm "github.com/$REPOSITORY/base/core?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
+kubectl kustomize --enablehelm "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
 # # Create dns challenge key
