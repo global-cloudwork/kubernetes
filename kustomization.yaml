@@ -4,6 +4,6 @@ kind: Kustomization
 
 resources:
   - applications/argocd
-  - kubernetes/gateway.yaml
-  - Kubernetes/application-set.yaml
+  # - kubernetes/gateway.yaml
+  # - Kubernetes/application-set.yaml
   
