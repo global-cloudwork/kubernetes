@@ -2,7 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - namespace.yaml
   - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/kubernetes/namespace.yaml
 
   # Cert-Manager CRDs (v1.13.0)

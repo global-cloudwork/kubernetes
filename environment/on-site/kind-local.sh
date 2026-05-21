@@ -102,6 +102,9 @@ kubectl kustomize --enable-helm "github.com/$REPOSITORY/kubernetes?ref=$BRANCH" 
 kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
+
+
+
 # # Create dns challenge key
 # gcloud secrets versions access latest \
 #   --secret="dns-solver-json-key" \
