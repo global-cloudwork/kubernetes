@@ -13,8 +13,14 @@ helmCharts:
     version: 9.1.0
     releaseName: argocd
     includeCRDs: true
+
     valuesInline:
       configs:
         params:
           server.insecure: "true"
 
+      server:
+        service:
+          type: NodePort
+          nodePortHttp: 30080
+          nodePortHttps: 30443
