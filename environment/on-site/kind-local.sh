@@ -97,11 +97,23 @@ kind create cluster --config kind.yaml
 
 REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
-kubectl kustomize --enable-helm "github.com/$REPOSITORY/kubernetes?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
-kubectl kustomize --enable-helm "github.com/$REPOSITORY?ref=$BRANCH" | \
+
+# Install infrastructure + CRDs
+kubectl kustomize --enable-helm \
+  "github.com/$REPOSITORY/kubernetes?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
+# Wait for Argo CD CRDs to become established
+kubectl wait --for=condition=Established \
+  crd/applications.argoproj.io \
+  crd/applicationsets.argoproj.io \
+  crd/appprojects.argoproj.io \
+  --timeout=120s
+
+# Apply workload manifests
+kubectl kustomize --enable-helm \
+  "github.com/$REPOSITORY?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
 
 
 
