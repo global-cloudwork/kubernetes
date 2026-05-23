@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/kubernetes/namespace.yaml
-  - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/kubernetes/app-project.yaml
 
   # Argo CD CRDs
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/application-crd.yaml
