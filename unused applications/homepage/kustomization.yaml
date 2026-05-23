@@ -1,0 +1,81 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - homepage-fix.yaml
+
+configMapGenerator:
+  - name: homepage-config
+    files:
+      - settings.yaml
+      - services.yaml
+      - bookmarks.yaml
+      - widgets.yaml
+      
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+helmCharts:
+  - name: homepage
+    repo: https://unknowniq.github.io/helm-charts/
+    namespace: homepage
+    version: 1.8.1
+    releaseName: homepage
+    valuesInline:
+      service:
+        type: NodePort
+        port: 3000
+        nodePort: 31376
+      env:
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: "*"
+
+patches:
+  # --- existing Deployment patch ---
+  - target:
+      kind: Deployment
+      name: homepage
+    patch: |-
+      - op: add
+        path: /spec/template/spec/initContainers
+        value:
+          - name: copy-configs
+            image: busybox
+            command:
+              - sh
+              - -c
+              - |
+                mkdir -p /app/config && \
+                cp /config-src/* /app/config/ && \
+                chown -R 1000:1000 /app/config
+            volumeMounts:
+              - name: homepage-config-src
+                mountPath: /config-src
+              - name: homepage-config-writable
+                mountPath: /app/config
+
+      - op: replace
+        path: /spec/template/spec/containers/0/volumeMounts
+        value:
+          - name: homepage-config-writable
+            mountPath: /app/config
+
+      - op: add
+        path: /spec/template/spec/volumes
+        value:
+          - name: homepage-config-src
+            configMap:
+              name: homepage-config
+          - name: homepage-config-writable
+            emptyDir: {}
+
+  # --- NEW: force NodePort ---
+  - target:
+      kind: Service
+      name: homepage
+      namespace: homepage
+    patch: |-
+      - op: add
+        path: /spec/ports/0/nodePort
+        value: 31376

@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+helmCharts:
+  - name: keycloak
+    repo: https://charts.bitnami.com/bitnami
+    namespace: keycloak
+    version: 25.2.0
+    releaseName: my-keycloak
+    valuesInline:
+      image:
+        registry: docker.io
+        repository: bitnami/keycloak
+        tag: 26.3.3-debian-11-r0
+        pullPolicy: IfNotPresent
+      postgresql:
+        image:
+          registry: docker.io
+          repository: bitnami/postgresql
+          tag: 17.6.0-debian-11-r0
+          pullPolicy: IfNotPresent

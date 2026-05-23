@@ -5,7 +5,6 @@ resources:
   - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/kubernetes/namespace.yaml
   - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/kubernetes/app-project.yaml
 
-
   # Cert-Manager CRDs (v1.13.0)
   - https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.crds.yaml
 
