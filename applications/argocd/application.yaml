@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/global-cloudwork/kubernetes.git
     targetRevision: main
-    path: kubernetes/application-set.yaml
+    path: kubernetes/core
 
   destination:
     server: https://kubernetes.default.svc
