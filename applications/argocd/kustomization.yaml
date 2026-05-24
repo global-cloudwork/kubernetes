@@ -5,6 +5,8 @@ resources:
   - namespace.yaml
   - application.yaml
   - secret.yaml
+  - https://raw.githubusercontent.com/global-cloudwork/kubernetes/main/kubernetes/application-set.yaml
+
 
 helmCharts:
   - name: argo-cd
