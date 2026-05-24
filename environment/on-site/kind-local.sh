@@ -21,5 +21,3 @@ kubectl kustomize --enable-helm \
 kubectl kustomize --enable-helm \
   "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
-
-# CILIUM_POD="${kubectl get pods -n kube-system -l k8s-app=cilium -o jsonpath='{.items[0].metadata.name}'}"
