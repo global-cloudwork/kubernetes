@@ -3,34 +3,41 @@ kind: ApplicationSet
 metadata:
   name: application-set
   namespace: argocd
+
 spec:
   goTemplate: true
-  goTemplateOptions: 
-  - "missingkey=error"
+  goTemplateOptions:
+    - "missingkey=error"
+
   generators:
-  - git:
-      repoURL: https://github.com/global-cloudwork/kubernetes.git
-      revision: main
-      directories:
-      - path: applications/**/
+    - git:
+        repoURL: https://github.com/global-cloudwork/kubernetes.git
+        revision: main
+        directories:
+          - path: applications/*
+
   template:
     metadata:
-      name: '{{ .name }}'
+      name: '{{ .path.basename }}'
+
     spec:
       project: default
-      sources:
-        - repoURL: https://github.com/global-cloudwork/kubernetes.git
-          targetRevision: main
-          path: '{{ .path }}'
-          kustomize: {}
+
+      source:
+        repoURL: https://github.com/global-cloudwork/kubernetes.git
+        targetRevision: main
+        path: '{{ .path.path }}'
+        kustomize: {}
+
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{ .name }}'
+        namespace: '{{ .path.basename }}'
+
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
+
         syncOptions:
-        - CreateNamespace=true
-        - ServerSideApply=true
-        
+          - CreateNamespace=true
+          - ServerSideApply=true
