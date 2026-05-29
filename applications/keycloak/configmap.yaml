@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-cm
+  namespace: keycloak
+data:
+  config: "generated-by-kilo"

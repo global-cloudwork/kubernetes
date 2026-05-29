@@ -272,4 +272,7 @@ run_cmd "kubectl get nodes -o wide"
 
 section "DONE"
 
+
+
 echo -e "${GREEN}Kubernetes cluster check finished successfully.${NC}"
+

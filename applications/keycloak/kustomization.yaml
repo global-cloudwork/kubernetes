@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - configmap.yaml
 helmCharts:
   - name: keycloak
     repo: https://charts.bitnami.com/bitnami

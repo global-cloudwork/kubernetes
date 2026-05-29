@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - secret.yaml
+  - configmap.yaml
 
 helmCharts:
   - name: argo-cd
@@ -18,8 +19,8 @@ helmCharts:
         params:
           server.insecure: "true"
 
-      server:
-        service:
-          type: NodePort
-          nodePortHttp: 30080
-          nodePortHttps: 30443
+      # server:
+      #   service:
+      #     type: NodePort
+      #     nodePortHttp: 30080
+      #     nodePortHttps: 30443

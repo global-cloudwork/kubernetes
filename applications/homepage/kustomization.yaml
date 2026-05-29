@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - homepage-fix.yaml
+  - configmap.yaml
 
 configMapGenerator:
   - name: homepage-config
@@ -23,13 +24,16 @@ helmCharts:
     version: 1.8.1
     releaseName: homepage
     valuesInline:
-      service:
-        type: NodePort
-        port: 3000
-        nodePort: 31376
-      env:
-        - name: HOMEPAGE_ALLOWED_HOSTS
-          value: "*"
+      configs:
+        params:
+          server.insecure: "true"
+
+      server:
+        service:
+          type: NodePort
+          nodePortHttp: 30080
+          nodePortHttps: 30443
+
 
 patches:
   # --- existing Deployment patch ---
