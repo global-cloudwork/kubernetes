@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - secret.yaml
-  - configmap.yaml
 
 helmCharts:
   - name: argo-cd
