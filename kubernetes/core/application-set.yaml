@@ -27,7 +27,8 @@ spec:
         repoURL: https://github.com/global-cloudwork/kubernetes.git
         targetRevision: main
         path: '{{ .path.path }}'
-        kustomize: {}
+        kustomize: 
+          buildOptions: "--enable-helm"
 
       destination:
         server: https://kubernetes.default.svc
