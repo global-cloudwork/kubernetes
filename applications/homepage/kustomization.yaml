@@ -8,13 +8,7 @@ helmCharts:
     version: 1.8.1
     releaseName: homepage
     valuesInline:
-      configs:
-        params:
-          server.insecure: "true"
-
-      server:
-        service:
-          type: NodePort
-          nodePortHttp: 30090
-          nodePortHttps: 30443
-
+      service:
+        type: NodePort
+        nodePortHttp: 30090
+        nodePortHttps: 30443
