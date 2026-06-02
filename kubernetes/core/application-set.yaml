@@ -26,7 +26,7 @@ spec:
       source:
         repoURL: https://github.com/global-cloudwork/kubernetes.git
         targetRevision: main
-        path: '{{ .path.path }}'
+        path: '{{ .path }}'
         kustomize: 
           buildOptions: "--enable-helm"
 
