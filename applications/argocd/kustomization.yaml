@@ -15,10 +15,21 @@ helmCharts:
     valuesInline:
       configs:
         params:
-          server.insecure: "true"
+          server.insecure: true # Ensured strict boolean format
 
       server:
         service:
           type: NodePort
           nodePortHttp: 30080
           nodePortHttps: 30443
+
+# Bootstrap the Helm feature flag declaratively via inline patching
+patches:
+  - target:
+      kind: ConfigMap
+      name: argocd-cm
+      namespace: argocd
+    patch: |-
+      - op: add
+        path: /data/kustomize.buildOptions
+        value: "--enable-helm --load-restrictor LoadRestrictionsNone"
