@@ -1,44 +1,25 @@
-apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
-metadata:
-  name: application-set
-  namespace: argocd
+template:
+  metadata:
+    name: '{{ base .path }}'
 
-spec:
-  goTemplate: true
-  goTemplateOptions:
-    - "missingkey=error"
+  spec:
+    project: default
 
-  generators:
-    - git:
-        repoURL: https://github.com/global-cloudwork/kubernetes.git
-        revision: main
-        directories:
-          - path: applications/*
+    source:
+      repoURL: https://github.com/global-cloudwork/kubernetes.git
+      targetRevision: main
+      path: '{{ .path }}'
+      kustomize:
+        buildOptions: "--enable-helm"
 
-  template:
-    metadata:
-      name: '{{ .path.basename }}'
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: '{{ base .path }}'
 
-    spec:
-      project: default
-
-      source:
-        repoURL: https://github.com/global-cloudwork/kubernetes.git
-        targetRevision: main
-        path: applications/{{ base .path }}
-        kustomize: 
-          buildOptions: "--enable-helm"
-
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: '{{ .path.basename }}'
-
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-
-        syncOptions:
-          - CreateNamespace=true
-          - ServerSideApply=true
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      syncOptions:
+        - CreateNamespace=true
+        - ServerSideApply=true
