@@ -1,25 +1,44 @@
-template:
-  metadata:
-    name: '{{ base (index .path "path") }}'
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-apps
+  namespace: argocd
+spec:
+  # 1. CRITICAL: Enables the standard Go templating engine 
+  # so functions like 'base' can safely parse string variables.
+  goTemplate: true 
 
-  spec:
-    project: default
+  # 2. GENERATOR: Scans your repository for application directories
+  generators:
+    - git:
+        repoURL: https://github.com/global-cloudwork/kubernetes.git
+        revision: main
+        directories:
+          # Adjust this wildcard path to match where your apps live 
+          # (e.g., "apps/*" or "environments/production/*")
+          - path: apps/* # 3. TEMPLATE: Standardizes the Application layout for every discovered path
+  template:
+    metadata:
+      # Dynamically extracts the folder name (e.g., 'apps/nginx' becomes 'nginx')
+      name: '{{ base .path }}'
+    spec:
+      project: default
 
-    source:
-      repoURL: https://github.com/global-cloudwork/kubernetes.git
-      targetRevision: main
-      path: '{{ index .path "path" }}'
-      kustomize:
-        buildOptions: "--enable-helm"
+      source:
+        repoURL: https://github.com/global-cloudwork/kubernetes.git
+        targetRevision: main
+        path: '{{ .path }}'
+        kustomize:
+          buildOptions: "--enable-helm"
 
-    destination:
-      server: https://kubernetes.default.svc
-      namespace: '{{ base (index .path "path") }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ base .path }}'
 
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
-      syncOptions:
-        - CreateNamespace=true
-        - ServerSideApply=true
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
