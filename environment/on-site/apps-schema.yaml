@@ -1,0 +1,23 @@
+apps:
+  - name: string
+    type: helm | kustomize | raw
+
+    repoPath: string
+
+    versioning:
+      strategy: git | helm | pinned
+      version: string?
+
+    defaults:
+      namespaceIsolation: boolean
+      exposeIngress: boolean
+
+    dependencies:
+      - string   # other apps
+
+    resources:
+      cpu: string?
+      memory: string?
+
+    configSchema:
+      type: object

@@ -21,3 +21,5 @@ kubectl kustomize --enable-helm \
 kubectl kustomize --enable-helm \
   "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
+
+./get-credentials.sh 

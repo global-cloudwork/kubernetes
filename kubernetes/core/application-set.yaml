@@ -3,35 +3,50 @@ kind: ApplicationSet
 metadata:
   name: cluster-apps
   namespace: argocd
+
 spec:
-  goTemplate: true 
+  goTemplate: true
+
   generators:
     - git:
         repoURL: https://github.com/global-cloudwork/kubernetes.git
         revision: main
         directories:
-          # 1. SCOPE RESTRICTION: Only look at folders inside the 'applications' directory
           - path: applications/*
+
   template:
     metadata:
-      # This still extracts just the folder name (e.g., 'applications/frontend' becomes 'frontend')
       name: '{{ .path.basename }}'
+
     spec:
       project: default
+
       source:
         repoURL: https://github.com/global-cloudwork/kubernetes.git
         targetRevision: main
-        # 2. TARGET PATH: Points Argo CD to the exact subfolder to find your Kustomize files
         path: '{{ .path.path }}'
+
         kustomize:
-          buildOptions: "--enable-helm"
+          buildOptions: >-
+            --enable-helm
+            --load-restrictor LoadRestrictionsNone
+
       destination:
         server: https://kubernetes.default.svc
+
+        # Uses the application folder name:
+        # applications/keycloak -> namespace keycloak
+        # applications/n8n -> namespace n8n
         namespace: '{{ .path.basename }}'
+
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
+
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true
+          - RespectIgnoreDifferences=true
+
+      revisionHistoryLimit: 3
