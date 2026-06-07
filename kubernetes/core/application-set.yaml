@@ -1,6 +1,6 @@
 template:
   metadata:
-    name: '{{ base .path }}'
+    name: '{{ base (index .path "path") }}'
 
   spec:
     project: default
@@ -8,13 +8,13 @@ template:
     source:
       repoURL: https://github.com/global-cloudwork/kubernetes.git
       targetRevision: main
-      path: '{{ .path }}'
+      path: '{{ index .path "path" }}'
       kustomize:
         buildOptions: "--enable-helm"
 
     destination:
       server: https://kubernetes.default.svc
-      namespace: '{{ base .path }}'
+      namespace: '{{ base (index .path "path") }}'
 
     syncPolicy:
       automated:
