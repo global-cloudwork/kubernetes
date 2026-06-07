@@ -10,16 +10,19 @@ spec:
         repoURL: https://github.com/global-cloudwork/kubernetes.git
         revision: main
         directories:
-          - path: '*' # If your apps live in a subfolder, use 'apps/*' instead
+          # 1. SCOPE RESTRICTION: Only look at folders inside the 'applications' directory
+          - path: applications/*
   template:
     metadata:
-      name: '{{ .path.basename }}' # Fixed string mapping
+      # This still extracts just the folder name (e.g., 'applications/frontend' becomes 'frontend')
+      name: '{{ .path.basename }}'
     spec:
       project: default
       source:
         repoURL: https://github.com/global-cloudwork/kubernetes.git
         targetRevision: main
-        path: '{{ .path.path }}' # Fixed string mapping
+        # 2. TARGET PATH: Points Argo CD to the exact subfolder to find your Kustomize files
+        path: '{{ .path.path }}'
         kustomize:
           buildOptions: "--enable-helm"
       destination:
