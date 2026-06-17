@@ -22,4 +22,6 @@ kubectl kustomize --enable-helm \
   "github.com/$REPOSITORY?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
+# Wait 60 seconds for cluster stabilization before obtaining credentials
+sleep 60
 ./get-credentials.sh 
