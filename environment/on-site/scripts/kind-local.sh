@@ -7,7 +7,7 @@ echo
 echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 kind delete cluster
-kind create cluster --config kind.yaml
+kind create cluster --config kind.yaml --wait 2m
 
 REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
