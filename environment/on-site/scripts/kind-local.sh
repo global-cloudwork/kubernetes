@@ -24,4 +24,5 @@ kubectl kustomize --enable-helm \
 
 # Wait 60 seconds for cluster stabilization before obtaining credentials
 sleep 60
+
 ./get-credentials.sh 
