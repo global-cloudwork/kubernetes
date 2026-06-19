@@ -15,7 +15,7 @@ helmCharts:
     valuesInline:
       configs:
         params:
-          server.insecure: true # Ensured strict boolean format
+          server.insecure: "true"  # must be a string — configs.params lands in a ConfigMap (map[string]string)
 
       server:
         service:
