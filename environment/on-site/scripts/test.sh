@@ -134,6 +134,99 @@ section "Network Policies"
 kubectl get networkpolicy -A 2>/dev/null || warn "No network policies found"
 
 # -----------------------------------------------------------------------------
+# Gateway API & Traefik
+# -----------------------------------------------------------------------------
+
+section "Gateway API — GatewayClasses"
+
+echo "=== GatewayClasses ==="
+kubectl get gatewayclass -o wide 2>/dev/null || warn "No GatewayClass resources found"
+
+echo ""
+echo "=== GatewayClass Conditions ==="
+kubectl get gatewayclass -o json 2>/dev/null | \
+  jq -r '.items[] | "[\(.metadata.name)] controller: \(.spec.controllerName) | accepted: \(.status.conditions[]? | select(.type=="Accepted") | .status)"' \
+  || warn "Could not parse GatewayClass conditions (jq may not be installed)"
+
+section "Gateway API — Gateways"
+
+echo "=== Gateways ==="
+kubectl get gateway -A -o wide 2>/dev/null || warn "No Gateway resources found"
+
+echo ""
+echo "=== Gateway Conditions ==="
+kubectl get gateway -A -o json 2>/dev/null | \
+  jq -r '.items[] | "[\(.metadata.namespace)/\(.metadata.name)] programmed: \(.status.conditions[]? | select(.type=="Programmed") | .status) | ready: \(.status.conditions[]? | select(.type=="Ready") | .status)"' \
+  || warn "Could not parse Gateway conditions (jq may not be installed)"
+
+echo ""
+echo "=== Gateway Addresses ==="
+kubectl get gateway -A -o json 2>/dev/null | \
+  jq -r '.items[] | "[\(.metadata.namespace)/\(.metadata.name)] addresses: \([.status.addresses[]?.value] | join(", "))"' \
+  || warn "Could not parse Gateway addresses"
+
+section "Gateway API — HTTPRoutes"
+
+echo "=== HTTPRoutes ==="
+kubectl get httproute -A -o wide 2>/dev/null || warn "No HTTPRoute resources found"
+
+echo ""
+echo "=== HTTPRoute Details (hostnames & backends) ==="
+kubectl get httproute -A -o json 2>/dev/null | \
+  jq -r '.items[] | "[\(.metadata.namespace)/\(.metadata.name)] hostnames: \(.spec.hostnames // [] | join(", ")) | parent: \(.spec.parentRefs[]? | "\(.namespace // "same ns")/\(.name)")"' \
+  || warn "Could not parse HTTPRoute details"
+
+section "Traefik"
+
+echo "=== Traefik Pods ==="
+kubectl get pods -A -l 'app.kubernetes.io/name=traefik' -o wide 2>/dev/null \
+  || kubectl get pods -A -l 'app=traefik' -o wide 2>/dev/null \
+  || warn "No Traefik pods found"
+
+echo ""
+echo "=== Traefik Services ==="
+kubectl get svc -A -l 'app.kubernetes.io/name=traefik' 2>/dev/null \
+  || kubectl get svc -A -l 'app=traefik' 2>/dev/null \
+  || warn "No Traefik services found"
+
+echo ""
+echo "=== Traefik Deployment ==="
+kubectl get deployment -A -l 'app.kubernetes.io/name=traefik' -o wide 2>/dev/null \
+  || kubectl get deployment -A -l 'app=traefik' -o wide 2>/dev/null \
+  || warn "No Traefik deployment found"
+
+section "Local Network Reachability"
+
+echo "=== Probing HTTPRoute hostnames ==="
+
+if ! command -v curl >/dev/null 2>&1; then
+  warn "curl not installed — skipping reachability checks"
+else
+  HOSTNAMES=$(kubectl get httproute -A -o json 2>/dev/null | \
+    jq -r '.items[].spec.hostnames[]?' 2>/dev/null || true)
+
+  if [[ -z "$HOSTNAMES" ]]; then
+    warn "No hostnames found in HTTPRoutes"
+  else
+    while IFS= read -r hostname; do
+      [[ -z "$hostname" ]] && continue
+
+      HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+        --connect-timeout 3 "http://$hostname" 2>/dev/null || echo "000")
+      HTTPS_CODE=$(curl -ks -o /dev/null -w "%{http_code}" \
+        --connect-timeout 3 "https://$hostname" 2>/dev/null || echo "000")
+
+      if [[ "$HTTP_CODE" =~ ^(200|301|302|401|403|404)$ ]] || \
+         [[ "$HTTPS_CODE" =~ ^(200|301|302|401|403|404)$ ]]; then
+        echo -e "${GREEN}✓${NC} $hostname — HTTP: $HTTP_CODE  HTTPS: $HTTPS_CODE"
+      else
+        echo -e "${RED}✗${NC} $hostname — HTTP: $HTTP_CODE  HTTPS: $HTTPS_CODE (unreachable)"
+      fi
+    done <<< "$HOSTNAMES"
+  fi
+fi
+
+# -----------------------------------------------------------------------------
 # Storage
 # -----------------------------------------------------------------------------
 
@@ -165,6 +258,21 @@ section "Argo CD Pods"
 echo "=== Argo CD Pods ==="
 run_cmd "kubectl get pods -n argocd"
 run_cmd "kubectl get pods -n argocd -o wide"
+
+section "Argo CD Applications"
+
+echo "=== Applications ==="
+kubectl get applications -n argocd 2>/dev/null || warn "No ArgoCD Applications found"
+
+echo ""
+echo "=== ApplicationSets ==="
+kubectl get applicationsets -n argocd 2>/dev/null || warn "No ArgoCD ApplicationSets found"
+
+echo ""
+echo "=== Sync & Health Status ==="
+kubectl get applications -n argocd -o json 2>/dev/null | \
+  jq -r '.items[] | "[\(.metadata.name)] sync: \(.status.sync.status) | health: \(.status.health.status)"' \
+  || warn "Could not parse ArgoCD application status"
 
 section "Argo CD Services"
 
@@ -272,7 +380,4 @@ run_cmd "kubectl get nodes -o wide"
 
 section "DONE"
 
-
-
 echo -e "${GREEN}Kubernetes cluster check finished successfully.${NC}"
-
