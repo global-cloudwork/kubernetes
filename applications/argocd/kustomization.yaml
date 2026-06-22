@@ -19,5 +19,4 @@ helmCharts:
 
       server:
         service:
-          type: NodePort
-          nodePortHttp: 30080
+          type: ClusterIP
