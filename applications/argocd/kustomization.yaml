@@ -3,7 +3,12 @@ kind: Kustomization
 
 resources:
   - secret.yaml
-  - config-map.yaml
+
+patches:
+  - path: config-map.yaml
+    target:
+      kind: ConfigMap
+      name: argocd-cm
 
 helmCharts:
   - name: argo-cd
