@@ -26,9 +26,9 @@ kubectl kustomize --enable-helm \
 
 sleep 60
 
-kubectl apply \
-  -f "github.com/$REPOSITORY/kubernetes/kubernetes/core/app-project.yaml?ref=$BRANCH" \
-  -f "github.com/$REPOSITORY/kubernetes/kubernetes/core/application-set.yaml?ref=$BRANCH"
+kubectl apply \ 
+  -f "https://raw.githubusercontent.com/$REPOSITORY/$BRANCH/kubernetes/core/app-project.yaml" \
+  -f "https://raw.githubusercontent.com/$REPOSITORY/$BRANCH/kubernetes/core/application-set.yaml"
 
 sleep 120
 
