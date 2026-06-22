@@ -3,28 +3,12 @@ kind: Gateway
 metadata:
   name: gateway
   namespace: gateway
-  annotations:
-    cert-manager.io/cluster-issuer: cluster-issuer
 spec:
-  gatewayClassName: cilium
+  gatewayClassName: <your-gateway-class>
   listeners:
-    - hostname: "*.promotesudbury.ca"
-      name: http
+    - name: http
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
           from: All
-
-    - hostname: "*.promotesudbury.ca"
-      name: https
-      protocol: HTTPS
-      port: 443
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            name: wildcard-certificate
