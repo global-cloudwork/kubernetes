@@ -4,7 +4,8 @@ metadata:
   name: gateway
   namespace: gateway
 spec:
-  gatewayClassName: <your-gateway-class>
+  gatewayClassName: traefik
+
   listeners:
     - name: http
       protocol: HTTP

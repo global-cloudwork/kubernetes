@@ -12,10 +12,6 @@ spec:
     - homepage.local
 
   rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
+    - backendRefs:
         - name: homepage
-          port: 3000
+          port: 80
