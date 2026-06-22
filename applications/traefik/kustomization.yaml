@@ -16,7 +16,7 @@ helmCharts:
           enabled: true
 
       gateway:
-        enabled: true
+        enabled: false
 
       service:
         type: NodePort

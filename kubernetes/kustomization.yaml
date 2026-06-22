@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - gateway.yaml
   # Argo CD CRDs
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/application-crd.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/appproject-crd.yaml
