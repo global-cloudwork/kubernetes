@@ -11,22 +11,19 @@ helmCharts:
     version: 37.1.0
     releaseName: traefik
     valuesInline:
-      gateway:
-        enabled: true
-
       providers:
         kubernetesGateway:
           enabled: true
 
+      gateway:
+        enabled: true
+
       service:
         type: NodePort
 
-        spec:
-          externalTrafficPolicy: Local
+      ports:
+        web:
+          nodePort: 30080
 
-        ports:
-          web:
-            nodePort: 30080
-
-          websecure:
-            nodePort: 30443
+        websecure:
+          nodePort: 30443
