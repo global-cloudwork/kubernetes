@@ -26,9 +26,10 @@ kubectl kustomize --enable-helm \
 
 sleep 120
 
-kubectl apply -f \
-  "github.com/$REPOSITORY/kubernetes/core/?ref=$BRANCH"
+kubectl apply \
+  -f "github.com/$REPOSITORY/kubernetes/core/app-project.yaml?ref=$BRANCH" \
+  -f "github.com/$REPOSITORY/kubernetes/core/application-set.yaml?ref=$BRANCH"
 
 sleep 120
 
-./get-credentials.sh 
+./get-credentials.sh
