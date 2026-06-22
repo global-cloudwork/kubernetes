@@ -9,7 +9,7 @@ echo "Section: Deploy Base and Core, then restart RKE2"
 kind delete cluster
 kind create cluster --config kind.yaml
 
-sleep 120
+sleep 60
 
 REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
@@ -24,7 +24,7 @@ kubectl kustomize --enable-helm \
   "github.com/$REPOSITORY/applications/argocd?ref=$BRANCH" | \
   kubectl apply --server-side --force-conflicts -f -
 
-sleep 120
+sleep 60
 
 kubectl apply \
   -f "github.com/$REPOSITORY/kubernetes/core/app-project.yaml?ref=$BRANCH" \
