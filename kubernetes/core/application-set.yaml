@@ -26,11 +26,6 @@ spec:
         targetRevision: main
         path: '{{ .path.path }}'
 
-        kustomize:
-          buildOptions: >-
-            --enable-helm
-            --load-restrictor LoadRestrictionsNone
-
       destination:
         server: https://kubernetes.default.svc
 
