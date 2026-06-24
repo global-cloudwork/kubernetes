@@ -18,6 +18,12 @@ helmCharts:
       gateway:
         enabled: false
 
+      gatewayAPI:
+        enabled: true
+        entryPoints:
+          - web
+          - websecure
+
       service:
         type: NodePort
 
