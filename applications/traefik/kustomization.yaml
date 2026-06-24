@@ -14,15 +14,12 @@ helmCharts:
       providers:
         kubernetesGateway:
           enabled: true
+          entryPoints:
+            - web
+            - websecure
 
       gateway:
         enabled: false
-
-      gatewayAPI:
-        enabled: true
-        entryPoints:
-          - web
-          - websecure
 
       service:
         type: NodePort
