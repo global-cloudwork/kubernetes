@@ -17,16 +17,16 @@ BRANCH=main
 # Generate Authentik secret key
 AUTHENTIK_SECRET_KEY=$(openssl rand -base64 36)
 
+# Install infrastructure + CRDs
+kubectl kustomize --enable-helm \
+  "github.com/$REPOSITORY/kubernetes?ref=$BRANCH" | \
+  kubectl apply --server-side --force-conflicts -f -
+
 kubectl create secret generic authentik-secret-key \
   --namespace authentik \
   --from-literal=secret_key="$AUTHENTIK_SECRET_KEY" \
   --dry-run=client -o yaml | \
   kubectl apply -f -
-
-# Install infrastructure + CRDs
-kubectl kustomize --enable-helm \
-  "github.com/$REPOSITORY/kubernetes?ref=$BRANCH" | \
-  kubectl apply --server-side --force-conflicts -f -
 
 # Apply workload manifests
 kubectl kustomize --enable-helm \
