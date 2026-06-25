@@ -10,3 +10,15 @@ helmCharts:
     namespace: authentik
     version: 2026.5.3
     releaseName: my-authentik
+    valuesInline:
+      authentik:
+        existingSecret: "authentik-secret-key"
+        existingSecretKey: "secret_key"
+        error_reporting:
+          enabled: false
+
+      postgresql:
+        enabled: true
+
+      redis:
+        enabled: true
