@@ -5,8 +5,8 @@ resources:
   - namespace.yaml
   - configmap.yaml
 helmCharts:
-  - name: keycloak
-    repo: https://charts.bitnami.com/bitnami
+  - name: authentik
+    repo: https://charts.goauthentik.io/
     namespace: keycloak
-    version: 25.2.0
-    releaseName: my-keycloak
+    version: 2026.5.3
+    releaseName: my-authentik
