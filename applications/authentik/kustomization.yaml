@@ -7,6 +7,6 @@ resources:
 helmCharts:
   - name: authentik
     repo: https://charts.goauthentik.io/
-    namespace: keycloak
+    namespace: authentik
     version: 2026.5.3
     releaseName: my-authentik
