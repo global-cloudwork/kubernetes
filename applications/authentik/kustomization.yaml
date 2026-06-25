@@ -12,8 +12,8 @@ helmCharts:
     releaseName: my-authentik
     valuesInline:
       authentik:
-        existingSecret: "authentik-secret-key"
-        existingSecretKey: "secret_key"
+        existingSecret:
+          secretName: "authentik-secret-key"
         error_reporting:
           enabled: false
 
