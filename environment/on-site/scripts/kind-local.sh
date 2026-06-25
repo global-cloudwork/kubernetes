@@ -14,6 +14,9 @@ sleep 60
 REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
 
+# Generate Authentik secret key
+AUTHENTIK_SECRET_KEY=$(openssl rand -base64 36)
+
 # Install infrastructure + CRDs
 kubectl kustomize --enable-helm \
   "github.com/$REPOSITORY/kubernetes?ref=$BRANCH" | \
@@ -30,6 +33,16 @@ kubectl apply \
   -f "https://raw.githubusercontent.com/$REPOSITORY/$BRANCH/kubernetes/core/app-project.yaml" \
   -f "https://raw.githubusercontent.com/$REPOSITORY/$BRANCH/kubernetes/core/application-set.yaml" \
   -f "https://raw.githubusercontent.com/$REPOSITORY/$BRANCH/kubernetes/core/gateway.yaml"
+
+# Inject Authentik secret key as a Kubernetes Secret
+kubectl create namespace authentik --dry-run=client -o yaml | \
+  kubectl apply -f -
+
+kubectl create secret generic authentik-secret-key \
+  --namespace authentik \
+  --from-literal=secret_key="$AUTHENTIK_SECRET_KEY" \
+  --dry-run=client -o yaml | \
+  kubectl apply -f -
 
 sleep 120
 
