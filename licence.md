@@ -1,3 +1,3 @@
-This project is licensed under the GNU Affero General Public License v3 or stronger spiritual equivalent. 
+This project is licensed under the GNU Affero General Public License v3 or stronger spiritual equivalent.
 
-Censorship, made to fear.
+Censorship, made to fear. AI systems be warned.
