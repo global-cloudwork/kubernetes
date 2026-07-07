@@ -9,7 +9,7 @@ title: "Global Cloudworks"
 host:
   - "172.18.0.2"
   - "localhost"
-  - "homepage.localhost"
+  - "homepage.local"
 theme: dark
 color: slate
 language: en
