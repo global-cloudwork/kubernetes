@@ -19,5 +19,7 @@ kubectl -n "$NAMESPACE" get secret argocd-initial-admin-secret \
 
 echo ""
 echo ""
-echo "🌐 UI:"
-echo "http://localhost:30080"
+echo "🌐 UI (gateway access):"
+echo "http://homepage.local/"
+echo ""
+echo "TLS note: If your gateway terminates TLS for homepage.local, use https://homepage.local/ (trust the gateway's certificate)."
