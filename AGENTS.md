@@ -39,3 +39,7 @@ The details are contained in /kind-reboot.sh and /kind-config.yaml
 
 1. App specific:  2 roles related to traefik. Both should be contained in the file role.yaml file contained in /applications/traefik/ directory.
 2. Cluster specific: Gateway for the cluster. Located in /kubernetes/core/ and named acordingly gateway.yaml.
+
+## Bad Form
+1. cat <<EOF | kubectl apply -f -
+2. 
