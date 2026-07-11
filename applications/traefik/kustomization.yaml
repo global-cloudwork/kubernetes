@@ -3,6 +3,9 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  - traefik-sa.yaml
+  - traefik-role.yaml
+  - traefik-rolebinding.yaml
 
 helmCharts:
   - name: traefik
@@ -11,16 +14,17 @@ helmCharts:
     version: 37.1.0
     releaseName: traefik
     valuesInline:
+      rbac:
+        create: false
+      serviceAccount:
+        create: false
       providers:
         kubernetesGateway:
           enabled: true
-
       gateway:
         enabled: false
-
       service:
         type: NodePort
-
       ports:
         web:
           port: 80
@@ -28,10 +32,10 @@ helmCharts:
           expose:
             default: true
           protocol: TCP
-
-        websecure:
-          port: 443
-          nodePort: 30443
-          expose:
-            default: true
-          protocol: TCP
+      websecure:
+        port: 443
+        nodePort: 30443
+        expose:
+          default: true
+        protocol: TCP
+## Traefik components are deployed via discrete manifests; Helm chart remains the primary deployment mechanism.
