@@ -3,9 +3,9 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
-  - traefik-sa.yaml
-  - traefik-role.yaml
-  - traefik-rolebinding.yaml
+  - service-account.yaml
+  - cluster-role-binding.yaml
+  - cluster-role.yaml
 
 helmCharts:
   - name: traefik
