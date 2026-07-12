@@ -1,4 +1,6 @@
-I reader, then an idea developer. The goal is to balance the current issue set to you. Dont ask questions debug and act in a loop until finished the task.
+The goal is to balance the task set to you, with the stability of my system. Don't ask questions, debug, act, assess, repeat until finished.
+
+Read this file, tree the repository root, then cat files until comfortable before continuing.
 
 # Not a normal kubernetes server
 
