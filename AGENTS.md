@@ -2,6 +2,12 @@
 
 *!!! This is the pattern for the repo, maintain it and things will remain clean orginized. !!!*
 
+./kind-reboot.sh /
+&& kubectl wait gatewayclass traefik --for=condition=Accepted --timeout=60s /
+&& kubectl wait gateway gateway -n gateway --for=condition=Programmed --timeout=60s /
+&& kubectl wait httproute homepage -n homepage --for=condition=Ready --timeout=60s /
+&& curl -H "Host: homepage.local" http://homepage.local:30080
+
 The mature reasons for this aproach are as follows:
 1. Simplicity
 2. Orginization
