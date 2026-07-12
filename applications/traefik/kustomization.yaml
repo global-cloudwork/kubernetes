@@ -13,6 +13,14 @@ helmCharts:
     version: 37.1.0
     releaseName: traefik
     valuesInline:
+      deployment:
+        tolerations:
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+            effect: "NoSchedule"
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+            effect: "NoExecute"
       rbac:
         create: false
       serviceAccount:
