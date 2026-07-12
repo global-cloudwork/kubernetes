@@ -6,6 +6,7 @@ Read this file, tree the repository root, then cat files until comfortable befor
 
 *!!! This is the pattern for the repo, maintain it and things will remain clean orginized. !!!*
 
+Do not run this, instead know it is an option
 ./kind-reboot.sh /
 && kubectl wait gatewayclass traefik --for=condition=Accepted --timeout=60s /
 && kubectl wait gateway gateway -n gateway --for=condition=Programmed --timeout=60s /
