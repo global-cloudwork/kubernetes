@@ -12,6 +12,9 @@
 
 source ".env"
 
+echo "Pushing current branch to remote"
+git push
+
 REPOSITORY=global-cloudwork/kubernetes
 BRANCH=main
 
