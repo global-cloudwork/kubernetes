@@ -2,9 +2,18 @@
 
 #===============================================================================
 # Deploy Base and Core, then restart RKE2
+
+#./kind-reboot.sh /
+#&& kubectl wait gatewayclass traefik --for=condition=Accepted --timeout=60s /
+#&& kubectl wait gateway gateway -n gateway --for=condition=Programmed --timeout=60s /
+#&& kubectl wait httproute homepage -n homepage --for=condition=Ready --timeout=60s /
+#&& curl -H "Host: homepage.local" http://localhost:30080
 #===============================================================================
 
 source ".env"
+
+REPOSITORY=global-cloudwork/kubernetes
+BRANCH=main
 
 echo
 echo "Section: Deploy Base and Core, then restart RKE2"
@@ -14,8 +23,6 @@ kind create cluster --config kind-config.yaml
 
 sleep 60
 
-REPOSITORY=global-cloudwork/kubernetes
-BRANCH=main
 
 # Generate Authentik secret key
 AUTHENTIK_SECRET_KEY=$(openssl rand -base64 36)
