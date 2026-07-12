@@ -13,6 +13,7 @@ helmCharts:
     version: 37.1.0
     releaseName: traefik
     valuesInline:
+      installCRDs: true
       deployment:
         tolerations:
           - key: "node-role.kubernetes.io/control-plane"
