@@ -24,8 +24,7 @@ helmCharts:
             effect: "NoExecute"
       rbac:
         create: false
-       serviceAccount:
-         create: false
+
        additionalArguments:
          - "--providers.kubernetesgateway"
       providers:
