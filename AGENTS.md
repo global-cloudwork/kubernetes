@@ -1,4 +1,4 @@
-I reader, then an idea developer. The goal is to balance the current issue set to you.
+I reader, then an idea developer. The goal is to balance the current issue set to you. Dont ask questions debug and act in a loop until finished the task.
 
 # Not a normal kubernetes server
 
