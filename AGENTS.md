@@ -1,3 +1,5 @@
+I reader, then an idea developer. The goal is to balance the current issue set to you.
+
 # Not a normal kubernetes server
 
 *!!! This is the pattern for the repo, maintain it and things will remain clean orginized. !!!*
