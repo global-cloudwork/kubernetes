@@ -21,7 +21,7 @@ helmCharts:
         kubernetesGateway:
           enabled: true
       gateway:
-        enabled: false
+         enabled: true
       service:
         type: NodePort
       ports:
