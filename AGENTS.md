@@ -24,6 +24,7 @@ The details are contained in /kind-reboot.sh and /kind-config.yaml
 
 1. Initilization - /kubernetes/kustomization.yaml this includes CRD's namespaces, and other required manifests.
 2. Server Manifests - /kubernetes/core/*.yaml
+   1. Located in this folder is an applicationset that deploys all the applications in section 3
 3. App Deployment - /applications/**/kustomization.yaml, and paired manifests
    1. The helmCharts: section deploys each of the applications via helm chart
    2. The valuesInline: section makes for clean and readable values.yaml overides
