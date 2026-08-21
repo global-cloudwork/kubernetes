@@ -1,0 +1,20 @@
+---
+# Kustomization for Source Hydrator Infrastructure
+#
+# This kustomization includes the hydrator and environment applications
+# in the bootstrap process. Include this in the main kustomization.yaml
+# AFTER ArgoCD is installed and Source Hydrator is enabled.
+#
+# Use this file when rebuilding the cluster with hydrator support.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # Hydrator Applications (21 total)
+  - core/hydrator-applications.yaml
+
+  # Environment Applications (21 total)
+  - core/development.yaml
+  - core/testing.yaml
+  - core/prod.yaml
