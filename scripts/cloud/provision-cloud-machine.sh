@@ -1,13 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Load environment variables from root .env
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../../.env"
+
+if [ -f "${ENV_FILE}" ]; then
+  set +u  # Disable unset check for sourcing .env
+  source "${ENV_FILE}"
+  set -u
+else
+  echo "Warning: .env file not found at ${ENV_FILE}"
+  echo "Set GCP_PROJECT_ID, GCP_REGION, GCP_ZONE environment variables manually"
+fi
+
 # Environment & Context
 PROJECT_ID="${GCP_PROJECT_ID:?Set GCP_PROJECT_ID environment variable}"
 REGION="${GCP_REGION:-us-central1}"
 ZONE="${GCP_ZONE:-us-central1-a}"
 
-# Startup Script
-STARTUP_SCRIPT_PATH="${STARTUP_SCRIPT_PATH:-.\/cloud-machine-init.sh}"
+# Startup Script (default to cloud-machine-init.sh in same directory)
+STARTUP_SCRIPT_PATH="${STARTUP_SCRIPT_PATH:-${SCRIPT_DIR}/cloud-machine-init.sh}"
 
 VPC_NAME="vpn-gateway-vpc"
 SUBNET_NAME="vpn-gateway-subnet"

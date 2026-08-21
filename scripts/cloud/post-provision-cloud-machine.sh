@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Load environment variables from root .env
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../../.env"
+
+if [ -f "${ENV_FILE}" ]; then
+  set +u  # Disable unset check for sourcing .env
+  source "${ENV_FILE}"
+  set -u
+else
+  echo "Warning: .env file not found at ${ENV_FILE}"
+  echo "Set GCP_PROJECT_ID, GCP_ZONE environment variables manually"
+fi
+
 # Post-Boot Configuration: Retrieve WireGuard keys, add peer clients, validate tunnel
 # Runs after GCP instance boot + cloud-machine-init.sh completion
 
