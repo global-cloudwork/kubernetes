@@ -107,7 +107,12 @@ kubernetes/
    - Verify ArgoCD Application syncs from development branch
    - Check deployment status
 
-3. **Clean Up ApplicationSet**
+3. **Deploy Environment Applications**
+   - Apply kubernetes/core/development.yaml
+   - Apply kubernetes/core/testing.yaml
+   - Apply kubernetes/core/prod.yaml
+
+4. **Clean Up ApplicationSet**
    - Remove old ApplicationSet after validation
    - Delete old kustomization.yaml files from `/applications/*/`
 

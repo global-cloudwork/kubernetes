@@ -111,13 +111,19 @@ Created ArgoCD Applications for each environment:
 │       └── templates/
 │           └── (custom resource manifests)
 │
-├── applications/
-│   ├── development.yaml                      (NEW - 7 Applications)
-│   ├── testing.yaml                          (NEW - 7 Applications)
-│   ├── prod.yaml                             (NEW - 7 Applications)
-│   └── [app-name]/
-│       ├── kustomization.yaml                (KEEP - will be deleted in Phase 3)
-│       └── ... (other app resources)
+├── kubernetes/
+│   ├── core/
+│   │   ├── development.yaml                  (NEW - 7 Applications)
+│   │   ├── testing.yaml                      (NEW - 7 Applications)
+│   │   ├── prod.yaml                         (NEW - 7 Applications)
+│   │   ├── application-set.yaml              (KEEP - will be deleted in Phase 3)
+│   │   └── ...
+│   └── ...
+│
+└── applications/
+    └── [app-name]/
+        ├── kustomization.yaml                (KEEP - will be deleted in Phase 3)
+        └── ... (other app resources)
 │
 ├── kubernetes/
 │   ├── kustomization.yaml                    (KEEP - still needed for CRDs)

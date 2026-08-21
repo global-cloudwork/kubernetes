@@ -205,13 +205,13 @@ Once hydration is verified and working, deploy the environment-specific applicat
 
 ```bash
 # Development environment
-kubectl apply -f applications/development.yaml
+kubectl apply -f kubernetes/core/development.yaml
 
 # Testing/Staging environment
-kubectl apply -f applications/testing.yaml
+kubectl apply -f kubernetes/core/testing.yaml
 
 # Production environment
-kubectl apply -f applications/prod.yaml
+kubectl apply -f kubernetes/core/prod.yaml
 ```
 
 Verify they're syncing:
