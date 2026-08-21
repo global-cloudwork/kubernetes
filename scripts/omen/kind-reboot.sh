@@ -3,7 +3,7 @@
 #===============================================================================
 # Deploy Base and Core, then restart RKE2
 
-#./kind-reboot.sh /
+#./scripts/omen/kind-reboot.sh /
 #&& kubectl wait gatewayclass traefik --for=condition=Accepted --timeout=60s /
 #&& kubectl wait gateway gateway -n gateway --for=condition=Programmed --timeout=60s /
 #&& kubectl wait httproute homepage -n homepage --for=condition=Ready --timeout=60s /
@@ -22,7 +22,7 @@ echo
 echo "Section: Deploy Base and Core, then restart RKE2"
 #===============================================================================
 kind delete cluster
-kind create cluster --config kind-config.yaml
+kind create cluster --config scripts/omen/kind-config.yaml
 
 sleep 60
 

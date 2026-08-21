@@ -7,7 +7,7 @@ Read this file, tree the repository root, then cat files until comfortable befor
 *!!! This is the pattern for the repo, maintain it and things will remain clean orginized. !!!*
 
 ## Reboot - Do not run this, instead know it is an option
-./kind-reboot.sh /
+./scripts/omen/kind-reboot.sh /
 && kubectl wait gatewayclass traefik --for=condition=Accepted --timeout=60s /
 && kubectl wait gateway gateway -n gateway --for=condition=Programmed --timeout=60s /
 && kubectl wait httproute homepage -n homepage --for=condition=Ready --timeout=60s /
@@ -31,7 +31,7 @@ This file file bootstrapts the kubernetes cluster. Removing the existing version
 
 Deploying single files, or applying via kubectl or kustomize is poor form for this project. Aim to reboot the cluster after modifying the declaritive specifications then pushing those to the repository.
 
-The details are contained in /kind-reboot.sh and /kind-config.yaml
+The details are contained in /scripts/omen/kind-reboot.sh and /scripts/omen/kind-config.yaml
 
 ## Manifest locations 
 
