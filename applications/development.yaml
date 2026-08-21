@@ -1,0 +1,171 @@
+---
+# Development Environment Applications for Space Age GitOps
+# These applications target the 'development' branch for active deployment
+# The 'next-development' branch is used for hydrator staging
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/global-cloudwork/kubernetes
+    targetRevision: development
+    path: helm/traefik-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/global-cloudwork/kubernetes
+    targetRevision: development
+    path: helm/argocd-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/global-cloudwork/kubernetes
+    targetRevision: development
+    path: helm/cert-manager-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: authentik-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/global-cloudwork/kubernetes
+    targetRevision: development
+    path: helm/authentik-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: authentik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/global-cloudwork/kubernetes
+    targetRevision: development
+    path: helm/n8n-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: n8n
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: neo4j-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/global-cloudwork/kubernetes
+    targetRevision: development
+    path: helm/neo4j-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: neo4j
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homepage-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/global-cloudwork/kubernetes
+    targetRevision: development
+    path: helm/homepage-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: homepage
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3

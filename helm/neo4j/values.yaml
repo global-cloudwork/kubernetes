@@ -1,0 +1,5 @@
+neo4j:
+  name: neo4j
+volumes:
+  data:
+    mode: defaultStorageClass

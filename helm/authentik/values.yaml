@@ -1,0 +1,11 @@
+authentik:
+  existingSecret:
+    secretName: "authentik-secret-key"
+  error_reporting:
+    enabled: false
+
+postgresql:
+  enabled: true
+
+redis:
+  enabled: true

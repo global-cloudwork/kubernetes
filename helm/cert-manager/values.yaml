@@ -1,0 +1,15 @@
+cert-manager:
+  crds:
+    enabled: true
+  webhook:
+    securePort: 10260
+  config:
+    apiVersion: controller.config.cert-manager.io/v1alpha1
+    kind: ControllerConfiguration
+    enableGatewayAPI: true
+  controler:
+    securityContext:
+      capabilities:
+        add:
+          - "NET_RAW"
+          - NET_BIND_SERVICE
