@@ -23,9 +23,9 @@ ZONE="${GCP_ZONE:-us-central1-a}"
 VM_NAME="${VM_NAME:-gce-vpn-gateway}"
 
 # WireGuard Configuration (must match cloud-machine-init.sh)
-WG_SUBNET="10.20.0.0/24"
-LOCAL_LAN_SUBNET="192.168.1.0/24"
-LAPTOP_PEER_IP="10.20.0.3/32"
+WG_SUBNET="${WG_NET:-10.20.0.0/24}"
+LOCAL_LAN_SUBNET="${LOCAL_LAN_SUBNET:-192.168.1.0/24}"
+LAPTOP_PEER_IP="${LAPTOP_PEER_IP:-10.20.0.3/32}"
 
 # Output directory for peer configs
 CONFIG_OUTPUT_DIR="${CONFIG_OUTPUT_DIR:-.}"

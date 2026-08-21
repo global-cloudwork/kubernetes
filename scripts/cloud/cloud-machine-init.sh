@@ -3,28 +3,43 @@ set -euo pipefail
 
 # Alpine + WireGuard + Caddy Gateway
 # Runs as root on first GCE boot (via user-data)
+# All configuration passed via GCP metadata
 
 # Fetch GCE Public IP via Metadata server
 GCE_PUBLIC_IP=$(wget -q -O- --header="Metadata-Flavor: Google" \
   http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
 
-# Addressing Parameters
-WG_NET="10.20.0.0/24"
-WG_GW_IP="10.20.0.1/24"
-LOCAL_LAN_SUBNET="192.168.1.0/24"
+# Helper function to fetch metadata values
+get_metadata() {
+  local key="$1"
+  local default="$2"
+  local value=$(wget -q -O- --header="Metadata-Flavor: Google" \
+    "http://metadata.google.internal/computeMetadata/v1/instance/metadata/${key}" 2>/dev/null)
 
-# Target IP Routing Allocations
-LOCAL_PEER_IP="10.20.0.2/32"
-LAPTOP_PEER_IP="10.20.0.3/32"
+  if [ -z "${value}" ]; then
+    echo "${default}"
+  else
+    echo "${value}"
+  fi
+}
 
-# Allowed Target Services on Local LAN (Explicit Minimum)
-N8N_IP="192.168.1.10"
-POSTGRES_IP="192.168.1.20"
-HA_IP="192.168.1.30"
+# Network Configuration (from metadata or use sensible defaults)
+WG_NET="$(get_metadata 'WG_NET' '10.20.0.0/24')"
+WG_GW_IP="$(get_metadata 'WG_GW_IP' '10.20.0.1/24')"
+LOCAL_LAN_SUBNET="$(get_metadata 'LOCAL_LAN_SUBNET' '192.168.1.0/24')"
 
-# Caddy Configuration
-CADDY_DOMAIN="${CADDY_DOMAIN:-vpn-gateway.local}"
-CADDY_PORT="443"
+# Peer IP Allocations (from metadata or use sensible defaults)
+LOCAL_PEER_IP="$(get_metadata 'LOCAL_PEER_IP' '10.20.0.2/32')"
+LAPTOP_PEER_IP="$(get_metadata 'LAPTOP_PEER_IP' '10.20.0.3/32')"
+
+# Internal Service IPs on Local LAN (from metadata or use sensible defaults)
+N8N_IP="$(get_metadata 'N8N_IP' '192.168.1.10')"
+POSTGRES_IP="$(get_metadata 'POSTGRES_IP' '192.168.1.20')"
+HA_IP="$(get_metadata 'HA_IP' '192.168.1.30')"
+
+# Caddy Configuration (from metadata or use sensible defaults)
+CADDY_DOMAIN="$(get_metadata 'CADDY_DOMAIN' 'vpn-gateway.local')"
+CADDY_PORT="$(get_metadata 'CADDY_PORT' '443')"
 
 echo "==> Updating system packages and installing dependencies..."
 apk update

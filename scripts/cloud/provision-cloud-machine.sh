@@ -31,6 +31,17 @@ VM_NAME="gce-vpn-gateway"
 
 # Caddy Configuration (optional - can be overridden)
 CADDY_DOMAIN="${CADDY_DOMAIN:-vpn-gateway.local}"
+CADDY_PORT="${CADDY_PORT:-443}"
+
+# Network Configuration (pass to instance via metadata)
+WG_NET="${WG_NET:-10.20.0.0/24}"
+WG_GW_IP="${WG_GW_IP:-10.20.0.1/24}"
+LOCAL_LAN_SUBNET="${LOCAL_LAN_SUBNET:-192.168.1.0/24}"
+LOCAL_PEER_IP="${LOCAL_PEER_IP:-10.20.0.2/32}"
+LAPTOP_PEER_IP="${LAPTOP_PEER_IP:-10.20.0.3/32}"
+N8N_IP="${N8N_IP:-192.168.1.10}"
+POSTGRES_IP="${POSTGRES_IP:-192.168.1.20}"
+HA_IP="${HA_IP:-192.168.1.30}"
 
 echo "==> Validating startup script exists..."
 if [ ! -f "${STARTUP_SCRIPT_PATH}" ]; then
@@ -112,7 +123,17 @@ if ! gcloud compute instances describe "${VM_NAME}" --zone="${ZONE}" &>/dev/null
     --shielded-secure-boot \
     --shielded-vtpm \
     --shielded-integrity-monitoring \
-    --metadata=enable-oslogin=TRUE,block-project-wide-ssh-keys=TRUE \
+    --metadata=enable-oslogin=TRUE,block-project-wide-ssh-keys=TRUE,\
+WG_NET="${WG_NET}",\
+WG_GW_IP="${WG_GW_IP}",\
+LOCAL_LAN_SUBNET="${LOCAL_LAN_SUBNET}",\
+LOCAL_PEER_IP="${LOCAL_PEER_IP}",\
+LAPTOP_PEER_IP="${LAPTOP_PEER_IP}",\
+N8N_IP="${N8N_IP}",\
+POSTGRES_IP="${POSTGRES_IP}",\
+HA_IP="${HA_IP}",\
+CADDY_DOMAIN="${CADDY_DOMAIN}",\
+CADDY_PORT="${CADDY_PORT}" \
     --metadata-from-file=user-data="${STARTUP_SCRIPT_PATH}"
 fi
 
