@@ -91,9 +91,9 @@ kubernetes/
    - First deployment will create `next-development`, `next-testing`, `next-production` commits
 
 4. **Deploy Environment Applications**
-   - Apply `/applications/development.yaml`
-   - Apply `/applications/testing.yaml`
-   - Apply `/applications/prod.yaml`
+   - Apply `/kubernetes/core/development.yaml`
+   - Apply `/kubernetes/core/testing.yaml`
+   - Apply `/kubernetes/core/prod.yaml`
 
 ### Next Steps: Phase 3 - Testing & Validation
 

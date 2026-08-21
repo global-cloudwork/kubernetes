@@ -54,18 +54,18 @@ helm/[app]/
 
 Created ArgoCD Applications for each environment:
 
-**`applications/development.yaml`** (7 Applications)
+**`kubernetes/core/development.yaml`** (7 Applications)
 - 7 Applications targeting `development` branch
 - Auto-sync enabled (prune + selfHeal)
 - Each app references: `helm/[app-name]-hydrated/` directory
 - Namespaces auto-created
 
-**`applications/testing.yaml`** (7 Applications)
+**`kubernetes/core/testing.yaml`** (7 Applications)
 - 7 Applications targeting `testing` branch
 - Auto-sync enabled
 - Staging/QA environment configuration
 
-**`applications/prod.yaml`** (7 Applications)
+**`kubernetes/core/prod.yaml`** (7 Applications)
 - 7 Applications targeting `live-production` branch
 - **Manual sync policy** for production safety
 - Requires explicit approval before deployment
