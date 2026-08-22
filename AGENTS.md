@@ -6,11 +6,10 @@ Read this file, tree the repository root, then cat files until comfortable befor
 
 *!!! This is the pattern for the repo, maintain it and things will remain clean orginized. !!!*
 
-## Reboot - Do not run this, instead know it is an option
-./scripts/omen/kind-reboot.sh /
-&& kubectl wait gatewayclass traefik --for=condition=Accepted --timeout=60s /
-&& kubectl wait gateway gateway -n gateway --for=condition=Programmed --timeout=60s /
-&& kubectl wait httproute homepage -n homepage --for=condition=Ready --timeout=60s /
+## Bootstrap - Phoenix-style GitOps cluster creation
+./scripts/omen/bootstrap.sh --phase 1
+# Then after setup:
+./scripts/omen/bootstrap.sh --phase 2 <github-username> <github-pat-token>
 
 ## Test Connection 
 curl -H "Host: homepage.local" http://homepage.local:30080
@@ -25,13 +24,16 @@ The mature reasons for this aproach are as follows:
 7. Declarative stateless server configurations
 8. Versatility
 
-## The Keystone kind-reboot.sh
+## The Unified bootstrap.sh Script
 
-This file file bootstrapts the kubernetes cluster. Removing the existing version and deploying the version currently stored in Git. Think pheonex style gitops.
+This script bootstraps the entire kubernetes cluster. Destroys the existing version and deploys the version currently stored in Git. Think phoenix-style gitops.
 
-Deploying single files, or applying via kubectl or kustomize is poor form for this project. Aim to reboot the cluster after modifying the declaritive specifications then pushing those to the repository.
+**Phase 1**: Creates Kind cluster + deploys infrastructure (CRDs, namespaces, ApplicationSets)
+**Phase 2**: Enables Source Hydrator + creates GitHub write secret for manifest rendering
 
-The details are contained in /scripts/omen/kind-reboot.sh and /scripts/omen/kind-config.yaml
+Deploying single files or applying via kubectl directly is poor form for this project. Aim to modify declaritive specifications in git, then bootstrap the cluster to deploy them.
+
+Details: /scripts/omen/bootstrap.sh and /scripts/omen/kind-config.yaml
 
 ## Manifest locations 
 

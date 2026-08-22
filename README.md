@@ -4,21 +4,24 @@
 
 ---
 
-## QUICK START (5 Minutes)
+## QUICK START (15 Minutes)
 
 ```bash
-# Step 1: Bootstrap cluster (5-10 min)
-./scripts/omen/kind-reboot.sh
+# Phase 1: Bootstrap cluster + infrastructure (10 min)
+./scripts/omen/bootstrap.sh --phase 1
 
-# Step 2: Enable hydrator and deploy all 42 apps (2-5 min)
-./scripts/omen/bootstrap-hydrator.sh <github-username> <github-pat-token>
+# Phase 2: Enable hydrator + deploy 42 apps (5 min)
+./scripts/omen/bootstrap.sh --phase 2 <github-username> <github-pat-token>
+
+# Or run everything at once (requires credentials for phase 2):
+# ./scripts/omen/bootstrap.sh --phase 2 <github-username> <github-pat-token>
 
 # Verify
 kubectl get application -n argocd | wc -l
 # Expected: 42+ applications
 ```
 
-**System is live after Step 2.**
+**System is live after Phase 2.** 🚀
 
 ---
 
@@ -62,9 +65,10 @@ Deployed to cluster (~60 seconds total)
   - 7 testing (auto-sync)
   - 7 production (manual-sync for safety)
 
-✅ **2 Unified Bootstrap Scripts** (lean automation)
-- kind-reboot.sh: Creates cluster + applies ApplicationSets
-- bootstrap-hydrator.sh: Enables hydrator + creates secret (simplified)
+✅ **Unified Bootstrap Script** (lean automation)
+- scripts/omen/bootstrap.sh: Flexible phases (cluster, hydrator, or both)
+  - Phase 1: Kind cluster + infrastructure
+  - Phase 2: Source Hydrator + 42 applications
 
 ✅ **Complete Documentation** (consolidated here)
 
@@ -72,33 +76,36 @@ Deployed to cluster (~60 seconds total)
 
 ## Two-Phase Bootstrap
 
+Unified bootstrap script: `scripts/omen/bootstrap.sh`
+
 ### Phase 1: Cluster Bootstrap (5-10 minutes)
 
 ```bash
-./scripts/omen/kind-reboot.sh
+./scripts/omen/bootstrap.sh --phase 1
 ```
 
 What it does:
 - Deletes and recreates Kind cluster
 - Installs CRDs (ArgoCD, Cert-Manager, Gateway API)
-- Creates namespaces
+- Creates namespaces + secrets
 - Deploys ArgoCD
-- Sets up base infrastructure
+- Applies ApplicationSets (generates all 42 apps)
+- Sets up gateway infrastructure
 
 ### Phase 2: Hydrator Bootstrap (2-5 minutes)
 
 ```bash
-./scripts/omen/bootstrap-hydrator.sh <username> <pat-token>
+./scripts/omen/bootstrap.sh --phase 2 <username> <pat-token>
 ```
 
 What it does:
-- Enables Source Hydrator in ArgoCD
+- Enables Source Hydrator in ArgoCD ConfigMap
 - Creates repository write secret (GitHub PAT)
-- Deploys 21 Hydrator Applications
-- Deploys 21 Environment Applications
-- Verifies complete setup
+- Verifies all 42 applications are deployed
+- Displays ArgoCD credentials
+- Provides next steps for hydrator verification
 
-**Total time**: ~20 minutes including waiting periods
+**Total time**: ~15 minutes (down from 20 due to ApplicationSet consolidation)
 
 ---
 
@@ -107,7 +114,7 @@ What it does:
 - Docker/Kind installed
 - GitHub Personal Access Token (create at github.com/settings/tokens with "repo" scope)
 - kubectl available
-- ArgoCD 3.2+ (auto-installed by kind-reboot.sh)
+- ArgoCD 3.2+ (auto-installed by bootstrap.sh --phase 1)
 
 ---
 
@@ -117,7 +124,7 @@ What it does:
 2. Click "Generate new token" → "Personal access token (classic)"
 3. Select "repo" scope (full control of private repositories)
 4. Copy token (won't be shown again)
-5. Use in bootstrap: `./scripts/omen/bootstrap-hydrator.sh myuser ghp_xxxx`
+5. Use in bootstrap: `./scripts/omen/bootstrap.sh --phase 2 myuser ghp_xxxx`
 
 ---
 
@@ -205,9 +212,9 @@ applications/[app]/
 └── httproute.yaml
 
 scripts/omen/
-├── kind-reboot.sh                  (Cluster bootstrap + ApplicationSets)
-├── bootstrap-hydrator.sh           (Enable hydrator + create secret)
-└── kind-config.yaml
+├── bootstrap.sh                    (Unified: all phases, flexible execution)
+├── kind-config.yaml                (Kind cluster configuration)
+└── setup-wireguard-client.sh       (WireGuard VPN setup)
 ```
 
 ---
@@ -521,8 +528,10 @@ Each deployed to:
 2. Add Chart.yaml with dependency
 3. Create values.yaml and values-[env].yaml
 4. Push to main
-5. Add new app to bootstrap-hydrator.sh APPS array
-6. Run bootstrap-hydrator.sh again
+5. Add new app to `kubernetes/core/applications.yaml` generators list
+6. Run: `kubectl apply -f kubernetes/core/applications.yaml`
+
+Hydrator will automatically start rendering the new app to all environment branches.
 
 ---
 
@@ -557,7 +566,7 @@ The following applications were evaluated but are not currently deployed:
 - open-webui
 - vaultwarden
 
-These applications can be re-enabled by adding them to the `APPS` array in `scripts/omen/bootstrap-hydrator.sh` and running the bootstrap script again. Each requires a Chart.yaml and values files in the respective application's charts directory.
+These applications can be re-enabled by adding them to the generators list in `kubernetes/core/applications.yaml` and running `kubectl apply -f kubernetes/core/applications.yaml`. Each requires a Chart.yaml and values files in the respective application's charts directory.
 
 ---
 
@@ -583,11 +592,14 @@ This is a complete, production-ready Space Age GitOps system:
 
 **To start**:
 ```bash
-./scripts/omen/kind-reboot.sh
-./scripts/omen/bootstrap-hydrator.sh <username> <token>
+# Phase 1: Cluster + Infrastructure (10 min)
+./scripts/omen/bootstrap.sh --phase 1
+
+# Phase 2: Hydrator + 42 Apps (5 min)
+./scripts/omen/bootstrap.sh --phase 2 <username> <token>
 ```
 
-**System is live.**
+**System is live in ~15 minutes.** 🚀
 
 ---
 
