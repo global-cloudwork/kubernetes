@@ -1,0 +1,41 @@
+# Namespace configuration
+namespace:
+  argocd:
+    name: argocd
+  authentik:
+    name: authentik
+  applications:
+    name: applications
+
+# ArgoCD configuration
+argocd:
+  enabled: true
+  replicaCount: 1
+  server:
+    insecure: true
+  persistence:
+    enabled: true
+    size: 10Gi
+  hydrator:
+    enabled: true
+    commitServer: "argocd-commit-server:8086"
+
+# Authentik configuration
+authentik:
+  enabled: true
+  secretKey: ""  # Will be injected from $AUTHENTIK_SECRET_KEY
+
+# Repository credentials
+repository:
+  url: "https://github.com/global-cloudwork/kubernetes"
+  username: ""  # Injected from $GITHUB_USERNAME
+  password: ""  # Injected from $GITHUB_PAT_TOKEN
+
+# ArgoCD Applications configuration
+applications:
+  hydrator:
+    drySourceBranch: "main"
+    drySourcePath: "helm"
+    hydrateTargetBranch: "environment/dev-next"  # Overridden per environment
+    syncSourceBranch: "environment/dev"          # Overridden per environment
+    syncSourcePath: "rendered"

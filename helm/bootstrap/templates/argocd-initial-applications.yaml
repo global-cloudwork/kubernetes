@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: core-apps-hydrator
+  namespace: {{ .Values.namespace.argocd.name }}
+  labels:
+    app.kubernetes.io/name: bootstrap
+spec:
+  project: core-apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.namespace.applications.name }}
+
+  sourceHydrator:
+    drySource:
+      repoURL: {{ .Values.repository.url }}
+      targetRevision: {{ .Values.applications.hydrator.drySourceBranch }}
+      path: {{ .Values.applications.hydrator.drySourcePath }}
+      helm:
+        releaseName: core-apps
+
+    hydrateTo:
+      targetBranch: {{ .Values.applications.hydrator.hydrateTargetBranch }}
+      targetPath: rendered
+
+    syncSource:
+      targetBranch: {{ .Values.applications.hydrator.syncSourceBranch }}
+      path: {{ .Values.applications.hydrator.syncSourcePath }}

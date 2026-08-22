@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: core-apps
+  namespace: {{ .Values.namespace.argocd.name }}
+  labels:
+    app.kubernetes.io/name: bootstrap
+spec:
+  sourceRepos:
+  - {{ .Values.repository.url | quote }}
+  destinations:
+  - namespace: '*'
+    server: 'https://kubernetes.default.svc'
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceBlacklist:
+  - group: ''
+    kind: Namespace
+    name: kube-system

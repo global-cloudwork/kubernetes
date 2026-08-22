@@ -1,0 +1,18 @@
+# Dev environment-specific overrides
+# Dev uses ephemeral branches and fresh cluster per bootstrap
+
+# Dev uses dev branches
+applications:
+  hydrator:
+    hydrateTargetBranch: "environment/dev-next"
+    syncSourceBranch: "environment/dev"
+
+# Minimal persistence for ephemeral dev cluster
+argocd:
+  persistence:
+    enabled: true
+    size: 10Gi
+
+# Generate a fresh Authentik secret for dev (not reused across reboots)
+authentik:
+  generateSecretKey: true

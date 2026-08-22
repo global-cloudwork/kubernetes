@@ -1,0 +1,26 @@
+{{- if .Values.namespace.argocd.name }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace.argocd.name }}
+  labels:
+    app.kubernetes.io/name: bootstrap
+{{- end }}
+---
+{{- if .Values.namespace.authentik.name }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace.authentik.name }}
+  labels:
+    app.kubernetes.io/name: bootstrap
+{{- end }}
+---
+{{- if .Values.namespace.applications.name }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace.applications.name }}
+  labels:
+    app.kubernetes.io/name: bootstrap
+{{- end }}
