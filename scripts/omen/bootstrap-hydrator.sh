@@ -147,26 +147,145 @@ fi
 echo ""
 print_header "Step 5: Deploying Hydrator Applications..."
 
-# Apply hydrator applications
-if kubectl apply -f kubernetes/core/hydrator-applications.yaml; then
-    print_success "Hydrator Applications deployed"
-else
-    print_error "Failed to deploy hydrator applications"
-    exit 1
-fi
+# Deploy hydrator applications using git file approach
+APPS=("traefik" "argocd" "cert-manager" "authentik" "n8n" "neo4j" "homepage")
+REPO="https://github.com/global-cloudwork/kubernetes"
+DEPLOYED_COUNT=0
+
+for app in "${APPS[@]}"; do
+  for env_pair in "dev:development" "testing:testing" "prod:live-production"; do
+    IFS=: read -r short long <<< "$env_pair"
+    next="next-$long"
+
+    kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hydrator-${app}-${short}
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: ${REPO}
+    targetRevision: HEAD
+    path: helm/${app}
+    helm:
+      releaseName: ${app}
+      valuesFiles:
+        - values.yaml
+        - values-${short}.yaml
+  destination:
+    server: https://kubernetes.default.svc
+  sourceHydrator:
+    hydrateTo:
+      targetBranch: ${next}
+    syncSource:
+      targetBranch: ${long}
+      path: helm/${app}-hydrated
+  syncPolicy:
+    syncOptions:
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+EOF
+
+    if [ $? -eq 0 ]; then
+      ((DEPLOYED_COUNT++))
+    else
+      print_error "Failed to deploy hydrator-${app}-${short}"
+      exit 1
+    fi
+  done
+done
+
+print_success "Hydrator Applications deployed: $DEPLOYED_COUNT/21"
 
 echo ""
 print_header "Step 6: Deploying Environment Applications..."
 
-# Apply environment applications
-if kubectl apply -f kubernetes/core/development.yaml && \
-   kubectl apply -f kubernetes/core/testing.yaml && \
-   kubectl apply -f kubernetes/core/prod.yaml; then
-    print_success "Environment Applications deployed"
-else
-    print_error "Failed to deploy environment applications"
-    exit 1
-fi
+# Deploy environment applications for each app and environment
+ENV_APP_COUNT=0
+
+for app in "${APPS[@]}"; do
+  # Development applications (auto-sync)
+  kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${app}-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: ${REPO}
+    targetRevision: development
+    path: helm/${app}-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${app}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+EOF
+  ((ENV_APP_COUNT++))
+
+  # Testing applications (auto-sync)
+  kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${app}-testing
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: ${REPO}
+    targetRevision: testing
+    path: helm/${app}-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${app}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+EOF
+  ((ENV_APP_COUNT++))
+
+  # Production applications (manual sync for safety)
+  kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${app}-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: ${REPO}
+    targetRevision: live-production
+    path: helm/${app}-hydrated
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${app}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+  revisionHistoryLimit: 3
+EOF
+  ((ENV_APP_COUNT++))
+done
+
+print_success "Environment Applications deployed: $ENV_APP_COUNT/21"
 
 echo ""
 print_header "Step 7: Waiting for ArgoCD to reconcile..."
