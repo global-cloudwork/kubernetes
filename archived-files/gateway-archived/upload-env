@@ -1,4 +1,0 @@
-#!/bin/bash
-
-gcloud secrets versions add development-env-file \
-    --data-file=- < "../.gateway.dev.env"
