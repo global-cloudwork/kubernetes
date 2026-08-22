@@ -28,22 +28,10 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Helper functions
-print_header() {
-    echo -e "${BLUE}▶${NC} ${BLUE}$1${NC}"
-}
-
-print_success() {
-    echo -e "${GREEN}✓${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}⚠${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}✗${NC} $1"
-}
+print_header() { echo -e "${BLUE}▶${NC} ${BLUE}$1${NC}"; }
+print_success() { echo -e "${GREEN}✓${NC} $1"; }
+print_warning() { echo -e "${YELLOW}⚠${NC} $1"; }
+print_error() { echo -e "${RED}✗${NC} $1"; }
 
 # Check arguments
 if [ $# -ne 2 ]; then
@@ -84,14 +72,12 @@ if ! kubectl get namespace argocd &> /dev/null; then
 fi
 print_success "ArgoCD namespace found"
 
-# Check ArgoCD version
 ARGOCD_VERSION=$(kubectl get deployment -n argocd argocd-application-controller -o jsonpath='{.spec.template.spec.containers[0].image}' | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' || echo "unknown")
 print_success "ArgoCD version: $ARGOCD_VERSION"
 
 echo ""
 print_header "Step 2: Enabling Source Hydrator in ArgoCD..."
 
-# Enable hydrator in ArgoCD ConfigMap
 kubectl patch configmap argocd-cmd-params-cm -n argocd --type merge -p '{
   "data": {
     "hydrator.enabled": "true",
@@ -106,7 +92,6 @@ print_success "Source Hydrator enabled in ArgoCD ConfigMap"
 echo ""
 print_header "Step 3: Creating repository write secret..."
 
-# Create the write secret
 kubectl create secret generic global-cloudwork-kubernetes-write \
   -n argocd \
   --from-literal=type=git \
@@ -115,7 +100,6 @@ kubectl create secret generic global-cloudwork-kubernetes-write \
   --from-literal=password="$GITHUB_PAT_TOKEN" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# Label the secret as a write secret
 kubectl label secret global-cloudwork-kubernetes-write \
   -n argocd \
   argocd.argoproj.io/secret-type=repository-write \
@@ -133,178 +117,22 @@ if [ -z "$SECRET_EXISTS" ]; then
 fi
 print_success "Secret verified"
 
-# Verify secret has correct label
-SECRET_LABEL=$(kubectl get secret -n argocd global-cloudwork-kubernetes-write -o jsonpath='{.metadata.labels.argocd\.argoproj\.io/secret-type}' 2>/dev/null || echo "")
-if [ "$SECRET_LABEL" != "repository-write" ]; then
-    print_warning "Secret label not set correctly. Setting now..."
-    kubectl label secret global-cloudwork-kubernetes-write \
-      -n argocd \
-      argocd.argoproj.io/secret-type=repository-write \
-      --overwrite
-    print_success "Secret label corrected"
-fi
+echo ""
+print_header "Step 5: Deploying ApplicationSets..."
+
+# Deploy the unified ApplicationSets (hydrators + environments)
+kubectl apply -f kubernetes/core/applications.yaml
+print_success "ApplicationSets deployed (42 apps: 21 hydrators + 21 environments)"
 
 echo ""
-print_header "Step 5: Deploying Hydrator Applications..."
-
-# Deploy hydrator applications using git file approach
-APPS=("traefik" "argocd" "cert-manager" "authentik" "n8n" "neo4j" "homepage")
-REPO="https://github.com/global-cloudwork/kubernetes"
-DEPLOYED_COUNT=0
-
-for app in "${APPS[@]}"; do
-  for env_pair in "dev:development" "testing:testing" "prod:live-production"; do
-    IFS=: read -r short long <<< "$env_pair"
-    next="next-$long"
-
-    kubectl apply -f - <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: hydrator-${app}-${short}
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: ${REPO}
-    targetRevision: HEAD
-    path: helm/${app}
-    helm:
-      releaseName: ${app}
-      valuesFiles:
-        - values.yaml
-        - values-${short}.yaml
-  destination:
-    server: https://kubernetes.default.svc
-  sourceHydrator:
-    hydrateTo:
-      targetBranch: ${next}
-    syncSource:
-      targetBranch: ${long}
-      path: helm/${app}-hydrated
-  syncPolicy:
-    syncOptions:
-      - PrunePropagationPolicy=foreground
-      - PruneLast=true
-EOF
-
-    if [ $? -eq 0 ]; then
-      ((DEPLOYED_COUNT++))
-    else
-      print_error "Failed to deploy hydrator-${app}-${short}"
-      exit 1
-    fi
-  done
-done
-
-print_success "Hydrator Applications deployed: $DEPLOYED_COUNT/21"
-
-echo ""
-print_header "Step 6: Deploying Environment Applications..."
-
-# Deploy environment applications for each app and environment
-ENV_APP_COUNT=0
-
-for app in "${APPS[@]}"; do
-  # Development applications (auto-sync)
-  kubectl apply -f - <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: ${app}-dev
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: ${REPO}
-    targetRevision: development
-    path: helm/${app}-hydrated
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: ${app}
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
-  revisionHistoryLimit: 3
-EOF
-  ((ENV_APP_COUNT++))
-
-  # Testing applications (auto-sync)
-  kubectl apply -f - <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: ${app}-testing
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: ${REPO}
-    targetRevision: testing
-    path: helm/${app}-hydrated
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: ${app}
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
-  revisionHistoryLimit: 3
-EOF
-  ((ENV_APP_COUNT++))
-
-  # Production applications (manual sync for safety)
-  kubectl apply -f - <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: ${app}-prod
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: ${REPO}
-    targetRevision: live-production
-    path: helm/${app}-hydrated
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: ${app}
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
-  revisionHistoryLimit: 3
-EOF
-  ((ENV_APP_COUNT++))
-done
-
-print_success "Environment Applications deployed: $ENV_APP_COUNT/21"
-
-echo ""
-print_header "Step 7: Waiting for ArgoCD to reconcile..."
-
-# Give ArgoCD time to sync
+print_header "Step 6: Waiting for ArgoCD to reconcile..."
 sleep 10
 
 echo ""
 print_header "Verification..."
 
-# Check hydrator applications status
-HYDRATOR_APPS=$(kubectl get application -n argocd -l app.kubernetes.io/part-of=hydrator -o jsonpath='{.items[*].metadata.name}' 2>/dev/null | wc -w)
-print_success "Hydrator Applications deployed: ~21 (checked $HYDRATOR_APPS)"
-
-# Check environment applications status
-DEV_APPS=$(kubectl get application -n argocd -o name | grep -E "dev$|dev-" | wc -l)
-TEST_APPS=$(kubectl get application -n argocd -o name | grep -E "testing$|testing-" | wc -l)
-PROD_APPS=$(kubectl get application -n argocd -o name | grep -E "prod$|prod-" | wc -l)
-print_success "Environment Applications deployed: dev($DEV_APPS) testing($TEST_APPS) prod($PROD_APPS)"
+TOTAL_APPS=$(kubectl get application -n argocd --no-headers 2>/dev/null | wc -l)
+print_success "Total Applications deployed: $TOTAL_APPS/42"
 
 echo ""
 print_header "Next Steps:"
@@ -317,14 +145,9 @@ echo "   git fetch origin"
 echo "   git log origin/next-development --oneline | head -5"
 echo ""
 echo "3. Check rendered manifests:"
-echo "   git show origin/next-development:helm/traefik-hydrated/Chart.yaml | head -20"
+echo "   git show origin/next-development:applications/traefik-hydrated/Chart.yaml | head -20"
 echo ""
-echo "4. Test promotion workflow:"
-echo "   git checkout development"
-echo "   git merge next-development"
-echo "   git push origin development"
-echo ""
-echo "5. Monitor application sync:"
+echo "4. Monitor application sync:"
 echo "   kubectl get application -n argocd -w"
 echo ""
 
