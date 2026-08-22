@@ -5,17 +5,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${SCRIPT_DIR}/../.."
 CLOUD_SCRIPTS="${PROJECT_ROOT}/scripts/cloud"
 
-source "${SCRIPT_DIR}/../common.sh"
+source "${SCRIPT_DIR}/../env.sh"
 
 echo
-common_header "Mac WireGuard Client Setup"
+echo_header "Mac WireGuard Client Setup"
 echo
 
 command -v wg &>/dev/null || { common_err "wg not found: brew install wireguard-tools"; exit 1; }
 [ -d "/Applications/WireGuard.app" ] || { common_err "WireGuard.app not found"; exit 1; }
-common_ok "Prerequisites verified"
+echo_ok "Prerequisites verified"
 
-common_header "Generating keypair..."
+echo_header "Generating keypair..."
 SETUP_DIR="${PROJECT_ROOT}/wireguard-client-setup-$(date +%s)"
 mkdir -p "${SETUP_DIR}"
 
@@ -33,7 +33,7 @@ else
 fi
 
 MAC_PUBLIC_KEY=$(cat "${MAC_PUBLIC_KEY_FILE}")
-common_ok "Keypair ready"
+echo_ok "Keypair ready"
 echo "  Private: ${MAC_PRIVATE_KEY_FILE}"
 echo "  Public:  ${MAC_PUBLIC_KEY_FILE}"
 echo
@@ -41,7 +41,7 @@ echo
 [ -f "${CLOUD_SCRIPTS}/post-provision-cloud-machine.sh" ] || \
   { common_err "Post-provisioning script not found"; exit 1; }
 
-common_header "Running cloud post-provisioning..."
+echo_header "Running cloud post-provisioning..."
 export MAC_CLIENT_PUBKEY="${MAC_PUBLIC_KEY}"
 cd "${CLOUD_SCRIPTS}"
 bash ./post-provision-cloud-machine.sh
@@ -49,7 +49,7 @@ bash ./post-provision-cloud-machine.sh
 CONFIG_FILE=$(ls -t mac-wg0-*.conf 2>/dev/null | head -1)
 [ -z "${CONFIG_FILE}" ] && CONFIG_FILE="${SETUP_DIR}/mac-wg0.conf"
 
-common_header "Finalizing configuration..."
+echo_header "Finalizing configuration..."
 PRIVATE_KEY_CONTENT=$(cat "${MAC_PRIVATE_KEY_FILE}")
 
 if [ -f "${CONFIG_FILE}" ] && [ "${CONFIG_FILE}" != "${SETUP_DIR}/mac-wg0.conf" ]; then
@@ -60,12 +60,12 @@ fi
 if [ -f "${CONFIG_FILE}" ]; then
   sed -i '' "s|PrivateKey = <YOUR_MAC_PRIVATE_KEY_HERE>|PrivateKey = ${PRIVATE_KEY_CONTENT}|" "${CONFIG_FILE}"
   wg-quick strip "${CONFIG_FILE}" >/dev/null 2>&1 || { common_err "Config invalid"; exit 1; }
-  common_ok "Config ready: ${CONFIG_FILE}"
+  echo_ok "Config ready: ${CONFIG_FILE}"
 else
   common_err "Config not found; check post-provisioning output"
   exit 1
 fi
 
 echo
-common_ok "Setup complete"
+echo_ok "Setup complete"
 echo "  Config: ${CONFIG_FILE}"

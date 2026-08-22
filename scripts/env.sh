@@ -14,6 +14,6 @@ NC='\033[0m'
 GITHUB_USERNAME=$1
 GITHUB_PAT_TOKEN=$2
 
-common_header() { echo -e "${BLUE}▶${NC} $1"; }
-common_ok() { echo -e "${GREEN}✓${NC} $1"; }
+echo_header() { echo -e "${BLUE}▶${NC} $1"; }
+echo_ok() { echo -e "${GREEN}✓${NC} $1"; }
 common_err() { echo -e "${RED}✗${NC} $1"; }
