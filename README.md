@@ -33,7 +33,7 @@ kubectl get application -n argocd | wc -l
 
 **Architecture**:
 ```
-helm/app/values.yaml (main branch)
+applications/[app]/charts/values.yaml (main branch)
     ↓ (Source Hydrator renders automatically)
 next-development branch (rendered manifests)
     ↓ (Developer reviews and merges PR)
@@ -125,10 +125,10 @@ What it does:
 
 ```bash
 # Edit values for dev environment
-vi helm/traefik/values-dev.yaml
+vi applications/traefik/charts/values-dev.yaml
 
 # Commit and push
-git add helm/traefik/values-dev.yaml
+git add applications/traefik/charts/values-dev.yaml
 git commit -m "config: update traefik replicas"
 git push origin main
 ```
@@ -144,7 +144,7 @@ git push origin main
 
 ```bash
 # Review rendered output in git
-git show origin/next-development:helm/traefik-hydrated/
+git show origin/next-development:applications/traefik-hydrated/
 
 # Merge to active branch
 git checkout development
@@ -155,7 +155,7 @@ git push origin development
 ### 4. Application Syncs Automatically
 
 - ArgoCD Application detects commit on development branch
-- Syncs from `helm/traefik-hydrated/`
+- Syncs from `applications/traefik-hydrated/`
 - Deploys to cluster (5-15 seconds)
 
 **Total: Main → Deployed = ~60 seconds**
@@ -171,9 +171,9 @@ git push origin development
 | Production | live-production | Manual | Safety gate |
 
 Each environment has its own values file:
-- `helm/[app]/values-dev.yaml`
-- `helm/[app]/values-testing.yaml`
-- `helm/[app]/values-prod.yaml`
+- `applications/[app]/charts/values-dev.yaml`
+- `applications/[app]/charts/values-testing.yaml`
+- `applications/[app]/charts/values-prod.yaml`
 
 ---
 
@@ -190,20 +190,25 @@ kubernetes/
 │   └── prod.yaml                     (Reference: 7 prod apps)
 └── namespace.yaml
 
-helm/
+applications/
 ├── traefik/
+│   ├── charts/
+│   │   ├── Chart.yaml
+│   │   ├── values.yaml
+│   │   ├── values-dev.yaml
+│   │   ├── values-testing.yaml
+│   │   ├── values-prod.yaml
+│   │   └── templates/ (custom resources)
+│   ├── cluster-role.yaml
+│   ├── cluster-role-binding.yaml
+│   ├── service-account.yaml
+│   └── kustomization.yaml
 ├── argocd/
 ├── cert-manager/
 ├── authentik/
 ├── n8n/
 ├── neo4j/
 └── homepage/
-    ├── Chart.yaml
-    ├── values.yaml
-    ├── values-dev.yaml
-    ├── values-testing.yaml
-    ├── values-prod.yaml
-    └── templates/ (custom resources)
 
 scripts/omen/
 ├── kind-reboot.sh              (Phase 1: cluster bootstrap)
@@ -219,10 +224,10 @@ scripts/omen/
 
 ```bash
 # Edit environment-specific config
-vi helm/[app]/values-[env].yaml
+vi applications/[app]/charts/values-[env].yaml
 
 # Push to main
-git add helm/[app]/values-[env].yaml
+git add applications/[app]/charts/values-[env].yaml
 git commit -m "config: update [app]"
 git push origin main
 
@@ -233,7 +238,7 @@ git push origin main
 ### Promote to Next Environment
 
 ```bash
-# After testing in dev, promote to staging
+# After testing in dev, promote to testing environment
 git checkout testing
 git merge next-testing
 git push origin testing
@@ -308,7 +313,7 @@ kubectl get application -n argocd | grep [app]
 git branch -r | grep development
 
 # Check if path exists on branch
-git ls-tree origin/development helm/
+git ls-tree origin/development applications/
 
 # Check logs for errors
 kubectl logs -n argocd deployment/argocd-application-controller | grep -i error
@@ -336,7 +341,7 @@ kubectl get secret -n argocd -L argocd.argoproj.io/secret-type | grep write
 **Purpose**: Automatically render helm charts to manifests and commit to git
 
 **Flow**:
-1. Watches main branch for changes to `helm/[app]/`
+1. Watches main branch for changes to `applications/[app]/charts/`
 2. Detects change to Chart.yaml or values files
 3. Runs `helm template` with appropriate values
 4. Creates commit with rendered manifests
@@ -351,9 +356,9 @@ kubectl get secret -n argocd -L argocd.argoproj.io/secret-type | grep write
 **Purpose**: Sync rendered manifests from environment branches to clusters
 
 **Configuration**:
-- Development: `repoURL: [...], targetRevision: development, path: helm/[app]-hydrated`
-- Testing: `repoURL: [...], targetRevision: testing, path: helm/[app]-hydrated`
-- Production: `repoURL: [...], targetRevision: live-production, path: helm/[app]-hydrated`
+- Development: `repoURL: [...], targetRevision: development, path: applications/[app]-hydrated`
+- Testing: `repoURL: [...], targetRevision: testing, path: applications/[app]-hydrated`
+- Production: `repoURL: [...], targetRevision: live-production, path: applications/[app]-hydrated`
 
 **Sync Policies**:
 - Development/Testing: `automated` (prune + selfHeal)
@@ -471,8 +476,8 @@ Each deployed to:
 3. Test the workflow:
    ```bash
    # Edit a helm chart
-   echo "# Test" >> helm/traefik/values-dev.yaml
-   git add helm/traefik/values-dev.yaml
+   echo "# Test" >> applications/traefik/charts/values-dev.yaml
+   git add applications/traefik/charts/values-dev.yaml
    git commit -m "test: verify hydration"
    git push origin main
    
@@ -481,7 +486,7 @@ Each deployed to:
    
    # Check rendered output
    git fetch origin
-   git show origin/next-development:helm/traefik-hydrated/
+   git show origin/next-development:applications/traefik-hydrated/
    ```
 
 ### Daily Operations
@@ -495,7 +500,7 @@ Each deployed to:
 
 ### Adding New Applications
 
-1. Create `helm/[new-app]/` directory
+1. Create `applications/[new-app]/charts/` directory
 2. Add Chart.yaml with dependency
 3. Create values.yaml and values-[env].yaml
 4. Push to main
@@ -514,6 +519,29 @@ Each deployed to:
 ✅ Git History: Clean (10 commits)
 
 **STATUS: PRODUCTION READY**
+
+---
+
+## Archived/Unused Applications
+
+The following applications were evaluated but are not currently deployed:
+
+- actualbudget
+- argocd
+- cert-manager
+- cilium
+- cockatrice
+- erpnext
+- foundry-vtt
+- homepage
+- keycloak
+- kubeview
+- n8n
+- neo4j
+- open-webui
+- vaultwarden
+
+These applications can be re-enabled by adding them to the `APPS` array in `scripts/omen/bootstrap-hydrator.sh` and running the bootstrap script again. Each requires a Chart.yaml and values files in the respective application's charts directory.
 
 ---
 
