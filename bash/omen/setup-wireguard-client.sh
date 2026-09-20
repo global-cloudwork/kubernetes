@@ -5,7 +5,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${SCRIPT_DIR}/../.."
 CLOUD_SCRIPTS="${PROJECT_ROOT}/bash/cloud"
 
-source "${SCRIPT_DIR}/../env.sh"
+readonly BLUE='\033[0;34m'
+readonly GREEN='\033[0;32m'
+readonly RED='\033[0;31m'
+readonly RESET='\033[0m'
+
+echo_header() { printf '%b▶%b %s\n' "${BLUE}" "${RESET}" "$1"; }
+echo_ok() { printf '%b✓%b %s\n' "${GREEN}" "${RESET}" "$1"; }
+common_err() { printf '%b✗%b %s\n' "${RED}" "${RESET}" "$1" >&2; }
 
 echo
 echo_header "Mac WireGuard Client Setup"
@@ -23,8 +30,8 @@ MAC_PRIVATE_KEY_FILE="${SETUP_DIR}/mac-private.key"
 MAC_PUBLIC_KEY_FILE="${SETUP_DIR}/mac-public.key"
 
 if [ -f "${MAC_PRIVATE_KEY_FILE}" ]; then
-  read -p "Keypair exists; use existing? (y/n) " -n 1 -r
-  echo 
+  read -r -p "Keypair exists; use existing? (y/n) " -n 1 REPLY
+  printf '\n'
   [[ $REPLY =~ ^[Yy]$ ]] || {
     wg genkey | tee "${MAC_PRIVATE_KEY_FILE}" | wg pubkey > "${MAC_PUBLIC_KEY_FILE}"
   }
