@@ -1,0 +1,12 @@
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: ScmProvider
+metadata:
+  name: github
+  namespace: promoter-system
+spec:
+  secretRef:
+    name: github-app
+  github:
+    # Replace with the numeric GitHub App ID before applying credentials.
+    appID: 0
+    # Optional; omit to let Promoter discover the installation.

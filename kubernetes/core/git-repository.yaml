@@ -1,0 +1,11 @@
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: GitRepository
+metadata:
+  name: kubernetes
+  namespace: promoter-system
+spec:
+  github:
+    name: kubernetes
+    owner: global-cloudwork
+  scmProviderRef:
+    name: github

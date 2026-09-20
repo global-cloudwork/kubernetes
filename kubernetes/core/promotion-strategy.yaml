@@ -1,0 +1,111 @@
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: traefik
+  namespace: promoter-system
+spec:
+  activePath: applications/traefik
+  orderCommitStatusRef: {group: promoter.argoproj.io, kind: DependentsSuccessfulCommitStatus, name: traefik}
+  activeCommitStatuses:
+    - key: argocd-health
+  gitRepositoryRef: {name: kubernetes}
+  environments:
+    - {autoMerge: true, branch: environment/development}
+    - {autoMerge: true, branch: environment/staging}
+    - {autoMerge: false, branch: environment/production}
+---
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: argocd
+  namespace: promoter-system
+spec:
+  activePath: applications/argocd
+  orderCommitStatusRef: {group: promoter.argoproj.io, kind: DependentsSuccessfulCommitStatus, name: argocd}
+  activeCommitStatuses:
+    - key: argocd-health
+  gitRepositoryRef: {name: kubernetes}
+  environments:
+    - {autoMerge: true, branch: environment/development}
+    - {autoMerge: true, branch: environment/staging}
+    - {autoMerge: false, branch: environment/production}
+---
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: cert-manager
+  namespace: promoter-system
+spec:
+  activePath: applications/cert-manager
+  orderCommitStatusRef: {group: promoter.argoproj.io, kind: DependentsSuccessfulCommitStatus, name: cert-manager}
+  activeCommitStatuses:
+    - key: argocd-health
+  gitRepositoryRef: {name: kubernetes}
+  environments:
+    - {autoMerge: true, branch: environment/development}
+    - {autoMerge: true, branch: environment/staging}
+    - {autoMerge: false, branch: environment/production}
+---
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: authentik
+  namespace: promoter-system
+spec:
+  activePath: applications/authentik
+  orderCommitStatusRef: {group: promoter.argoproj.io, kind: DependentsSuccessfulCommitStatus, name: authentik}
+  activeCommitStatuses:
+    - key: argocd-health
+  gitRepositoryRef: {name: kubernetes}
+  environments:
+    - {autoMerge: true, branch: environment/development}
+    - {autoMerge: true, branch: environment/staging}
+    - {autoMerge: false, branch: environment/production}
+---
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: n8n
+  namespace: promoter-system
+spec:
+  activePath: applications/n8n
+  orderCommitStatusRef: {group: promoter.argoproj.io, kind: DependentsSuccessfulCommitStatus, name: n8n}
+  activeCommitStatuses:
+    - key: argocd-health
+  gitRepositoryRef: {name: kubernetes}
+  environments:
+    - {autoMerge: true, branch: environment/development}
+    - {autoMerge: true, branch: environment/staging}
+    - {autoMerge: false, branch: environment/production}
+---
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: neo4j
+  namespace: promoter-system
+spec:
+  activePath: applications/neo4j
+  orderCommitStatusRef: {group: promoter.argoproj.io, kind: DependentsSuccessfulCommitStatus, name: neo4j}
+  activeCommitStatuses:
+    - key: argocd-health
+  gitRepositoryRef: {name: kubernetes}
+  environments:
+    - {autoMerge: true, branch: environment/development}
+    - {autoMerge: true, branch: environment/staging}
+    - {autoMerge: false, branch: environment/production}
+---
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: homepage
+  namespace: promoter-system
+spec:
+  activePath: applications/homepage
+  orderCommitStatusRef: {group: promoter.argoproj.io, kind: DependentsSuccessfulCommitStatus, name: homepage}
+  activeCommitStatuses:
+    - key: argocd-health
+  gitRepositoryRef: {name: kubernetes}
+  environments:
+    - {autoMerge: true, branch: environment/development}
+    - {autoMerge: true, branch: environment/staging}
+    - {autoMerge: false, branch: environment/production}
