@@ -20,8 +20,8 @@ REGION="${GCP_REGION:-us-central1}"
 ZONE="${GCP_ZONE:-us-central1-a}"
 REPOSITORY_URL="${GIT_REPOSITORY_URL:-https://github.com/global-cloudwork/kubernetes.git}"
 
-# Startup Script (default to cloud-machine-init.sh in same directory)
-STARTUP_SCRIPT_PATH="${STARTUP_SCRIPT_PATH:-${SCRIPT_DIR}/cloud-machine-init.sh}"
+# Startup Script (default to at-boot.sh in same directory)
+STARTUP_SCRIPT_PATH="${STARTUP_SCRIPT_PATH:-${SCRIPT_DIR}/at-boot.sh}"
 
 VPC_NAME="${GCP_VPC_NAME:-kubernetes-vpc}"
 SUBNET_NAME="${GCP_SUBNET_NAME:-kubernetes-subnet}"
@@ -122,7 +122,7 @@ echo " Zone            : ${ZONE}"
 echo ""
 echo " NEXT STEPS:"
 echo "  1. Wait for the startup script to finish"
-echo "  2. Run post-boot automation: ./post-provision-cloud-machine.sh"
+echo "  2. Log in and run: sudo /root/bootstrap-kubernetes.sh"
 echo ""
 echo " MANUAL SSH ACCESS (if needed):"
 echo "  gcloud compute ssh ${VM_NAME} --zone=${ZONE} --tunnel-through-iap"
