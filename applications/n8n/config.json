@@ -1,0 +1,1 @@
+{"app":"n8n","enabled":false,"namespace":"n8n","source":{"type":"helm","path":"applications/n8n"},"versions":{"development":"1.15.17","staging":"1.15.17","production":"1.15.17"}}

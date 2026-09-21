@@ -1,0 +1,1 @@
+{"app":"neo4j","enabled":false,"namespace":"neo4j","source":{"type":"helm","path":"applications/neo4j"},"versions":{"development":"2025.10.1","staging":"2025.10.1","production":"2025.10.1"}}

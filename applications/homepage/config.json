@@ -1,0 +1,1 @@
+{"app":"homepage","enabled":false,"namespace":"homepage","source":{"type":"helm","path":"applications/homepage"},"versions":{"development":"1.8.1","staging":"1.8.1","production":"1.8.1"}}

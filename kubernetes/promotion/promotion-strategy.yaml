@@ -1,0 +1,22 @@
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: traefik
+  namespace: promoter-system
+spec:
+  activePath: applications/traefik
+  orderCommitStatusRef:
+    group: promoter.argoproj.io
+    kind: DependentsSuccessfulCommitStatus
+    name: traefik
+  activeCommitStatuses:
+    - key: traefik-health
+  gitRepositoryRef:
+    name: kubernetes
+  environments:
+    - autoMerge: true
+      branch: environment/development
+    - autoMerge: true
+      branch: environment/staging
+    - autoMerge: false
+      branch: environment/production

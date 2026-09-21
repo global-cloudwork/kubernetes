@@ -1,0 +1,1 @@
+{"app":"argocd","enabled":false,"namespace":"argocd","source":{"type":"helm","path":"applications/argocd"},"versions":{"development":"9.1.0","staging":"9.1.0","production":"9.1.0"}}

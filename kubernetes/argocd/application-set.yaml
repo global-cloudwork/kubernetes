@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: applications
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: https://github.com/global-cloudwork/kubernetes
+              revision: main
+              files:
+                - path: applications/*/config.json
+          - scmProvider:
+              github:
+                organization: global-cloudwork
+                allBranches: true
+              filters:
+                - repositoryMatch: '^kubernetes$'
+                  branchMatch: '^environment/(development|staging|production)$'
+              values:
+                environment: '{{ .branch | replace "environment/" "" }}'
+                syncBranch: '{{ .branch }}'
+                hydrateBranch: '{{ .branch }}-next'
+  selector:
+    matchExpressions:
+      - key: enabled
+        operator: In
+        values:
+          - "true"
+  template:
+    metadata:
+      name: '{{.app}}-{{.values.environment}}'
+      namespace: argocd
+      labels:
+        app.kubernetes.io/managed-by: applicationset
+        app.kubernetes.io/name: '{{.app}}'
+        app.kubernetes.io/part-of: applications
+        app-name: '{{.app}}'
+        environment: '{{.values.environment}}'
+    spec:
+      project: app-project
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{.namespace}}'
+      sourceHydrator:
+        drySource:
+          repoURL: https://github.com/global-cloudwork/kubernetes
+          path: '{{.source.path}}/releases/{{ index .versions .values.environment }}'
+          targetRevision: main
+        syncSource:
+          targetBranch: '{{.values.syncBranch}}'
+          path: 'applications/{{.app}}'
+        hydrateTo:
+          targetBranch: '{{.values.hydrateBranch}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

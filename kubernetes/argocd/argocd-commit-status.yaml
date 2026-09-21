@@ -1,0 +1,11 @@
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: ArgoCDCommitStatus
+metadata:
+  name: traefik-health
+  namespace: promoter-system
+spec:
+  promotionStrategyRef:
+    name: traefik
+  applicationSelector:
+    matchLabels:
+      app-name: traefik

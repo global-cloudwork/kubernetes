@@ -1,20 +1,17 @@
-#All hidden files
-
-#All key files
+# Credential and environment files
 *.key
-*key.json
-#All env files
+**/*key.json
 *.env
+.env
 
-# Kubernetes secret manifests contain credentials; keep only *.yaml.example files
-kubernetes/core/*secret.yaml
-kubernetes/bootstrap/*secret.yaml
+# Kubernetes secret manifests contain credentials. Example files use the
+# .yaml.example suffix and are not matched by these rules.
+**/*secret*.yaml
+**/*secret*.yml
 
 key.*
 kilo.jsonc
 .kilo/*
 
-*secret*
-
-# Kustomize downloads external Helm charts into this cache.
-applications/*/charts/
+# Keep generated chart caches out of the repository.
+applications/**/charts/

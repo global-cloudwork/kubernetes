@@ -1,0 +1,1 @@
+{"app":"authentik","enabled":false,"namespace":"authentik","source":{"type":"helm","path":"applications/authentik"},"versions":{"development":"2026.5.3","staging":"2026.5.3","production":"2026.5.3"}}

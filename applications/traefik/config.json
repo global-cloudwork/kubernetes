@@ -1,0 +1,7 @@
+{
+  "app": "traefik",
+  "enabled": true,
+  "namespace": "traefik",
+  "source": {"type": "helm", "path": "applications/traefik"},
+  "versions": {"development": "37.1.0", "staging": "37.1.0", "production": "37.1.0"}
+}

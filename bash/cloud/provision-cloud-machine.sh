@@ -18,30 +18,17 @@ fi
 PROJECT_ID="${GCP_PROJECT_ID:?Set GCP_PROJECT_ID environment variable}"
 REGION="${GCP_REGION:-us-central1}"
 ZONE="${GCP_ZONE:-us-central1-a}"
+REPOSITORY_URL="${GIT_REPOSITORY_URL:-https://github.com/global-cloudwork/kubernetes.git}"
 
 # Startup Script (default to cloud-machine-init.sh in same directory)
 STARTUP_SCRIPT_PATH="${STARTUP_SCRIPT_PATH:-${SCRIPT_DIR}/cloud-machine-init.sh}"
 
-VPC_NAME="vpn-gateway-vpc"
-SUBNET_NAME="vpn-gateway-subnet"
+VPC_NAME="${GCP_VPC_NAME:-kubernetes-vpc}"
+SUBNET_NAME="${GCP_SUBNET_NAME:-kubernetes-subnet}"
 SUBNET_CIDR="10.100.0.0/24"
-STATIC_IP_NAME="vpn-gateway-static-ip"
-SA_NAME="gce-vpn-gateway-sa"
-VM_NAME="gce-vpn-gateway"
-
-# Caddy Configuration (optional - can be overridden)
-CADDY_DOMAIN="${CADDY_DOMAIN:-vpn-gateway.local}"
-CADDY_PORT="${CADDY_PORT:-443}"
-
-# Network Configuration (pass to instance via metadata)
-WG_NET="${WG_NET:-10.20.0.0/24}"
-WG_GW_IP="${WG_GW_IP:-10.20.0.1/24}"
-LOCAL_LAN_SUBNET="${LOCAL_LAN_SUBNET:-192.168.1.0/24}"
-LOCAL_PEER_IP="${LOCAL_PEER_IP:-10.20.0.2/32}"
-LAPTOP_PEER_IP="${LAPTOP_PEER_IP:-10.20.0.3/32}"
-N8N_IP="${N8N_IP:-192.168.1.10}"
-POSTGRES_IP="${POSTGRES_IP:-192.168.1.20}"
-HA_IP="${HA_IP:-192.168.1.30}"
+STATIC_IP_NAME="${GCP_STATIC_IP_NAME:-kubernetes-static-ip}"
+SA_NAME="${GCP_SERVICE_ACCOUNT_NAME:-gce-kubernetes-sa}"
+VM_NAME="${GCP_VM_NAME:-gce-kubernetes}"
 
 echo "==> Validating startup script exists..."
 if [ ! -f "${STARTUP_SCRIPT_PATH}" ]; then
@@ -87,13 +74,12 @@ fi
 STATIC_IP=$(gcloud compute addresses describe "${STATIC_IP_NAME}" --region="${REGION}" --format="value(address)")
 
 echo "==> Applying VPC Firewall Boundary Rules..."
-# Allow WireGuard UDP Inbound
-if ! gcloud compute firewall-rules describe "allow-wireguard-ingress" &>/dev/null; then
-  gcloud compute firewall-rules create "allow-wireguard-ingress" \
+if ! gcloud compute firewall-rules describe "allow-kubernetes-web" &>/dev/null; then
+  gcloud compute firewall-rules create "allow-kubernetes-web" \
     --network="${VPC_NAME}" \
-    --allow=udp:51820 \
+    --allow=tcp:80,tcp:443 \
     --source-ranges="0.0.0.0/0" \
-    --target-tags="vpn-gateway"
+    --target-tags="kubernetes-host"
 fi
 
 # Allow SSH ONLY via GCP Identity-Aware Proxy (IAP) CIDR
@@ -102,39 +88,29 @@ if ! gcloud compute firewall-rules describe "allow-iap-ssh" &>/dev/null; then
     --network="${VPC_NAME}" \
     --allow=tcp:22 \
     --source-ranges="35.235.240.0/20" \
-    --target-tags="vpn-gateway"
+    --target-tags="kubernetes-host"
 fi
 
-echo "==> Deploying Hardened Alpine WireGuard Gateway Instance..."
+echo "==> Deploying Ubuntu Kind Kubernetes host..."
 if ! gcloud compute instances describe "${VM_NAME}" --zone="${ZONE}" &>/dev/null; then
   gcloud compute instances create "${VM_NAME}" \
     --zone="${ZONE}" \
-    --machine-type="e2-micro" \
-    --image-family="alpine-edge" \
-    --image-project="alpine-linux-cloud" \
-    --boot-disk-size="10GB" \
-    --boot-disk-type="pd-standard" \
+    --machine-type="${GCP_MACHINE_TYPE:-e2-medium}" \
+    --image-family="ubuntu-2404-lts-amd64" \
+    --image-project="ubuntu-os-cloud" \
+    --boot-disk-size="30GB" \
+    --boot-disk-type="pd-balanced" \
     --network="${VPC_NAME}" \
     --subnet="${SUBNET_NAME}" \
     --address="${STATIC_IP}" \
     --service-account="${SA_EMAIL}" \
-    --scopes="cloud-platform" \
-    --tags="vpn-gateway" \
+    --scopes="logging-write,monitoring-write" \
+    --tags="kubernetes-host" \
     --shielded-secure-boot \
     --shielded-vtpm \
     --shielded-integrity-monitoring \
-    --metadata=enable-oslogin=TRUE,block-project-wide-ssh-keys=TRUE,\
-WG_NET="${WG_NET}",\
-WG_GW_IP="${WG_GW_IP}",\
-LOCAL_LAN_SUBNET="${LOCAL_LAN_SUBNET}",\
-LOCAL_PEER_IP="${LOCAL_PEER_IP}",\
-LAPTOP_PEER_IP="${LAPTOP_PEER_IP}",\
-N8N_IP="${N8N_IP}",\
-POSTGRES_IP="${POSTGRES_IP}",\
-HA_IP="${HA_IP}",\
-CADDY_DOMAIN="${CADDY_DOMAIN}",\
-CADDY_PORT="${CADDY_PORT}" \
-    --metadata-from-file=user-data="${STARTUP_SCRIPT_PATH}"
+    --metadata=enable-oslogin=TRUE,block-project-wide-ssh-keys=TRUE,GIT_REPOSITORY_URL="${REPOSITORY_URL}" \
+    --metadata-from-file=startup-script="${STARTUP_SCRIPT_PATH}"
 fi
 
 echo ""
@@ -145,7 +121,7 @@ echo " Instance Name   : ${VM_NAME}"
 echo " Zone            : ${ZONE}"
 echo ""
 echo " NEXT STEPS:"
-echo "  1. Wait 2-3 minutes for instance boot and WireGuard initialization"
+echo "  1. Wait for the startup script to finish"
 echo "  2. Run post-boot automation: ./post-provision-cloud-machine.sh"
 echo ""
 echo " MANUAL SSH ACCESS (if needed):"
