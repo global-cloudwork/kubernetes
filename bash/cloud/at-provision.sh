@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Load environment variables from root .env
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENV_FILE="${SCRIPT_DIR}/../../.env"
+ENV_FILE="${ENV_FILE:-${SCRIPT_DIR}/../../.env}"
 
 if [ -f "${ENV_FILE}" ]; then
   set +u  # Disable unset check for sourcing .env
   source "${ENV_FILE}"
   set -u
 else
-  echo "Warning: .env file not found at ${ENV_FILE}"
-  echo "Set GCP_PROJECT_ID, GCP_REGION, GCP_ZONE environment variables manually"
+  echo "Warning: .env file not found at ${ENV_FILE}; using exported environment variables" >&2
 fi
 
 # Environment & Context
@@ -19,6 +17,7 @@ PROJECT_ID="${GCP_PROJECT_ID:?Set GCP_PROJECT_ID environment variable}"
 REGION="${GCP_REGION:-us-central1}"
 ZONE="${GCP_ZONE:-us-central1-a}"
 REPOSITORY_URL="${GIT_REPOSITORY_URL:-https://github.com/global-cloudwork/kubernetes.git}"
+MACHINE_TYPE="${GCP_MACHINE_TYPE:-e2-medium}"
 
 # Startup Script (default to at-boot.sh in same directory)
 STARTUP_SCRIPT_PATH="${STARTUP_SCRIPT_PATH:-${SCRIPT_DIR}/at-boot.sh}"
@@ -39,10 +38,11 @@ fi
 echo "==> Setting active GCP Project context..."
 gcloud config set project "${PROJECT_ID}" --quiet
 
-echo "==> Provisioning Minimal IAM Service Account..."
+echo "==> Provisioning service account..."
 if ! gcloud iam service-accounts describe "${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" &>/dev/null; then
   gcloud iam service-accounts create "${SA_NAME}" \
-    --display-name="VPN Gateway Minimal SA"
+    --display-name="GCE Kubernetes bootstrap service account" \
+    --quiet
 fi
 SA_EMAIL="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
@@ -54,6 +54,22 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --member="serviceAccount:${SA_EMAIL}" \
   --role="roles/monitoring.metricWriter" --quiet >/dev/null
+
+# Keep the secret accessor grant bounded to the current bootstrap window. A
+# stable condition title lets a rerun replace the previous window rather than
+# accumulating IAM bindings.
+SECRET_CONDITION_TITLE="kubernetes-bootstrap-secret-access"
+gcloud projects remove-iam-policy-binding "${PROJECT_ID}" \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/secretmanager.secretAccessor" \
+  --condition="title=${SECRET_CONDITION_TITLE}" \
+  --quiet >/dev/null 2>&1 || true
+SECRET_ACCESS_EXPIRES="$(date -u -d '+24 hours' '+%Y-%m-%dT%H:%M:%SZ')"
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+  --member="serviceAccount:${SA_EMAIL}" \
+  --role="roles/secretmanager.secretAccessor" \
+  --condition="expression=request.time < timestamp('${SECRET_ACCESS_EXPIRES}'),title=${SECRET_CONDITION_TITLE},description=Temporary bootstrap secret access" \
+  --quiet >/dev/null
 
 echo "==> Provisioning VPC Network & Subnet..."
 if ! gcloud compute networks describe "${VPC_NAME}" &>/dev/null; then
@@ -91,27 +107,33 @@ if ! gcloud compute firewall-rules describe "allow-iap-ssh" &>/dev/null; then
     --target-tags="kubernetes-host"
 fi
 
-echo "==> Deploying Ubuntu Kind Kubernetes host..."
-if ! gcloud compute instances describe "${VM_NAME}" --zone="${ZONE}" &>/dev/null; then
-  gcloud compute instances create "${VM_NAME}" \
-    --zone="${ZONE}" \
-    --machine-type="${GCP_MACHINE_TYPE:-e2-medium}" \
-    --image-family="ubuntu-2404-lts-amd64" \
-    --image-project="ubuntu-os-cloud" \
-    --boot-disk-size="30GB" \
-    --boot-disk-type="pd-balanced" \
-    --network="${VPC_NAME}" \
-    --subnet="${SUBNET_NAME}" \
-    --address="${STATIC_IP}" \
-    --service-account="${SA_EMAIL}" \
-    --scopes="logging-write,monitoring-write" \
-    --tags="kubernetes-host" \
-    --shielded-secure-boot \
-    --shielded-vtpm \
-    --shielded-integrity-monitoring \
-    --metadata=enable-oslogin=TRUE,block-project-wide-ssh-keys=TRUE,GIT_REPOSITORY_URL="${REPOSITORY_URL}" \
-    --metadata-from-file=startup-script="${STARTUP_SCRIPT_PATH}"
+echo "==> Replacing Ubuntu Kind Kubernetes host..."
+if gcloud compute instances describe "${VM_NAME}" --zone="${ZONE}" &>/dev/null; then
+  echo "    Removing the old instance and releasing its static address..."
+  gcloud compute instances delete-access-config "${VM_NAME}" \
+    --zone="${ZONE}" --access-config-name="external-nat" --quiet >/dev/null 2>&1 || true
+  gcloud compute instances delete "${VM_NAME}" --zone="${ZONE}" --quiet
 fi
+
+gcloud compute instances create "${VM_NAME}" \
+  --zone="${ZONE}" \
+  --machine-type="${MACHINE_TYPE}" \
+  --image-family="ubuntu-2404-lts-amd64" \
+  --image-project="ubuntu-os-cloud" \
+  --boot-disk-size="30GB" \
+  --boot-disk-type="pd-balanced" \
+  --network="${VPC_NAME}" \
+  --subnet="${SUBNET_NAME}" \
+  --address="${STATIC_IP}" \
+  --service-account="${SA_EMAIL}" \
+  --scopes="cloud-platform" \
+  --tags="kubernetes-host" \
+  --shielded-secure-boot \
+  --shielded-vtpm \
+  --shielded-integrity-monitoring \
+  --metadata="enable-oslogin=TRUE,block-project-wide-ssh-keys=TRUE,GIT_REPOSITORY_URL=${REPOSITORY_URL}" \
+  --metadata-from-file="startup-script=${STARTUP_SCRIPT_PATH}" \
+  --quiet
 
 echo ""
 echo "=================================================================="
@@ -122,7 +144,8 @@ echo " Zone            : ${ZONE}"
 echo ""
 echo " NEXT STEPS:"
 echo "  1. Wait for the startup script to finish"
-echo "  2. Log in and run: sudo /root/bootstrap-kubernetes.sh"
+echo "  2. Populate /root/kubernetes-secrets on the instance"
+echo "  3. Log in and run: sudo /root/at-login.sh"
 echo ""
 echo " MANUAL SSH ACCESS (if needed):"
 echo "  gcloud compute ssh ${VM_NAME} --zone=${ZONE} --tunnel-through-iap"
