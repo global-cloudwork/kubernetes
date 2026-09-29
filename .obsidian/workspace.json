@@ -190,6 +190,7 @@
   },
   "active": "91d8a43e1bbb4a08",
   "lastOpenFiles": [
+    "AGENTS.md",
     "applications/traefik/tmpcharts-2924361/traefik-37.1.0.tgz",
     "applications/traefik/tmpcharts-2924361",
     "bash/cloud/at-provision.sh",
@@ -201,7 +202,6 @@
     "kubernetes/secrets/hydrator-secret.yaml",
     "kubernetes/secrets",
     "kubernetes/repository/scm-provider.yaml",
-    "kubernetes/repository/git-repository.yaml",
     "repo-assessment.md",
     "obsidian/Untitled.md",
     "obsidian/Plan for the obsidian kilocode link and options for it.md",
